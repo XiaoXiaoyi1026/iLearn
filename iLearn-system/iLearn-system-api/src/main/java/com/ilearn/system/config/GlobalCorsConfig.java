@@ -2,6 +2,7 @@ package com.ilearn.system.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -9,28 +10,36 @@ import org.springframework.web.filter.CorsFilter;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description 本地跨域配置
- * @date 2023/01/26 15:39
+ * @description 本地跨域请求过滤器
+ * @date 1/26/2023 4:31 PM
  */
 @Configuration
 public class GlobalCorsConfig {
 
     @Bean
     public CorsFilter getCorsFilter() {
-
+        // 创建CorsConfiguration
         CorsConfiguration configuration = new CorsConfiguration();
 
-        //添加哪些http方法可以跨域，比如：GET,Post，（多个方法中间以逗号分隔），*号表示所有
-        configuration.addAllowedMethod("*");
-        //添加允许哪个请求进行跨域，*表示所有,可以具体指定http://localhost:8601表示只允许http://localhost:8601/跨域
-        configuration.addAllowedOrigin("*");
-        //所有头信息全部放行
+        // 配置哪些方法可以跨域, *代表所有请求方法都可以
+        configuration.addAllowedMethod(HttpMethod.GET);
+
+        // 配置哪些请求来源可以跨域
+        configuration.addAllowedOrigin("http://localhost:8601");
+
+        // 配置哪些请求头可以跨域
         configuration.addAllowedHeader("*");
-        //允许跨域发送cookie
+
+        // 配置允许跨域发送cookie
         configuration.setAllowCredentials(true);
 
+        // 创建根据Url地址的拦截器
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+
+        // 配置要拦截的地址, /**代表要拦截所有请求
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
+
 }
