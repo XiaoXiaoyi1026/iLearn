@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ilearn-system-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///ilearn_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: XYX1026kwi!!
+
+# 日志文件配置路径
+logging:
+  config: classpath:log4j2-dev.xml
+
+
