@@ -1,0 +1,22 @@
+# 微服务名称
+spring:
+  application:
+    name: iLearn-content-api
+
+# 前端访问路径配置
+server:
+  servlet:
+    context-path: /content
+  port: 63040
+
+# 日志配置文件
+logging:
+  config: classpath:log4j2-dev.xml
+
+# swagger 文档配置
+swagger:
+  title: "爱学习内容管理系统"
+  description: "内容系统管理系统对课程相关信息进行业务管理数据"
+  base-package: com.ilearn.api
+  enabled: true
+  version: 1.0.0
