@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description TODO
+ * @description 内容管理启动类
  * @date 1/24/2023 5:26 PM
  */
 @EnableSwagger2Doc

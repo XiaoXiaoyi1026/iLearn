@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class CourseBaseInfoController {
 
     @Autowired
-    CourseBaseInfoService courseBaseInfoService;
+    private CourseBaseInfoService courseBaseInfoService;
 
     @PostMapping("/course/list")
     @ApiOperation("课程分页查询")
