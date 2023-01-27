@@ -2,6 +2,8 @@ package com.ilearn.content.api;
 
 import com.ilearn.base.model.PageParams;
 import com.ilearn.base.model.PageResult;
+import com.ilearn.content.model.dto.AddCourseDto;
+import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
 import com.ilearn.content.model.po.CourseBase;
 import com.ilearn.content.service.CourseBaseInfoService;
@@ -24,11 +26,17 @@ public class CourseBaseInfoController {
     @Autowired
     private CourseBaseInfoService courseBaseInfoService;
 
-    @PostMapping("/course/list")
+    @GetMapping("/course/list")
     @ApiOperation("课程分页查询")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         // Controller -> Service -> Mapper(dao)
         return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
+    }
+
+    @ApiOperation("新增课程")
+    @PostMapping("/course")
+    public CourseBaseInfoDto add(@RequestBody AddCourseDto addCourseDto) {
+        return null;
     }
 
 }
