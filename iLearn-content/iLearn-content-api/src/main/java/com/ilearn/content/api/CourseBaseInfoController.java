@@ -21,12 +21,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Api(value = "课程管理", tags = "课程管理相关接口")
+@RequestMapping("/course")
 public class CourseBaseInfoController {
 
     @Autowired
     private CourseBaseInfoService courseBaseInfoService;
 
-    @GetMapping("/course/list")
+    @PostMapping("/list")
     @ApiOperation("课程分页查询")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         // Controller -> Service -> Mapper(dao)
@@ -34,9 +35,11 @@ public class CourseBaseInfoController {
     }
 
     @ApiOperation("新增课程")
-    @PostMapping("/course")
+    @PostMapping
     public CourseBaseInfoDto add(@RequestBody AddCourseDto addCourseDto) {
-        return null;
+        // 认证/授权后, 可获取登录用户和所属培训机构的id
+        Long companyId = 1026L;
+        return courseBaseInfoService.addCourse(companyId, addCourseDto);
     }
 
 }
