@@ -1,4 +1,4 @@
-package com.ilearn.base.model.dictionary;
+package com.ilearn.base.dictionary;
 
 /**
  * @author xiaoxiaoyi

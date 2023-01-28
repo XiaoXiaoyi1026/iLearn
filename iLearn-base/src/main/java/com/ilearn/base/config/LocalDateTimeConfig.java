@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description TODO 日期和时间格式配置
+ * @description 日期和时间格式配置
  * @date 1/24/2023 6:12 PM
  */
 @Configuration

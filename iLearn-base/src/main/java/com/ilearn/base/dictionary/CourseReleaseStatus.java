@@ -1,4 +1,4 @@
-package com.ilearn.base.model.dictionary;
+package com.ilearn.base.dictionary;
 /**
 * @description 课程发布状态
 * @author xiaoxiaoyi

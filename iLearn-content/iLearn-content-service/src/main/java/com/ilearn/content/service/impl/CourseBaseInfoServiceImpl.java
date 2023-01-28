@@ -2,10 +2,12 @@ package com.ilearn.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ilearn.base.exception.CommonError;
+import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.PageParams;
 import com.ilearn.base.model.PageResult;
-import com.ilearn.base.model.dictionary.CourseAuditStatus;
-import com.ilearn.base.model.dictionary.CourseReleaseStatus;
+import com.ilearn.base.dictionary.CourseAuditStatus;
+import com.ilearn.base.dictionary.CourseReleaseStatus;
 import com.ilearn.content.mapper.CourseBaseMapper;
 import com.ilearn.content.mapper.CourseCategoryMapper;
 import com.ilearn.content.mapper.CourseMarketMapper;
@@ -94,7 +96,9 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     public CourseBaseInfoDto addCourse(Long companyId, AddCourseDto addCourseDto) {
         // 对参数进行合法性校验
         if (StringUtils.isBlank(addCourseDto.getName())) {
-            throw new RuntimeException("课程名称为空");
+            /*throw new RuntimeException("课程名称为空");*/
+            ILearnException.cast("课程名称为空");
+            /*ILearnException.cast(CommonError.PARAMS_ERROR);*/
         }
 
         if (StringUtils.isBlank(addCourseDto.getMt())) {

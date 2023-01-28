@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description TODO
+ * @description 内容服务启动类
  * @date 1/25/2023 2:39 PM
  */
 @SpringBootApplication
