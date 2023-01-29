@@ -25,7 +25,7 @@ Content-Type: application/json
   "grade": "204001",
   "description": "课程介绍",
   "objectives": "适用人群",
-  "charge": "201001",
+  "charge": "",
   "price": 0,
   "originalPrice": 0,
   "qq": "123123",

@@ -1,5 +1,6 @@
 package com.ilearn.content.api;
 
+import com.ilearn.base.exception.ValidationGroups;
 import com.ilearn.base.model.PageParams;
 import com.ilearn.base.model.PageResult;
 import com.ilearn.content.model.dto.AddCourseDto;
@@ -10,6 +11,7 @@ import com.ilearn.content.service.CourseBaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,7 +38,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation("新增课程")
     @PostMapping
-    public CourseBaseInfoDto add(@RequestBody AddCourseDto addCourseDto) {
+    public CourseBaseInfoDto add(@RequestBody @Validated(value = {ValidationGroups.Insert.class}) AddCourseDto addCourseDto) {
         // 认证/授权后, 可获取登录用户和所属培训机构的id
         Long companyId = 1026L;
         return courseBaseInfoService.addCourse(companyId, addCourseDto);
