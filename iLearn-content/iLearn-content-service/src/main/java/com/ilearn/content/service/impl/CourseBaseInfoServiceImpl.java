@@ -102,27 +102,33 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
 
         if (StringUtils.isBlank(addCourseDto.getMt())) {
-            throw new RuntimeException("课程分类为空");
+            /*throw new RuntimeException("课程分类为空");*/
+            ILearnException.cast("课程大分类为空");
         }
 
         if (StringUtils.isBlank(addCourseDto.getSt())) {
-            throw new RuntimeException("课程分类为空");
+            /*throw new RuntimeException("课程分类为空");*/
+            ILearnException.cast("课程小分类为空");
         }
 
         if (StringUtils.isBlank(addCourseDto.getGrade())) {
-            throw new RuntimeException("课程等级为空");
+            /*throw new RuntimeException("课程等级为空");*/
+            ILearnException.cast("课程等级为空");
         }
 
         if (StringUtils.isBlank(addCourseDto.getTeachmode())) {
-            throw new RuntimeException("教育模式为空");
+            /*throw new RuntimeException("教育模式为空");*/
+            ILearnException.cast("教育模式为空");
         }
 
         if (StringUtils.isBlank(addCourseDto.getUsers())) {
-            throw new RuntimeException("适应人群为空");
+            /*throw new RuntimeException("适应人群为空");*/
+            ILearnException.cast("适应人群为空");
         }
 
         if (StringUtils.isBlank(addCourseDto.getCharge())) {
-            throw new RuntimeException("收费规则为空");
+            /*throw new RuntimeException("收费规则为空");*/
+            ILearnException.cast("收费规则为空");
         }
         // 对数据进行封装, 封装成持久层mapper需要的对象
         CourseBase courseBase = new CourseBase();
@@ -142,23 +148,31 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // 封装营销信息
         CourseMarket courseMarket = new CourseMarket();
         BeanUtils.copyProperties(addCourseDto, courseMarket);
+        
         // 调用mapper进行持久化
         if (courseBaseMapper.insert(courseBase) < 1) {
-            throw new RuntimeException("插入课程失败!");
+            /*throw new RuntimeException("插入课程失败!");*/
+            ILearnException.cast("插入课程失败!");
         }
+
         Long courseId = courseBase.getId();
         courseMarket.setId(courseId);
+
         // 如果课程收费, 则价格必须输入
         if ("201001".equals(addCourseDto.getCharge())) {
             Float price = addCourseDto.getPrice();
             if (price == null) {
-                throw new RuntimeException("收费课程必须输入价格!");
+                /*throw new RuntimeException("收费课程必须输入价格!");*/
+                ILearnException.cast("收费课程必须输入价格!");
             } else if (price <= 0) {
-                throw new RuntimeException("价格必须大于0!");
+                /*throw new RuntimeException("价格必须大于0!");*/
+                ILearnException.cast("课程价格必须大于0!");
             }
         }
+
         if (courseMarketMapper.insert(courseMarket) < 1) {
-            throw new RuntimeException("插入营销信息失败!");
+            /*throw new RuntimeException("插入营销信息失败!");*/
+            ILearnException.cast("插入营销信息失败!");
         }
 
         // 拼装响应结果

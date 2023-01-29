@@ -8,14 +8,14 @@ package com.ilearn.base.exception;
  */
 public class RestErrorResponse {
 
-    private final String message;
+    private final String errMessage;
 
     public RestErrorResponse(String message) {
-        this.message = message;
+        this.errMessage = message;
     }
 
-    public String getMessage() {
-        return this.message;
+    public String getErrMessage() {
+        return this.errMessage;
     }
 
 }

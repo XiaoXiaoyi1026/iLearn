@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+
 /**
  * @author xiaoxiaoyi
  * @version 1.0
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @date 1/28/2023 4:49 PM
  * ControllerAdvice: 控制器(Controller)增强
  */
-@ControllerAdvice
 @Slf4j
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
@@ -33,6 +34,7 @@ public class GlobalExceptionHandler {
         String message = iLearnException.getMessage();
         // 记录日志信息
         log.error("捕获到异常: {}", message);
+        iLearnException.printStackTrace();
         return new RestErrorResponse(message);
     }
 
