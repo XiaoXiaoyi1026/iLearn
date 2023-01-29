@@ -6,6 +6,7 @@ import com.ilearn.base.model.PageResult;
 import com.ilearn.content.model.dto.AddCourseDto;
 import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
+import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
 import com.ilearn.content.service.CourseBaseInfoService;
 import io.swagger.annotations.Api;
@@ -36,12 +37,24 @@ public class CourseBaseInfoController {
         return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
     }
 
-    @ApiOperation("新增课程")
     @PostMapping
+    @ApiOperation("新增课程")
     public CourseBaseInfoDto add(@RequestBody @Validated(value = {ValidationGroups.Insert.class}) AddCourseDto addCourseDto) {
         // 认证/授权后, 可获取登录用户和所属培训机构的id
         Long companyId = 1026L;
         return courseBaseInfoService.addCourse(companyId, addCourseDto);
+    }
+
+    @GetMapping("/{courseId}")
+    @ApiOperation("根据课程id获取对应的课程信息")
+    public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
+        return null;
+    }
+
+    @PutMapping
+    @ApiOperation("更新课程信息")
+    public CourseBaseInfoDto update(@RequestBody UpdateCourseDto updateCourseDto) {
+        return null;
     }
 
 }
