@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
      * 该异常的响应状态码约定为HttpStatus.INTERNAL_SERVER_ERROR(500)
      * 约定返回的信息数据格式为JSON(@ResponseBody)
      *
-     * @param methodArgumentNotValidException JSR303校验抛出的异常
+     * @param methodArgumentNotValidException JSR303校验抛出的参数值异常
      * @return 与前端约定好的异常数据格式
      */
     @ResponseBody
@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
         }
         errors.append(fieldErrors.get(n - 1).getDefaultMessage());
         // 记录日志信息
-        log.error("JSR303校验捕获到异常: {}", errors);
+        log.error("JSR303校验捕获到参数值异常: {}", errors);
         methodArgumentNotValidException.printStackTrace();
         return new RestErrorResponse(String.valueOf(errors));
     }

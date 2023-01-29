@@ -34,7 +34,7 @@ public class CourseBaseInfoController {
     @ApiOperation("课程分页查询")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         // Controller -> Service -> Mapper(dao)
-        return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
+        return courseBaseInfoService.queryPageList(pageParams, queryCourseParamsDto);
     }
 
     @PostMapping
@@ -42,19 +42,20 @@ public class CourseBaseInfoController {
     public CourseBaseInfoDto add(@RequestBody @Validated(value = {ValidationGroups.Insert.class}) AddCourseDto addCourseDto) {
         // 认证/授权后, 可获取登录用户和所属培训机构的id
         Long companyId = 1026L;
-        return courseBaseInfoService.addCourse(companyId, addCourseDto);
+        return courseBaseInfoService.add(companyId, addCourseDto);
     }
 
     @GetMapping("/{courseId}")
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
-        return null;
+        return courseBaseInfoService.buildDtoInfo(courseId);
     }
 
     @PutMapping
     @ApiOperation("更新课程信息")
-    public CourseBaseInfoDto update(@RequestBody UpdateCourseDto updateCourseDto) {
-        return null;
+    public CourseBaseInfoDto update(@RequestBody @Validated(value = {ValidationGroups.Update.class}) UpdateCourseDto updateCourseDto) {
+        Long companyId = 1026L;
+        return courseBaseInfoService.update(companyId, updateCourseDto);
     }
 
 }

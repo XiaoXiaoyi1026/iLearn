@@ -2,7 +2,7 @@ package com.ilearn.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ilearn.base.exception.CommonError;
+import com.ilearn.base.dictionary.CourseType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.PageParams;
 import com.ilearn.base.model.PageResult;
@@ -14,18 +14,21 @@ import com.ilearn.content.mapper.CourseMarketMapper;
 import com.ilearn.content.model.dto.AddCourseDto;
 import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
+import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
 import com.ilearn.content.model.po.CourseCategory;
 import com.ilearn.content.model.po.CourseMarket;
 import com.ilearn.content.service.CourseBaseInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * @author xiaoxiaoyi
@@ -46,8 +49,11 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
 
+    @Autowired
+    private CourseMarketServiceImpl courseMarketService;
+
     @Override
-    public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResult<CourseBase> queryPageList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
         // 拼接查询条件
         LambdaQueryWrapper<CourseBase> courseBaseLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -92,44 +98,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     @Override
-    @Transactional(rollbackFor = RuntimeException.class)
-    public CourseBaseInfoDto addCourse(Long companyId, AddCourseDto addCourseDto) {
-        /*// 对参数进行合法性校验
-        if (StringUtils.isBlank(addCourseDto.getName())) {
-            *//*throw new RuntimeException("课程名称为空");*//*
-            ILearnException.cast("课程名称为空");
-            *//*ILearnException.cast(CommonError.PARAMS_ERROR);*//*
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getMt())) {
-            *//*throw new RuntimeException("课程分类为空");*//*
-            ILearnException.cast("课程大分类为空");
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getSt())) {
-            *//*throw new RuntimeException("课程分类为空");*//*
-            ILearnException.cast("课程小分类为空");
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getGrade())) {
-            *//*throw new RuntimeException("课程等级为空");*//*
-            ILearnException.cast("课程等级为空");
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getTeachmode())) {
-            *//*throw new RuntimeException("教育模式为空");*//*
-            ILearnException.cast("教育模式为空");
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getUsers())) {
-            *//*throw new RuntimeException("适应人群为空");*//*
-            ILearnException.cast("适应人群为空");
-        }
-
-        if (StringUtils.isBlank(addCourseDto.getCharge())) {
-            *//*throw new RuntimeException("收费规则为空");*//*
-            ILearnException.cast("收费规则为空");
-        }*/
+    @Transactional(rollbackFor = Throwable.class)
+    public CourseBaseInfoDto add(Long companyId, AddCourseDto addCourseDto) {
         // 对数据进行封装, 封装成持久层mapper需要的对象
         CourseBase courseBase = new CourseBase();
         // 将dto对象放入po类中, 属性一致
@@ -156,19 +126,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
 
         Long courseId = courseBase.getId();
-        courseMarket.setId(courseId);
-
-        // 如果课程收费, 则价格必须输入
-        if ("201001".equals(addCourseDto.getCharge())) {
-            Float price = addCourseDto.getPrice();
-            if (price == null) {
-                /*throw new RuntimeException("收费课程必须输入价格!");*/
-                ILearnException.cast("收费课程必须输入价格!");
-            } else if (price <= 0) {
-                /*throw new RuntimeException("价格必须大于0!");*/
-                ILearnException.cast("课程价格必须大于0!");
-            }
-        }
+        setCourseMarket(courseMarket, courseId, addCourseDto.getCharge(), addCourseDto.getPrice());
 
         if (courseMarketMapper.insert(courseMarket) < 1) {
             /*throw new RuntimeException("插入营销信息失败!");*/
@@ -176,27 +134,30 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
 
         // 拼装响应结果
-        return buildCourseInfo(courseId);
+        return buildDtoInfo(courseId);
     }
 
-    /**
-     * 根据课程id封装课程的基本信息和营销信息
-     *
-     * @param courseId 课程id
-     * @return 课程的基本信息和营销信息
-     */
-    private CourseBaseInfoDto buildCourseInfo(Long courseId) {
+    @Override
+    public CourseBaseInfoDto buildDtoInfo(Long courseId) {
         // 获取课程基本信息
         CourseBase baseInfo = courseBaseMapper.selectById(courseId);
-
+        if (baseInfo == null) {
+            ILearnException.cast("课程不存在!");
+        }
         // 获取课程营销信息
         CourseMarket marketInfo = courseMarketMapper.selectById(courseId);
+        if (marketInfo == null) {
+            marketInfo = new CourseMarket();
+        }
+        // 创建CourseBaseInfoDto对象并封装
+        return buildDtoInfo(baseInfo, marketInfo);
+    }
 
+    private @NotNull CourseBaseInfoDto buildDtoInfo(CourseBase baseInfo, CourseMarket marketInfo) {
         // 创建CourseBaseInfoDto对象并封装
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
         BeanUtils.copyProperties(baseInfo, courseBaseInfoDto);
         BeanUtils.copyProperties(marketInfo, courseBaseInfoDto);
-
         // 根据课程的mt和st获取对应的name并封装
         CourseCategory mtCategory = courseCategoryMapper.selectById(baseInfo.getMt());
         if (mtCategory != null) {
@@ -206,8 +167,67 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         if (stCategory != null) {
             courseBaseInfoDto.setStName(stCategory.getName());
         }
-
         return courseBaseInfoDto;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public CourseBaseInfoDto update(Long companyId, UpdateCourseDto updateCourseDto) {
+
+        Long courseId = updateCourseDto.getId();
+
+        // 校验(Controller层做, Service层只负责业务流程的合法性校验)
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+
+        if (courseBase == null) {
+            // 如果该课程不存在抛出异常
+            ILearnException.cast("课程不存在!");
+        }
+
+        // null safe处理, 判断更改的课程和机构id是否匹配
+        if (!Objects.equals(companyId, courseBase.getCompanyId())) {
+            ILearnException.cast("不可修改不是自己机构的课程!");
+        }
+
+        // 将dto对象放入po类中, 属性一致
+        BeanUtils.copyProperties(updateCourseDto, courseBase);
+
+        // 设置更新时间
+        courseBase.setChangeDate(LocalDateTime.now());
+
+        // 调用mapper进行持久化
+        if (courseBaseMapper.updateById(courseBase) < 1) {
+            ILearnException.cast("更新课程失败!");
+        }
+
+        // 营销信息有则更新, 没有则添加
+        CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+        if (courseMarket == null) {
+            courseMarket = new CourseMarket();
+        }
+        BeanUtils.copyProperties(updateCourseDto, courseMarket);
+
+        setCourseMarket(courseMarket, courseId, updateCourseDto.getCharge(), updateCourseDto.getPrice());
+
+        if (!courseMarketService.saveOrUpdate(courseMarket)) {
+            ILearnException.cast("更新课程营销信息失败!");
+        }
+
+        // 拼装响应结果
+        return buildDtoInfo(courseBase, courseMarket);
+    }
+
+    private static void setCourseMarket(CourseMarket courseMarket, Long courseId, String courseType, Float price) {
+        courseMarket.setId(courseId);
+
+        // 如果课程收费, 则价格必须输入
+        if (CourseType.CHARGE.equals(courseType)) {
+            if (price == null) {
+                ILearnException.cast("收费课程必须输入价格!");
+            } else if (price <= 0) {
+                ILearnException.cast("课程价格必须大于0!");
+            }
+        }
     }
 
 }

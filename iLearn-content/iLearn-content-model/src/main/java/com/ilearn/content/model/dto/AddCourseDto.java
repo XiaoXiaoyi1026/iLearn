@@ -58,9 +58,9 @@ public class AddCourseDto {
 
     @ApiModelProperty(value = "价格")
     private Float price;
+
     @ApiModelProperty(value = "原价")
     private Float originalPrice;
-
 
     @ApiModelProperty(value = "qq")
     private String qq;
