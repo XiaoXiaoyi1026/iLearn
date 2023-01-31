@@ -1,6 +1,7 @@
 package com.ilearn.content.model.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("teachplan_media")
+@ApiModel(value = "教学计划媒体", description = "对应数据库中的teachplan_media表")
 public class TeachPlanMedia implements Serializable {
 
     private static final long serialVersionUID = 1L;
