@@ -1,7 +1,9 @@
 package com.ilearn.content.model.dto;
 
-import com.ilearn.content.model.po.Teachplan;
-import com.ilearn.content.model.po.TeachplanMedia;
+import com.ilearn.content.model.po.TeachPlan;
+import com.ilearn.content.model.po.TeachPlanMedia;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,16 +17,19 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TeachPlanDto extends Teachplan {
+@ApiModel(value = "课程教学计划 Dto", description = "查询课程教学计划")
+public class TeachPlanDto extends TeachPlan {
 
     /**
      * 教学计划Dto是一个树形结构, 这是它的子节点
      */
+    @ApiModelProperty("课程教学计划的子节点")
     private List<TeachPlanDto> teachPlanTreeNodes;
 
     /**
      * 这是当前教学内容关联的媒资信息
      */
-    private TeachplanMedia teachplanMedia;
+    @ApiModelProperty("课程教学计划媒资信息")
+    private TeachPlanMedia teachplanMedia;
 
 }

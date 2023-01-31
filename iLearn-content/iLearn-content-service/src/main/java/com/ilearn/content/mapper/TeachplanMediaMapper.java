@@ -1,7 +1,7 @@
 package com.ilearn.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ilearn.content.model.po.TeachplanMedia;
+import com.ilearn.content.model.po.TeachPlanMedia;
 
 /**
  * <p>
@@ -10,6 +10,6 @@ import com.ilearn.content.model.po.TeachplanMedia;
  *
  * @author xiaoxiaoyi
  */
-public interface TeachplanMediaMapper extends BaseMapper<TeachplanMedia> {
+public interface TeachplanMediaMapper extends BaseMapper<TeachPlanMedia> {
 
 }

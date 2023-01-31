@@ -3,7 +3,7 @@
 <mapper namespace="com.ilearn.content.mapper.TeachplanMediaMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ilearn.content.model.po.TeachplanMedia">
+    <resultMap id="BaseResultMap" type="com.ilearn.content.model.po.TeachPlanMedia">
         <id column="id" property="id" />
         <result column="media_id" property="mediaId" />
         <result column="teachplan_id" property="teachplanId" />

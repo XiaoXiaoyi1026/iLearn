@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeachPlanController {
 
     /**
-     * 根据课程计划的id获取其对应的子节点
+     * 根据课程的id获取其对应的计划子节点
      *
-     * @param teachPlanId 教学计划id
+     * @param courseId 教学计划id
      * @return 子节点
      */
-    @GetMapping("/{teachPlanId}/tree-nodes")
-    public TeachPlanDto getTreeNodes(@PathVariable(name = "teachPlanId") String teachPlanId) {
+    @GetMapping("/{courseId}/tree-nodes")
+    public TeachPlanDto getTreeNodes(@PathVariable(name = "courseId") Long courseId) {
         return null;
     }
 
