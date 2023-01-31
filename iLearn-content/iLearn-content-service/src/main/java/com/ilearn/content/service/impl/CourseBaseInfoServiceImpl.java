@@ -122,19 +122,19 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // 调用mapper进行持久化
         if (courseBaseMapper.insert(courseBase) < 1) {
             /*throw new RuntimeException("插入课程失败!");*/
-            ILearnException.cast("插入课程失败!");
+            ILearnException.cast("添加课程失败!");
         }
 
-        Long courseId = courseBase.getId();
-        setCourseMarket(courseMarket, courseId, addCourseDto.getCharge(), addCourseDto.getPrice());
-
-        if (courseMarketMapper.insert(courseMarket) < 1) {
-            /*throw new RuntimeException("插入营销信息失败!");*/
-            ILearnException.cast("插入营销信息失败!");
-        }
+        // 为防止事务失效, 用自身的指针去调用非事务方法
+        this.saveOrUpdateCourseMarket(
+                courseMarket,
+                courseBase.getId(),
+                addCourseDto.getCharge(),
+                addCourseDto.getPrice()
+        );
 
         // 拼装响应结果
-        return buildDtoInfo(courseId);
+        return this.buildDtoInfo(courseBase, courseMarket);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             marketInfo = new CourseMarket();
         }
         // 创建CourseBaseInfoDto对象并封装
-        return buildDtoInfo(baseInfo, marketInfo);
+        return this.buildDtoInfo(baseInfo, marketInfo);
     }
 
     private @NotNull CourseBaseInfoDto buildDtoInfo(CourseBase baseInfo, CourseMarket marketInfo) {
@@ -207,17 +207,19 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
         BeanUtils.copyProperties(updateCourseDto, courseMarket);
 
-        setCourseMarket(courseMarket, courseId, updateCourseDto.getCharge(), updateCourseDto.getPrice());
-
-        if (!courseMarketService.saveOrUpdate(courseMarket)) {
-            ILearnException.cast("更新课程营销信息失败!");
-        }
+        // 为防止事务失效, 可以在本类中注入自身, 然后用自身的指针去调用方法
+        this.saveOrUpdateCourseMarket(
+                courseMarket,
+                courseId,
+                updateCourseDto.getCharge(),
+                updateCourseDto.getPrice()
+        );
 
         // 拼装响应结果
-        return buildDtoInfo(courseBase, courseMarket);
+        return this.buildDtoInfo(courseBase, courseMarket);
     }
 
-    private static void setCourseMarket(CourseMarket courseMarket, Long courseId, String courseType, Float price) {
+    private void saveOrUpdateCourseMarket(@NotNull CourseMarket courseMarket, Long courseId, String courseType, Float price) {
         courseMarket.setId(courseId);
 
         // 如果课程收费, 则价格必须输入
@@ -227,6 +229,10 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             } else if (price <= 0) {
                 ILearnException.cast("课程价格必须大于0!");
             }
+        }
+
+        if (!courseMarketService.saveOrUpdate(courseMarket)) {
+            ILearnException.cast("更新课程营销信息失败!");
         }
     }
 
