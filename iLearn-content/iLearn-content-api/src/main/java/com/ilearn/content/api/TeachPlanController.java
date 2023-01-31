@@ -1,12 +1,16 @@
 package com.ilearn.content.api;
 
 import com.ilearn.content.model.dto.TeachPlanDto;
+import com.ilearn.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author xiaoxiaoyi
@@ -20,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class TeachPlanController {
 
+    @Autowired
+    private TeachPlanService teachPlanService;
+
     /**
      * 根据课程的id获取其对应的计划子节点
      *
@@ -27,8 +34,8 @@ public class TeachPlanController {
      * @return 子节点
      */
     @GetMapping("/{courseId}/tree-nodes")
-    public TeachPlanDto getTreeNodes(@PathVariable(name = "courseId") Long courseId) {
-        return null;
+    public List<TeachPlanDto> getTreeNodes(@PathVariable(name = "courseId") Long courseId) {
+        return teachPlanService.getTreeNodes(courseId);
     }
 
 }
