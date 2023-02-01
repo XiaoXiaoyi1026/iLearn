@@ -1,5 +1,6 @@
 package com.ilearn.content.service;
 
+import com.ilearn.content.model.dto.SaveTeachPlanDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
 
 import java.util.List;
@@ -19,5 +20,12 @@ public interface TeachPlanService {
      * @return 教学计划
      */
     List<TeachPlanDto> getTreeNodes(Long courseId);
+
+    /**
+     * 添加/修改课程教学计划
+     *
+     * @param saveTeachPlanDto 添加/修改的课程教学计划信息
+     */
+    void saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
 
 }

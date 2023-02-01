@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,8 +41,8 @@ public class TeachPlanController {
 
     @ApiOperation("保存课程计划, 可以是添加或更新")
     @PostMapping
-    public void saveTeachPlan(@RequestBody SaveTeachPlanDto saveTeachPlanDto) {
-
+    public void saveTeachPlan(@RequestBody @Validated SaveTeachPlanDto saveTeachPlanDto) {
+        teachPlanService.saveTeachPlan(saveTeachPlanDto);
     }
 
 }
