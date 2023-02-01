@@ -12,6 +12,12 @@
 
     <dependencies>
 
+        <!-- nacos服务注册 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.ilearn</groupId>
             <artifactId>iLearn-content-model</artifactId>

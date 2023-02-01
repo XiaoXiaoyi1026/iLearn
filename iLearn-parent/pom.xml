@@ -52,6 +52,7 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <!-- nacos的依赖 -->
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>

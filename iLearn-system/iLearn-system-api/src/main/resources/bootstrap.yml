@@ -6,6 +6,12 @@ server:
 spring:
   application:
     name: ilearn-system-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: 47acfae3-090f-4755-95d9-cc1faa3c59cd
+        group: ilearn-project
 
 # 日志文件配置路径
 logging:

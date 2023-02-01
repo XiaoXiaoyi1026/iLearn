@@ -1,7 +1,13 @@
 # 微服务名称
 spring:
   application:
-    name: iLearn-content-api
+    name: ilearn-content-api
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: 47acfae3-090f-4755-95d9-cc1faa3c59cd
+        group: ilearn-project
 
 # 前端访问路径配置
 server:
