@@ -5,7 +5,7 @@ server:
 #微服务配置
 spring:
   application:
-    name: ilearn-system-service
+    name: iLearn-system-api
   cloud:
     nacos:
       server-addr: localhost:8848

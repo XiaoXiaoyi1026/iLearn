@@ -11,11 +11,19 @@
     <artifactId>iLearn-content-service</artifactId>
 
     <dependencies>
+
         <dependency>
             <groupId>com.ilearn</groupId>
             <artifactId>iLearn-content-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <!-- nacos配置管理服务 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
 
         <!-- MySQL 驱动 -->
         <dependency>

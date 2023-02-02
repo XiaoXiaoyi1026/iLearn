@@ -1,0 +1,21 @@
+# 应用名称
+spring:
+  application:
+    # 根据应用名称来找配置文件, 配置问价命名规则: 应用名称-环境名称.扩展名
+    name: iLearn-content-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        namespace: 47acfae3-090f-4755-95d9-cc1faa3c59cd
+        group: ilearn-project
+        # 对应配置文件的文件类型, 即扩展名
+        file-extension: yaml
+        refresh-enabled: true
+  # 对应配置文件的环境名称
+  profiles:
+    active: develop
+
+# 配置日志文件路径
+logging:
+  config: classpath:log4j2-dev.xml
