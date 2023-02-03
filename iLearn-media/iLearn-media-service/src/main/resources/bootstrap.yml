@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: iLearn-media-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: iLearn-logging-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
+  profiles:
+    active: develop

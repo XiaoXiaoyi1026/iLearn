@@ -368,7 +368,7 @@ INSERT INTO `xc_user` VALUES ('17b9d8be-cef3-400c-bec5-1478a6ef7ddc', 'o5PB1sytM
 INSERT INTO `xc_user` VALUES ('46', 'super', '$2a$10$TJ4TmCdK.X4wv/tCqHW14.w70U3CC33CeVncD3SLmyMXMknstqKRe', NULL, NULL, NULL, '超级管理员', NULL, NULL, '101003', NULL, '1', NULL, NULL, NULL, '1', '2022-09-28 08:32:03', NULL);
 INSERT INTO `xc_user` VALUES ('48', 'admin', '$2a$10$TJ4TmCdK.X4wv/tCqHW14.w70U3CC33CeVncD3SLmyMXMknstqKRe', NULL, NULL, NULL, '系统管理员', NULL, NULL, '101003', NULL, '1', NULL, NULL, NULL, '1', '2022-09-28 08:32:03', NULL);
 INSERT INTO `xc_user` VALUES ('49', 'itcast', '$2a$10$TJ4TmCdK.X4wv/tCqHW14.w70U3CC33CeVncD3SLmyMXMknstqKRe', NULL, NULL, NULL, 'test02', NULL, NULL, '101002', NULL, '1', '', '12345', NULL, '1', '2022-09-28 08:32:03', NULL);
-INSERT INTO `xc_user` VALUES ('50', 'stu1', '$2a$10$0pt7WlfTbnPDTcWtp/.2Mu5CTXvohnNQhR628qq4RoKSc0dGAdEgm', NULL, NULL, '大水牛', '学生1', 'http://file.xuecheng-plus.com/dddf', NULL, '101001', '2022-09-28 19:28:46', '1', NULL, NULL, NULL, '1', '2022-09-28 08:32:03', NULL);
+INSERT INTO `xc_user` VALUES ('50', 'stu1', '$2a$10$0pt7WlfTbnPDTcWtp/.2Mu5CTXvohnNQhR628qq4RoKSc0dGAdEgm', NULL, NULL, '大水牛', '学生1', 'http://file.ilearn-plus.com/dddf', NULL, '101001', '2022-09-28 19:28:46', '1', NULL, NULL, NULL, '1', '2022-09-28 08:32:03', NULL);
 INSERT INTO `xc_user` VALUES ('51', 'stu2', '$2a$10$nxPKkYSez7uz2YQYUnwhR.z57km3yqKn3Hr/p1FR6ZKgc18u.Tvqm', NULL, NULL, NULL, '学生2', NULL, NULL, '101001', NULL, '1', NULL, NULL, NULL, '1', '2022-09-28 08:32:03', NULL);
 INSERT INTO `xc_user` VALUES ('52', 't1', '$2a$10$0pt7WlfTbnPDTcWtp/.2Mu5CTXvohnNQhR628qq4RoKSc0dGAdEgm', NULL, NULL, NULL, 'M老师', NULL, '1232141425', '101002', NULL, '1', NULL, NULL, NULL, '', '2022-09-28 08:32:03', NULL);
 

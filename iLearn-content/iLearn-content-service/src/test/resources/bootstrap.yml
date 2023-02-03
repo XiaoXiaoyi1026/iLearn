@@ -7,7 +7,7 @@ spring:
     nacos:
       server-addr: localhost:8848
       config:
-        namespace: 47acfae3-090f-4755-95d9-cc1faa3c59cd
+        namespace: ${spring.profiles.active}
         group: ilearn-project
         # 对应配置文件的文件类型, 即扩展名
         file-extension: yaml
