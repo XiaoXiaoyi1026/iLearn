@@ -33,3 +33,9 @@ spring:
   # 对应配置文件的环境名称
   profiles:
     active: develop
+# 测试用配置, 本地配置文件, 编号: 4
+test-config:
+  a: 4a
+  b: 4b
+  c: 4c
+  d: 4d
