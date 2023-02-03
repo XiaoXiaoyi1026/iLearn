@@ -8,6 +8,16 @@ Content-Type: application/json
   "publishStatus": "203001"
 }
 
+### 课程查询接口-使用网关
+POST {{gateway_host}}/content/course/list?pageNo=1&pageSize=3
+Content-Type: application/json
+
+{
+  "auditStatus": "202004",
+  "courseName": "java",
+  "publishStatus": "203001"
+}
+
 ### 课程分类接口
 GET {{content_host}}/content/course-category/tree-nodes
 

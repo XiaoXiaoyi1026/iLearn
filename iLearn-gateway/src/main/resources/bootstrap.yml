@@ -1,7 +1,7 @@
-# 微服务名称
+# 网关服务
 spring:
   application:
-    name: iLearn-content-api
+    name: iLearn-gateway
   cloud:
     nacos:
       server-addr: localhost:8848
@@ -16,26 +16,11 @@ spring:
         # 对应配置文件的文件类型, 即扩展名
         file-extension: yaml
         refresh-enabled: true
-        # 扩展配置文件, 指当前配置文件依赖的其他配置文件
-        extension-configs:
-          # 此处不能写死, 在启动时可作为动态参数传递进来, 以根据不同的配置文件进行启动
-          - data-id: iLearn-content-service-${spring.profiles.active}.yaml
-            group: ilearn-project
-            refresh: true
         # 通用配置文件依赖, 可依赖多个文件
         shared-configs:
-          - data-id: iLearn-swagger-${spring.profiles.active}.yaml
-            group: ilearn-project
-            refresh: true
           - data-id: iLearn-logging-${spring.profiles.active}.yaml
             group: ilearn-project
             refresh: true
   # 对应配置文件的环境名称
   profiles:
     active: develop
-# 测试用配置, 本地配置文件, 编号: 4
-test-config:
-  a: 4a
-  b: 4b
-  c: 4c
-  d: 4d
