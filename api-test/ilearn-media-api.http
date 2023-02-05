@@ -3,7 +3,7 @@ POST {{media_host}}/media/upload/coursefile
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; name="filedata"; filename="MasterYi.png"
+Content-Disposition: form-data; name="filedata"; filename="Bocchi the Rock!.jpg"
 Content-Type: application/octet-stream
 
-< D:\Download\Media\IMAGE\MasterYi.png
+< D:\Download\Media\IMAGE\Bocchi the Rock!.jpg

@@ -12,18 +12,23 @@ import com.ilearn.media.model.dto.UploadFileParamsDto;
 import com.ilearn.media.model.dto.UploadFileResponseDto;
 import com.ilearn.media.model.po.MediaFiles;
 import com.ilearn.media.service.MediaFileService;
+import com.j256.simplemagic.ContentInfo;
+import com.j256.simplemagic.ContentInfoUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +38,7 @@ import java.util.List;
  * @description 媒体服务实现类
  * @date 2023/2/3 15:47
  */
+@Slf4j
 @Service
 public class MediaFileServiceImpl implements MediaFileService {
 
@@ -73,10 +79,10 @@ public class MediaFileServiceImpl implements MediaFileService {
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public UploadFileResponseDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, byte[] fileDataBytes, String folder, String objectName) {
-        UploadFileResponseDto uploadFileResponse = null;
+        UploadFileResponseDto uploadFileResponse;
         if (folder == null) {
             // 按照年月日进行生成
-            folder = this.getFileDateFolder(new Date());
+            folder = this.getDateFolder(new Date());
         } else if (folder.indexOf('/') < 0) {
             folder += '/';
         }
@@ -92,43 +98,81 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
         // 拼接文件全路径
         objectName = folder + filename;
+        // 保存媒体文件到MinIO
+        this.saveMedia2MinIO(fileDataBytes, filesBucket, objectName);
+        // 将文件保存至数据库, 先根据文件的md5值获取文件
+        MediaFiles mediaFiles = this.saveMedia2DataBase(companyId, uploadFileParamsDto, fileMD5, filesBucket, objectName);
+        // 准备返回数据
+        uploadFileResponse = new UploadFileResponseDto();
+        BeanUtils.copyProperties(mediaFiles, uploadFileResponse);
+        return uploadFileResponse;
+    }
+
+    /**
+     * 上传媒体文件到MinIO
+     *
+     * @param fileDataBytes 文件的字节数组
+     * @param bucketName    存储的目标桶的名称
+     * @param objectName    文件的全路径
+     */
+    private void saveMedia2MinIO(byte[] fileDataBytes, String bucketName, String objectName) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileDataBytes)) {
-            // 上传到MinIO
-            minioClient.putObject(PutObjectArgs.builder().bucket(filesBucket).object(objectName)
+            // 获取文件类型, 默认为未知的二进制流信息
+            String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            if (objectName.contains(".")) {
+                // 取出其中的扩展名
+                String extension = objectName.substring(objectName.indexOf("."));
+                // 根据扩展名得到mimeType
+                ContentInfo contentInfo = ContentInfoUtil.findExtensionMatch(extension);
+                if (contentInfo != null) {
+                    contentType = contentInfo.getMimeType();
+                }
+            }
+            minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName)
                     /*
-                      InputStream stream 输入流
-                      long objectSize 对象大小
-                      long partSize 分片大小
-                      -1代表最小分片大小: 5M
-                      最大分片大小: 5T
-                      分片数量最多不超过10000
+                      InputStream stream 输入流 long objectSize 对象大小 long partSize 分片大小
+                      -1代表最小分片大小: 5M 最大分片大小: 5T 分片数量最多不超过10000
                      */
                     .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
-                    .contentType(uploadFileParamsDto.getContentType()).build());
-            // 将文件保存至数据库, 先根据文件的md5值获取文件
-            MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMD5);
-            if (mediaFiles == null) {
-                mediaFiles = new MediaFiles();
-                BeanUtils.copyProperties(uploadFileParamsDto, mediaFiles);
-                mediaFiles.setId(fileMD5);
-                mediaFiles.setFileId(fileMD5);
-                mediaFiles.setCompanyId(companyId);
-                mediaFiles.setBucket(filesBucket);
-                mediaFiles.setFilePath(objectName);
-                mediaFiles.setUrl("/" + filesBucket + "/" + objectName);
-                mediaFiles.setStatus("1");
-                mediaFiles.setAuditStatus(ObjectAuditStatus.NOT_YET);
-                // 插入文件表
-                mediaFilesMapper.insert(mediaFiles);
-            }
-            // 准备返回数据
-            uploadFileResponse = new UploadFileResponseDto();
-            BeanUtils.copyProperties(mediaFiles, uploadFileResponse);
+                    .contentType(contentType).build());
         } catch (Exception e) {
+            // 记录日志
+            log.error("上传文件失败, 因为: {}", e.getMessage());
             e.printStackTrace();
-            ILearnException.cast("上传失败!因为: " + e.getMessage());
+            ILearnException.cast("Upload failed, please try again.");
         }
-        return uploadFileResponse;
+    }
+
+    /**
+     * 保存媒体信息到数据库
+     *
+     * @param companyId           公司id
+     * @param uploadFileParamsDto 上传文件的参数
+     * @param id                  文件的id
+     * @param bucketName          桶名称
+     * @param objectName          全路径, 即保存在服务器上的位置
+     * @return 保存的文件信息
+     */
+    @NotNull
+    private MediaFiles saveMedia2DataBase(Long companyId, UploadFileParamsDto uploadFileParamsDto, String id, String bucketName, String objectName) {
+        MediaFiles mediaFiles = mediaFilesMapper.selectById(id);
+        if (mediaFiles == null) {
+            mediaFiles = new MediaFiles();
+            BeanUtils.copyProperties(uploadFileParamsDto, mediaFiles);
+            mediaFiles.setId(id);
+            mediaFiles.setFileId(id);
+            mediaFiles.setCompanyId(companyId);
+            mediaFiles.setBucket(bucketName);
+            mediaFiles.setFilePath(objectName);
+            mediaFiles.setUrl("/" + bucketName + "/" + objectName);
+            LocalDateTime now = LocalDateTime.now();
+            mediaFiles.setCreateDate(now);
+            mediaFiles.setChangeDate(now);
+            mediaFiles.setStatus("1");
+            mediaFiles.setAuditStatus(ObjectAuditStatus.NOT_YET);
+            mediaFilesMapper.insert(mediaFiles);
+        }
+        return mediaFiles;
     }
 
     /**
@@ -137,7 +181,8 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param date 日期
      * @return 存储的目录
      */
-    private String getFileDateFolder(Date date) {
+    @NotNull
+    private String getDateFolder(Date date) {
         // 日期格式化
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
         // 获取当前日期时间

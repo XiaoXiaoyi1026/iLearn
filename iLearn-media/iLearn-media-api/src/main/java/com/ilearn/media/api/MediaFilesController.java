@@ -11,6 +11,7 @@ import com.ilearn.media.model.po.MediaFiles;
 import com.ilearn.media.service.MediaFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.io.IOException;
  * @date 2023/3/2 15:25
  */
 @Api(value = "媒资文件管理接口", tags = "媒资文件管理接口")
+@Slf4j
 @RestController
 public class MediaFilesController {
 
@@ -62,22 +64,22 @@ public class MediaFilesController {
         try {
             UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
             String contentType = fileData.getContentType();
+            if (contentType == null) {
+                ILearnException.cast("文件的contentType不能为空!");
+            }
             uploadFileParamsDto.setContentType(contentType);
             uploadFileParamsDto.setFileSize(fileData.getSize());
             uploadFileParamsDto.setFilename(fileData.getOriginalFilename());
-            if (contentType == null) {
-                throw new ILearnException("文件的contentType不能为空!");
-            }
             if (contentType.contains("image")) {
-                // 文件是图片类型
                 uploadFileParamsDto.setFileType(ResourceType.IMAGE);
             } else {
                 uploadFileParamsDto.setFileType(ResourceType.OTHER);
             }
             uploadFileResponseDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, fileData.getBytes(), folder, objectName);
         } catch (IOException e) {
+            log.error("获取文件字节码失败, 因为: {}", e.getMessage());
             e.printStackTrace();
-            ILearnException.cast("上传文件失败, 请重新上传");
+            ILearnException.cast("获取文件字节码失败, 请重试.");
         }
         return uploadFileResponseDto;
     }

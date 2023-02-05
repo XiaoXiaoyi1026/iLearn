@@ -1,5 +1,6 @@
 package com.ilearn.media.model.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
@@ -25,6 +26,7 @@ public class UploadFileParamsDto {
      * 文件content-type
      */
     @NotNull(message = "File content type must not be null!")
+    @ApiModelProperty(name = "资源类型, mimeType")
     private String contentType;
 
     /**
