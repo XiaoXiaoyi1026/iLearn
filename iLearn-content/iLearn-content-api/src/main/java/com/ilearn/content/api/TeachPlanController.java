@@ -24,8 +24,12 @@ import java.util.List;
 @Slf4j
 public class TeachPlanController {
 
+    private final TeachPlanService teachPlanService;
+
     @Autowired
-    private TeachPlanService teachPlanService;
+    private TeachPlanController(TeachPlanService teachPlanService) {
+        this.teachPlanService = teachPlanService;
+    }
 
     /**
      * 根据课程的id获取其对应的计划子节点

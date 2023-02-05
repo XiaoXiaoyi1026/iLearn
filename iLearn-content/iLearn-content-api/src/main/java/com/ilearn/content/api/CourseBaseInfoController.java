@@ -27,8 +27,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/course")
 public class CourseBaseInfoController {
 
+    private final CourseBaseInfoService courseBaseInfoService;
+
     @Autowired
-    private CourseBaseInfoService courseBaseInfoService;
+    private CourseBaseInfoController(CourseBaseInfoService courseBaseInfoService) {
+        this.courseBaseInfoService = courseBaseInfoService;
+    }
 
     @PostMapping("/list")
     @ApiOperation("课程分页查询")

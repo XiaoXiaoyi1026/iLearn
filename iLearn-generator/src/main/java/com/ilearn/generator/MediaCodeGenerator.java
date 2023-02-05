@@ -15,11 +15,11 @@ import java.util.Arrays;
  */
 public class MediaCodeGenerator {
 
-	// TODO 修改服务名以及数据表名
+	// 修改服务名以及数据表名
 	private static final String SERVICE_NAME = "media";
 
 	private static final String DATA_SOURCE_USER_NAME  = "root";
-	private static final String DATA_SOURCE_PASSWORD  = "mysql";
+	private static final String DATA_SOURCE_PASSWORD  = "XYX1026kwi!!";
 	private static final String[] TABLE_NAMES = new String[]{
 			"media_files",
 			"media_process",
@@ -29,7 +29,7 @@ public class MediaCodeGenerator {
 			// "live_course",
 	};
 
-	// TODO 默认生成entity，需要生成DTO修改此变量
+	// 默认生成entity，需要生成DTO修改此变量
 	// 一般情况下要先生成 DTO类 然后修改此参数再生成 PO 类。
 	private static final Boolean IS_DTO = false;
 
@@ -41,8 +41,8 @@ public class MediaCodeGenerator {
 		// 全局配置
 		GlobalConfig gc = new GlobalConfig();
 		gc.setFileOverride(true);
-		gc.setOutputDir(System.getProperty("user.dir") + "/ilearn-plus-generator/src/main/java");
-		gc.setAuthor("itcast");
+		gc.setOutputDir(System.getProperty("user.dir") + "/iLearn-generator/src/main/java");
+		gc.setAuthor("xiaoxiaoyi");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");
@@ -58,7 +58,7 @@ public class MediaCodeGenerator {
 		// 数据库配置
 		DataSourceConfig dsc = new DataSourceConfig();
 		dsc.setDbType(DbType.MYSQL);
-		dsc.setUrl("jdbc:mysql://192.168.101.65:3306/xcplus_media"
+		dsc.setUrl("jdbc:mysql://localhost:3306/xcplus_media"
 				+ "?useUnicode=true&useSSL=false&characterEncoding=utf8");
 		dsc.setDriverName("com.mysql.cj.jdbc.Driver");
 		dsc.setUsername(DATA_SOURCE_USER_NAME);

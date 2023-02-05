@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class UcenterCodeGenerator {
 
-	// TODO 修改服务名以及数据表名
+	// 修改服务名以及数据表名
 	private static final String SERVICE_NAME = "ucenter";
 
 	//数据库账号

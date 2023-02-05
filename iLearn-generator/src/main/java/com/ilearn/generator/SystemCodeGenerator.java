@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class SystemCodeGenerator {
 
-	// TODO 修改服务名以及数据表名
+	// 修改服务名以及数据表名
 	private static final String SERVICE_NAME = "system";
 
 	private static final String DATA_SOURCE_USER_NAME  = "root";

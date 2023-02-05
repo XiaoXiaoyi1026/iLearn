@@ -15,7 +15,6 @@ public class RestErrorResponse {
     }
 
     public String getErrMessage() {
-        return this.errMessage;
+        return errMessage;
     }
-
 }

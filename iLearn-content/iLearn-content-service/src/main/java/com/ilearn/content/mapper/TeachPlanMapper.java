@@ -3,6 +3,7 @@ package com.ilearn.content.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ilearn.content.model.dto.TeachPlanDto;
 import com.ilearn.content.model.po.TeachPlan;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author xiaoxiaoyi
  */
+@Mapper
 public interface TeachPlanMapper extends BaseMapper<TeachPlan> {
     /**
      * 根据课程id获取其教学计划的子节点

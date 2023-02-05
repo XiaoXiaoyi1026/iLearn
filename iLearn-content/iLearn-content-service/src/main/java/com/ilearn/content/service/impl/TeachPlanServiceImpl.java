@@ -28,8 +28,12 @@ import java.util.List;
 @Slf4j
 public class TeachPlanServiceImpl implements TeachPlanService {
 
+    private final TeachPlanMapper teachPlanMapper;
+
     @Autowired
-    private TeachPlanMapper teachPlanMapper;
+    TeachPlanServiceImpl(TeachPlanMapper teachPlanMapper) {
+        this.teachPlanMapper = teachPlanMapper;
+    }
 
     @Override
     public List<TeachPlanDto> getTreeNodes(Long courseId) {
@@ -57,14 +61,15 @@ public class TeachPlanServiceImpl implements TeachPlanService {
             // 不为空则是修改, 先查出之前的
             teachPlan = teachPlanMapper.selectById(teachPlanId);
             if (teachPlan == null) {
-                throw new ILearnException("修改教学计划失败!数据库中不存在该教学计划!");
+                ILearnException.cast("修改教学计划失败!数据库中不存在该教学计划!");
             }
-            if (saveTeachPlanDto.getCoursePubId() != null
-                    && !saveTeachPlanDto.getCoursePubId().equals(teachPlan.getCoursePubId())) {
-                throw new ILearnException("课程发布状态不一致, 不可修改!");
+            if (saveTeachPlanDto.getCoursePubId() != null && !saveTeachPlanDto.getCoursePubId().equals(teachPlan.getCoursePubId())) {
+                ILearnException.cast("课程发布状态不一致, 不可修改!");
             }
             // 再将更新信息赋值给之前的
             BeanUtils.copyProperties(saveTeachPlanDto, teachPlan);
+            // 设置时间
+            this.setTimeLength(teachPlan);
             // 把之前的保存回去
             teachPlanMapper.updateById(teachPlan);
         }
@@ -75,17 +80,22 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         LocalDateTime endTime = teachPlan.getEndTime();
         if (startTime == null) {
             if (endTime != null) {
-                throw new ILearnException("请设置开始时间!");
+                ILearnException.cast("请设置开始时间!");
             } else {
+                teachPlan.setTimelength("未设置");
                 return;
             }
         }
+        if (endTime == null) {
+            teachPlan.setTimelength("未设置");
+            return;
+        }
         if (startTime.isBefore(LocalDateTime.now())) {
-            throw new ILearnException("起始时间不能在当前时间之前!");
+            ILearnException.cast("起始时间不能在当前时间之前!");
         }
         // 计算时长
         if (startTime.isAfter(endTime)) {
-            throw new ILearnException("起始时间不能晚于结束时间!");
+            ILearnException.cast("起始时间不能晚于结束时间!");
         }
         StringBuilder timeLength = new StringBuilder();
         // 求出开始时间到结束时间之间的时长的秒数
@@ -93,7 +103,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         // 计算秒数对应的分钟数
         int minutes = seconds / 60;
         if (minutes < 10) {
-            throw new ILearnException("时长不能小于10分钟!");
+            ILearnException.cast("时长不能小于10分钟!");
         }
         // 计算小时数
         int hours = minutes / 60;
@@ -123,16 +133,14 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         LambdaQueryWrapper<TeachPlan> teachPlanLambdaQueryWrapper = new LambdaQueryWrapper<>();
         Long courseId = teachPlan.getCourseId();
         if (courseId == null) {
-            throw new ILearnException("教学计划id为空, 获取计划排序位置失败!");
+            ILearnException.cast("教学计划id为空, 获取计划排序位置失败!");
         }
         Long parentId = teachPlan.getParentid();
         if (parentId == null) {
-            throw new ILearnException("教学计划parentId为空, 获取计划排序位置失败!");
+            ILearnException.cast("教学计划parentId为空, 获取计划排序位置失败!");
         }
         // 构造查询条件
-        teachPlanLambdaQueryWrapper
-                .eq(TeachPlan::getCourseId, courseId)
-                .eq(TeachPlan::getParentid, parentId);
+        teachPlanLambdaQueryWrapper.eq(TeachPlan::getCourseId, courseId).eq(TeachPlan::getParentid, parentId);
         // 查询所有同级的
         List<TeachPlan> sameLayerTeachPlans = teachPlanMapper.selectList(teachPlanLambdaQueryWrapper);
         // 获取同组中orderBy最大的那个

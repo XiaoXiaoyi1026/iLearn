@@ -2,7 +2,6 @@ package com.ilearn.content.mapper;
 
 import com.ilearn.content.model.po.CourseBase;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
 
 /**
  * <p>

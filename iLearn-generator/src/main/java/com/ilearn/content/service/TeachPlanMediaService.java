@@ -1,6 +1,6 @@
 package com.ilearn.content.service;
 
-import com.ilearn.content.model.po.TeachplanMedia;
+import com.ilearn.content.model.po.TeachPlanMedia;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author xiaoxiaoyi
  * @since 2023-01-26
  */
-public interface TeachplanMediaService extends IService<TeachplanMedia> {
+public interface TeachPlanMediaService extends IService<TeachPlanMedia> {
 
 }

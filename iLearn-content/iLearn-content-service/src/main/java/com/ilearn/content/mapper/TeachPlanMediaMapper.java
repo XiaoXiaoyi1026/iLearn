@@ -10,6 +10,6 @@ import com.ilearn.content.model.po.TeachPlanMedia;
  *
  * @author xiaoxiaoyi
  */
-public interface TeachplanMediaMapper extends BaseMapper<TeachPlanMedia> {
+public interface TeachPlanMediaMapper extends BaseMapper<TeachPlanMedia> {
 
 }

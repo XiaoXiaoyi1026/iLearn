@@ -15,13 +15,13 @@ import java.util.Arrays;
  */
 public class LearningCodeGenerator {
 
-	// TODO 修改服务名以及数据表名
+	// 修改服务名以及数据表名
 	private static final String SERVICE_NAME = "learning";
 
 	//数据库账号
 	private static final String DATA_SOURCE_USER_NAME  = "root";
 	//数据库密码
-	private static final String DATA_SOURCE_PASSWORD  = "mysql";
+	private static final String DATA_SOURCE_PASSWORD  = "XYX1026kwi!!";
 	//生成的表
 	private static final String[] TABLE_NAMES = new String[]{
 			"xc_learn_record"
@@ -40,8 +40,8 @@ public class LearningCodeGenerator {
 		GlobalConfig gc = new GlobalConfig();
 		gc.setFileOverride(true);
 		//生成路径
-		gc.setOutputDir(System.getProperty("user.dir") + "/ilearn-plus-generator/src/main/java");
-		gc.setAuthor("itcast");
+		gc.setOutputDir(System.getProperty("user.dir") + "/iLearn-generator/src/main/java");
+		gc.setAuthor("xiaoxiaoyi");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");

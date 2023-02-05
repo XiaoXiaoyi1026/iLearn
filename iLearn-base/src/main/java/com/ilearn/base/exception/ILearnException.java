@@ -8,11 +8,7 @@ package com.ilearn.base.exception;
  */
 public class ILearnException extends RuntimeException {
 
-    private String message;
-
-    public ILearnException() {
-        super();
-    }
+    private final String message;
 
     public ILearnException(String message) {
         super(message);
@@ -27,6 +23,7 @@ public class ILearnException extends RuntimeException {
         throw new ILearnException(commonError.getErrMessage());
     }
 
+    @Override
     public String getMessage() {
         return this.message;
     }

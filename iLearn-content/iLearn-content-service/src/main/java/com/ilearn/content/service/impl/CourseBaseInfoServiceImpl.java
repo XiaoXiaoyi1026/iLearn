@@ -40,17 +40,24 @@ import java.util.Objects;
 @Service
 public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
-    @Autowired
-    private CourseBaseMapper courseBaseMapper;
+    private final CourseBaseMapper courseBaseMapper;
+
+    private final CourseMarketMapper courseMarketMapper;
+
+    private final CourseCategoryMapper courseCategoryMapper;
+
+    private final CourseMarketServiceImpl courseMarketService;
 
     @Autowired
-    private CourseMarketMapper courseMarketMapper;
-
-    @Autowired
-    private CourseCategoryMapper courseCategoryMapper;
-
-    @Autowired
-    private CourseMarketServiceImpl courseMarketService;
+    CourseBaseInfoServiceImpl(CourseBaseMapper courseBaseMapper,
+                                      CourseMarketMapper courseMarketMapper,
+                                      CourseCategoryMapper courseCategoryMapper,
+                                      CourseMarketServiceImpl courseMarketService) {
+        this.courseBaseMapper = courseBaseMapper;
+        this.courseMarketMapper = courseMarketMapper;
+        this.courseCategoryMapper = courseCategoryMapper;
+        this.courseMarketService = courseMarketService;
+    }
 
     @Override
     public PageResult<CourseBase> queryPageList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {

@@ -26,8 +26,12 @@ import java.util.List;
 @Slf4j
 public class CourseCategoryController {
 
+    private final CourseCategoryService courseCategoryService;
+
     @Autowired
-    private CourseCategoryService courseCategoryService;
+    private CourseCategoryController(CourseCategoryService courseCategoryService) {
+        this.courseCategoryService = courseCategoryService;
+    }
 
     /**
      * 课程分类查询

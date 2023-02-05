@@ -22,8 +22,12 @@ import java.util.Map;
 @Service
 public class CourseCategoryServiceImpl implements CourseCategoryService {
 
+    private final CourseCategoryMapper courseCategoryMapper;
+
     @Autowired
-    private CourseCategoryMapper courseCategoryMapper;
+    CourseCategoryServiceImpl(CourseCategoryMapper courseCategoryMapper) {
+        this.courseCategoryMapper = courseCategoryMapper;
+    }
 
     @Override
     public List<CourseCategoryDto> queryCourseCategory(String id) {

@@ -2,6 +2,7 @@ package com.ilearn.media.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ilearn.media.model.po.MediaFiles;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,6 +11,7 @@ import com.ilearn.media.model.po.MediaFiles;
  *
  * @author xiaoxiaoyi
  */
+@Mapper
 public interface MediaFilesMapper extends BaseMapper<MediaFiles> {
 
 }

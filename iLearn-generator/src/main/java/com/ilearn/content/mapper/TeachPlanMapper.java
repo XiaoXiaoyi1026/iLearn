@@ -1,8 +1,7 @@
 package com.ilearn.content.mapper;
 
-import com.ilearn.content.model.po.Teachplan;
+import com.ilearn.content.model.po.TeachPlan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +10,6 @@ import org.springframework.stereotype.Repository;
  *
  * @author xiaoxiaoyi
  */
-public interface TeachplanMapper extends BaseMapper<Teachplan> {
+public interface TeachPlanMapper extends BaseMapper<TeachPlan> {
 
 }

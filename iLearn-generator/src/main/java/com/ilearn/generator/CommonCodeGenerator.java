@@ -15,18 +15,18 @@ import java.util.Arrays;
  */
 public class CommonCodeGenerator {
 
-	// TODO 修改服务名以及数据表名
+	// 修改服务名以及数据表名
 	private static final String SERVICE_NAME = "comments";
 
 	private static final String DATA_SOURCE_USER_NAME  = "root";
-	private static final String DATA_SOURCE_PASSWORD  = "root";
+	private static final String DATA_SOURCE_PASSWORD  = "XYX1026kwi!!";
 	private static final String[] TABLE_NAMES = new String[]{
 			"comment",
 			"comment_reply",
 			"comment_target",
 	};
 
-	// TODO 默认生成entity，需要生成DTO修改此变量
+	// 默认生成entity，需要生成DTO修改此变量
 	// 一般情况下要先生成 DTO类 然后修改此参数再生成 PO 类。
 	private static final Boolean IS_DTO = true;
 
@@ -38,8 +38,8 @@ public class CommonCodeGenerator {
 		// 全局配置
 		GlobalConfig gc = new GlobalConfig();
 		gc.setFileOverride(true);
-		gc.setOutputDir(System.getProperty("user.dir") + "/ilearn-plus-generator/src/main/java");
-		gc.setAuthor("itcast");
+		gc.setOutputDir(System.getProperty("user.dir") + "/iLearn-generator/src/main/java");
+		gc.setAuthor("xiaoxiaoyi");
 		gc.setOpen(false);
 		gc.setSwagger2(false);
 		gc.setServiceName("%sService");

@@ -1,4 +1,4 @@
-package com.ilearn.system;
+package com.ilearn;
 
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.springframework.boot.SpringApplication;

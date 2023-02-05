@@ -2,6 +2,7 @@ package com.ilearn.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ilearn.content.model.po.CourseMarket;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,6 +11,7 @@ import com.ilearn.content.model.po.CourseMarket;
  *
  * @author xiaoxiaoyi
  */
+@Mapper
 public interface CourseMarketMapper extends BaseMapper<CourseMarket> {
 
 }
