@@ -12,6 +12,7 @@ import com.ilearn.media.service.MediaFileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class MediaFilesController {
      */
     @ApiOperation("上传媒资文件(图片/文档/视频)")
     @RequestMapping(value = "/upload/coursefile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public UploadFileResponseDto upload(@RequestPart("filedata") MultipartFile fileData,
+    public UploadFileResponseDto upload(@NotNull @RequestPart("filedata") MultipartFile fileData,
                                         @RequestParam(value = "folder", required = false) String folder,
                                         @RequestParam(value = "objectName", required = false) String objectName) {
         Long companyId = 1232141425L;

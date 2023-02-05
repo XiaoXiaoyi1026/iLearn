@@ -1,4 +1,4 @@
-package com.ilearn.base.config;
+package com.ilearn.system.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

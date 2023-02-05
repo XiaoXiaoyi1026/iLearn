@@ -60,7 +60,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     @Override
-    public PageResult<CourseBase> queryPageList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResult<CourseBase> queryPageList(@NotNull PageParams pageParams, @NotNull QueryCourseParamsDto queryCourseParamsDto) {
         // 拼接查询条件
         LambdaQueryWrapper<CourseBase> courseBaseLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -179,7 +179,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public CourseBaseInfoDto update(Long companyId, UpdateCourseDto updateCourseDto) {
+    public CourseBaseInfoDto update(Long companyId, @NotNull UpdateCourseDto updateCourseDto) {
 
         Long courseId = updateCourseDto.getId();
 
