@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,16 +47,27 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     private final MinioClient minioClient;
 
+    private final MediaFileService mediaFileService;
+
     @Value("${minio.bucket.files}")
     private String filesBucket;
 
     @Value("${minio.bucket.video}")
     private String videoBucket;
 
+    /**
+     * 构造器注入, 使用@Lazy使Spring先加载context, 等mediaFileService被调用时才进行注入
+     * 解决了循环依赖问题
+     *
+     * @param mediaFilesMapper 媒体文件与数据库的映射
+     * @param minioClient      分布式文件系统---MinIO
+     * @param mediaFileService 媒体文件服务
+     */
     @Autowired
-    MediaFileServiceImpl(MediaFilesMapper mediaFilesMapper, MinioClient minioClient) {
+    MediaFileServiceImpl(MediaFilesMapper mediaFilesMapper, MinioClient minioClient, @Lazy MediaFileService mediaFileService) {
         this.mediaFilesMapper = mediaFilesMapper;
         this.minioClient = minioClient;
+        this.mediaFileService = mediaFileService;
     }
 
     @Override
@@ -77,7 +89,6 @@ public class MediaFileServiceImpl implements MediaFileService {
     }
 
     @Override
-    @Transactional(rollbackFor = Throwable.class)
     public UploadFileResponseDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, byte[] fileDataBytes, String folder, String objectName) {
         UploadFileResponseDto uploadFileResponse;
         if (folder == null) {
@@ -100,8 +111,9 @@ public class MediaFileServiceImpl implements MediaFileService {
         objectName = folder + filename;
         // 保存媒体文件到MinIO
         this.saveMedia2MinIO(fileDataBytes, filesBucket, objectName);
-        // 将文件保存至数据库, 先根据文件的md5值获取文件
-        MediaFiles mediaFiles = this.saveMedia2DataBase(companyId, uploadFileParamsDto, fileMD5, filesBucket, objectName);
+        /* 由于saveMedia2DataBase是被this指针调用的, 不被spring代理, 所以不在Spring的管辖范围, 此处发生了事务失效 */
+        /* 解决方法: 使用被Spring管理的mediaFileService对象来调用该方法 */
+        MediaFiles mediaFiles = mediaFileService.saveMedia2DataBase(companyId, uploadFileParamsDto, fileMD5, filesBucket, objectName);
         // 准备返回数据
         uploadFileResponse = new UploadFileResponseDto();
         BeanUtils.copyProperties(mediaFiles, uploadFileResponse);
@@ -143,18 +155,9 @@ public class MediaFileServiceImpl implements MediaFileService {
         }
     }
 
-    /**
-     * 保存媒体信息到数据库
-     *
-     * @param companyId           公司id
-     * @param uploadFileParamsDto 上传文件的参数
-     * @param id                  文件的id
-     * @param bucketName          桶名称
-     * @param objectName          全路径, 即保存在服务器上的位置
-     * @return 保存的文件信息
-     */
     @NotNull
-    private MediaFiles saveMedia2DataBase(Long companyId, UploadFileParamsDto uploadFileParamsDto, String id, String bucketName, String objectName) {
+    @Transactional(rollbackFor = Throwable.class)
+    public MediaFiles saveMedia2DataBase(Long companyId, UploadFileParamsDto uploadFileParamsDto, String id, String bucketName, String objectName) {
         MediaFiles mediaFiles = mediaFilesMapper.selectById(id);
         if (mediaFiles == null) {
             mediaFiles = new MediaFiles();
@@ -171,6 +174,9 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaFiles.setStatus("1");
             mediaFiles.setAuditStatus(ObjectAuditStatus.NOT_YET);
             mediaFilesMapper.insert(mediaFiles);
+
+            /* 测试事务 */
+            int i = 1 / 0;
         }
         return mediaFiles;
     }

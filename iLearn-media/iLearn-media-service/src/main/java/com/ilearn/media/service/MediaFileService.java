@@ -41,4 +41,16 @@ public interface MediaFileService {
     UploadFileResponseDto uploadFile(@NotNull(message = "公司id不能为空!") Long companyId,
                                      @Valid UploadFileParamsDto uploadFileParamsDto,
                                      byte[] fileDataBytes, String folder, String objectName);
+
+    /**
+     * 保存媒体信息到数据库
+     *
+     * @param companyId           公司id
+     * @param uploadFileParamsDto 上传文件的参数
+     * @param id                  文件的id
+     * @param bucketName          桶名称
+     * @param objectName          全路径, 即保存在服务器上的位置
+     * @return 保存的文件信息
+     */
+    MediaFiles saveMedia2DataBase(Long companyId, UploadFileParamsDto uploadFileParamsDto, String id, String bucketName, String objectName);
 }

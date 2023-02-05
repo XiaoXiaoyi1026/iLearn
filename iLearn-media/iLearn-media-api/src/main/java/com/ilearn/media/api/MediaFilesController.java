@@ -75,6 +75,7 @@ public class MediaFilesController {
             } else {
                 uploadFileParamsDto.setFileType(ResourceType.OTHER);
             }
+            /* 因为这里的mediaFileService是被Spring代理的, 所以异常会被捕捉 */
             uploadFileResponseDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, fileData.getBytes(), folder, objectName);
         } catch (IOException e) {
             log.error("获取文件字节码失败, 因为: {}", e.getMessage());
