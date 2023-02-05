@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +46,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     private final MinioClient minioClient;
 
-    private final MediaFileService mediaFileService;
+    private MediaFileService mediaFileService;
 
     @Value("${minio.bucket.files}")
     private String filesBucket;
@@ -55,18 +54,20 @@ public class MediaFileServiceImpl implements MediaFileService {
     @Value("${minio.bucket.video}")
     private String videoBucket;
 
-    /**
-     * 构造器注入, 使用@Lazy使Spring先加载context, 等mediaFileService被调用时才进行注入
-     * 解决了循环依赖问题
-     *
-     * @param mediaFilesMapper 媒体文件与数据库的映射
-     * @param minioClient      分布式文件系统---MinIO
-     * @param mediaFileService 媒体文件服务
-     */
     @Autowired
-    MediaFileServiceImpl(MediaFilesMapper mediaFilesMapper, MinioClient minioClient, @Lazy MediaFileService mediaFileService) {
+    MediaFileServiceImpl(MediaFilesMapper mediaFilesMapper, MinioClient minioClient) {
         this.mediaFilesMapper = mediaFilesMapper;
         this.minioClient = minioClient;
+    }
+
+    /**
+     * Spring官方推荐, 使用setter注入解决循环依赖问题
+     * 因为基于setter注入的指会在被调用时注入, 和在构造器注入时加上@Lazy是一样的效果
+     *
+     * @param mediaFileService 媒体服务
+     */
+    @Autowired
+    void setMediaFileService(MediaFileService mediaFileService) {
         this.mediaFileService = mediaFileService;
     }
 
@@ -111,8 +112,8 @@ public class MediaFileServiceImpl implements MediaFileService {
         objectName = folder + filename;
         // 保存媒体文件到MinIO
         this.saveMedia2MinIO(fileDataBytes, filesBucket, objectName);
-        /* 由于saveMedia2DataBase是被this指针调用的, 不被spring代理, 所以不在Spring的管辖范围, 此处发生了事务失效 */
-        /* 解决方法: 使用被Spring管理的mediaFileService对象来调用该方法 */
+        /* 由于saveMedia2DataBase是被this指针调用的, 不被spring代理, 所以不在Spring的管辖范围, 此处发生了事务失效
+         解决方法: 使用被Spring管理的mediaFileService对象来调用该方法 */
         MediaFiles mediaFiles = mediaFileService.saveMedia2DataBase(companyId, uploadFileParamsDto, fileMD5, filesBucket, objectName);
         // 准备返回数据
         uploadFileResponse = new UploadFileResponseDto();
@@ -174,9 +175,6 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaFiles.setStatus("1");
             mediaFiles.setAuditStatus(ObjectAuditStatus.NOT_YET);
             mediaFilesMapper.insert(mediaFiles);
-
-            /* 测试事务 */
-            int i = 1 / 0;
         }
         return mediaFiles;
     }
