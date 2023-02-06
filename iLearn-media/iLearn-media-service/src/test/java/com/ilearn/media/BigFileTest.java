@@ -1,9 +1,13 @@
 package com.ilearn.media;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.util.DigestUtils;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * @author xiaoxiaoyi
@@ -70,6 +74,51 @@ public class BigFileTest {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 测试将分块文件合并
+     */
+    @Test
+    public void testMerge() {
+        // 创建合并后的文件
+        File mergeFile = new File("D:\\Download\\Media\\Video\\计算机导论第二次作业_merge.flv");
+        if (mergeFile.exists()) {
+            System.out.println(mergeFile.delete());
+        }
+        // 从分块文件的目录中读取所有的分块文件
+        File chunkFolder = new File("D:\\Download\\Media\\Video\\Chunk");
+        File[] chunkFiles = chunkFolder.listFiles();
+        if (chunkFiles != null && chunkFiles.length > 0) {
+            try (RandomAccessFile raf_write = new RandomAccessFile(mergeFile, "rw")) {
+                // 将分块文件按照文件名称升序排序
+                Arrays.sort(chunkFiles, Comparator.comparingInt(o -> Integer.parseInt(o.getName())));
+                RandomAccessFile raf_read;
+                byte[] buffer = new byte[1024];
+                int len;
+                // 循环取出所有分片数据写入合并后的文件
+                for (File chunkFile : chunkFiles) {
+                    raf_read = new RandomAccessFile(chunkFile, "r");
+                    while ((len = (raf_read.read(buffer))) != -1) {
+                        raf_write.write(buffer, 0, len);
+                    }
+                    raf_read.close();
+                    // 删除分块文件
+                    boolean delete = chunkFile.delete();
+                    System.out.println(delete);
+                }
+                // 验证合并后的文件和源文件是否一致
+                File sourceFile = new File("D:\\Download\\Media\\Video\\计算机导论第二次作业.flv");
+                // 获取MD5值进行判断
+                String sourceFileMD5 = DigestUtils.md5DigestAsHex(Files.newInputStream(sourceFile.toPath()));
+                String mergeFileMD5 = DigestUtils.md5DigestAsHex(Files.newInputStream(mergeFile.toPath()));
+                if (sourceFileMD5.equals(mergeFileMD5)) {
+                    System.out.println("合并成功!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
