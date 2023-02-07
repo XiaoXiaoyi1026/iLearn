@@ -12,7 +12,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class PageParams {
+public class PageRequestParams {
 
     //当前页码默认值
     public static final long DEFAULT_PAGE_CURRENT = 1L;
@@ -27,11 +27,11 @@ public class PageParams {
     @ApiModelProperty("每页记录数")
     private Long pageSize = DEFAULT_PAGE_SIZE;
 
-    public PageParams() {
+    public PageRequestParams() {
 
     }
 
-    public PageParams(long pageNo, long pageSize) {
+    public PageRequestParams(long pageNo, long pageSize) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
     }

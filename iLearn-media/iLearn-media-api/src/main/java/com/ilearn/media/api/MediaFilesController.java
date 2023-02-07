@@ -2,13 +2,13 @@ package com.ilearn.media.api;
 
 import com.ilearn.base.dictionary.ResourceType;
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.model.PageParams;
-import com.ilearn.base.model.PageResult;
+import com.ilearn.base.model.PageRequestParams;
+import com.ilearn.base.model.PageResponse;
 import com.ilearn.media.model.dto.QueryMediaParamsDto;
 import com.ilearn.media.model.dto.UploadFileParamsDto;
 import com.ilearn.media.model.dto.UploadFileResponseDto;
 import com.ilearn.media.model.po.MediaFiles;
-import com.ilearn.media.service.MediaFileService;
+import com.ilearn.media.service.MediaFilesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,18 +31,18 @@ import java.io.IOException;
 @RestController
 public class MediaFilesController {
 
-    private final MediaFileService mediaFileService;
+    private final MediaFilesService mediaFilesService;
 
     @Autowired
-    private MediaFilesController(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
+    private MediaFilesController(MediaFilesService mediaFilesService) {
+        this.mediaFilesService = mediaFilesService;
     }
 
     @ApiOperation("媒资列表查询接口")
     @PostMapping("/files")
-    public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
+    public PageResponse<MediaFiles> list(PageRequestParams pageRequestParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
         Long companyId = 1232141425L;
-        return mediaFileService.queryMediaFiles(companyId, pageParams, queryMediaParamsDto);
+        return mediaFilesService.queryMediaFiles(companyId, pageRequestParams, queryMediaParamsDto);
     }
 
     /**
@@ -77,7 +77,7 @@ public class MediaFilesController {
                 uploadFileParamsDto.setFileType(ResourceType.OTHER);
             }
             /* 因为这里的mediaFileService是被Spring代理的, 所以异常会被捕捉 */
-            uploadFileResponseDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, fileData.getBytes(), folder, objectName);
+            uploadFileResponseDto = mediaFilesService.uploadFile(companyId, uploadFileParamsDto, fileData.getBytes(), folder, objectName);
         } catch (IOException e) {
             log.error("获取文件字节码失败, 因为: {}", e.getMessage());
             e.printStackTrace();

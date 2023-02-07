@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ilearn.base.dictionary.CourseType;
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.model.PageParams;
-import com.ilearn.base.model.PageResult;
+import com.ilearn.base.model.PageRequestParams;
+import com.ilearn.base.model.PageResponse;
 import com.ilearn.base.dictionary.CourseAuditStatus;
 import com.ilearn.base.dictionary.CourseReleaseStatus;
 import com.ilearn.content.mapper.CourseBaseMapper;
@@ -60,7 +60,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     @Override
-    public PageResult<CourseBase> queryPageList(@NotNull PageParams pageParams, @NotNull QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResponse<CourseBase> queryPageList(@NotNull PageRequestParams pageRequestParams, @NotNull QueryCourseParamsDto queryCourseParamsDto) {
         // 拼接查询条件
         LambdaQueryWrapper<CourseBase> courseBaseLambdaQueryWrapper = new LambdaQueryWrapper<>();
 
@@ -87,21 +87,21 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         );
 
         // 准备分页参数
-        long pageNo = pageParams.getPageNo();
-        long pageSize = pageParams.getPageSize();
+        long pageNo = pageRequestParams.getPageNo();
+        long pageSize = pageRequestParams.getPageSize();
         Page<CourseBase> page = new Page<>(pageNo, pageSize);
 
         // 分页查询 (E page: 分页参数, @Param("ew") Wrapper<T> queryWrapper: 查询条件)
         Page<CourseBase> courseBasePage = courseBaseMapper.selectPage(page, courseBaseLambdaQueryWrapper);
 
         // 准备响应数据
-        PageResult<CourseBase> pageResult = new PageResult<>();
-        pageResult.setItems(courseBasePage.getRecords());
-        pageResult.setPageSize(pageSize);
-        pageResult.setPage(pageNo);
-        pageResult.setCounts(courseBasePage.getTotal());
+        PageResponse<CourseBase> pageResponse = new PageResponse<>();
+        pageResponse.setItems(courseBasePage.getRecords());
+        pageResponse.setPageSize(pageSize);
+        pageResponse.setPage(pageNo);
+        pageResponse.setCounts(courseBasePage.getTotal());
 
-        return pageResult;
+        return pageResponse;
     }
 
     @Override

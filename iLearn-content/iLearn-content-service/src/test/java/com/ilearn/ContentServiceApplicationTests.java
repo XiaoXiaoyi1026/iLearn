@@ -1,7 +1,7 @@
 package com.ilearn;
 
-import com.ilearn.base.model.PageParams;
-import com.ilearn.base.model.PageResult;
+import com.ilearn.base.model.PageRequestParams;
+import com.ilearn.base.model.PageResponse;
 import com.ilearn.content.mapper.CourseBaseMapper;
 import com.ilearn.content.model.dto.CourseCategoryDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
@@ -35,8 +35,8 @@ public class ContentServiceApplicationTests {
 
     @Test
     void testCourseBaseInfoService() {
-        PageResult<CourseBase> courseBaseList = courseBaseInfoService.queryPageList(
-                new PageParams(),
+        PageResponse<CourseBase> courseBaseList = courseBaseInfoService.queryPageList(
+                new PageRequestParams(),
                 new QueryCourseParamsDto()
         );
         System.out.println(courseBaseList);

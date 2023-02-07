@@ -1,8 +1,8 @@
 package com.ilearn.content.api;
 
 import com.ilearn.base.exception.ValidationGroups;
-import com.ilearn.base.model.PageParams;
-import com.ilearn.base.model.PageResult;
+import com.ilearn.base.model.PageRequestParams;
+import com.ilearn.base.model.PageResponse;
 import com.ilearn.content.model.dto.AddCourseDto;
 import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
@@ -36,9 +36,9 @@ public class CourseBaseInfoController {
 
     @PostMapping("/list")
     @ApiOperation("课程分页查询")
-    public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResponse<CourseBase> list(PageRequestParams pageRequestParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         // Controller -> Service -> Mapper(dao)
-        return courseBaseInfoService.queryPageList(pageParams, queryCourseParamsDto);
+        return courseBaseInfoService.queryPageList(pageRequestParams, queryCourseParamsDto);
     }
 
     @PostMapping

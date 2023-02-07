@@ -1,7 +1,7 @@
 package com.ilearn.content.service;
 
-import com.ilearn.base.model.PageParams;
-import com.ilearn.base.model.PageResult;
+import com.ilearn.base.model.PageRequestParams;
+import com.ilearn.base.model.PageResponse;
 import com.ilearn.content.model.dto.AddCourseDto;
 import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
@@ -19,11 +19,11 @@ public interface CourseBaseInfoService {
     /**
      * 课程基本信息分页查询
      *
-     * @param pageParams           分页参数
+     * @param pageRequestParams           分页参数
      * @param queryCourseParamsDto 课程查询条件
      * @return 分页课程信息
      */
-    PageResult<CourseBase> queryPageList(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
+    PageResponse<CourseBase> queryPageList(PageRequestParams pageRequestParams, QueryCourseParamsDto queryCourseParamsDto);
 
     /**
      * 新增课程
