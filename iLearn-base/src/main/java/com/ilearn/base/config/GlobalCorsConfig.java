@@ -1,8 +1,7 @@
-package com.ilearn.system.config;
+package com.ilearn.base.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -22,7 +21,7 @@ public class GlobalCorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 配置哪些方法可以跨域, *代表所有请求方法都可以
-        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod("*");
 
         // 配置哪些请求来源可以跨域
         configuration.addAllowedOrigin("http://localhost:8601");

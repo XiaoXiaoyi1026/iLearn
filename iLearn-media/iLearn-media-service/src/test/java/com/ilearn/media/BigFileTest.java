@@ -49,9 +49,9 @@ public class BigFileTest {
             int len;
 
             // 循环写chunkNumber次
-            for (int i = 0; i < chunkNumber; i++) {
+            for (int chunkIndex = 0; chunkIndex < chunkNumber; chunkIndex++) {
                 // 创建分块文件
-                chunkFile = new File("D:\\Download\\Media\\Video\\Chunk\\" + i);
+                chunkFile = new File("D:\\Download\\Media\\Video\\Chunk\\" + chunkIndex);
                 // 如果分块文件存在则直接删除
                 if (chunkFile.exists()) {
                     boolean delete = chunkFile.delete();

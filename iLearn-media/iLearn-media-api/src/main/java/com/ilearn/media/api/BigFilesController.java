@@ -1,16 +1,15 @@
 package com.ilearn.media.api;
 
+import com.ilearn.base.dictionary.ResourceType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.ResponseMessage;
+import com.ilearn.media.model.dto.UploadFileParamsDto;
 import com.ilearn.media.service.MediaFilesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -40,8 +39,7 @@ public class BigFilesController {
 
     @ApiOperation(value = "上传分片前检查分片是否已上传")
     @PostMapping("/checkchunk")
-    public ResponseMessage<Boolean> checkChunk(@RequestParam("fileMd5") String fileMD5,
-                                               @RequestParam("chunk") int chunkIndex) {
+    public ResponseMessage<Boolean> checkChunk(@RequestParam("fileMd5") String fileMD5, @RequestParam("chunk") int chunkIndex) {
         return mediaFilesService.checkChunk(fileMD5, chunkIndex);
     }
 
@@ -55,9 +53,7 @@ public class BigFilesController {
      */
     @ApiOperation(value = "上传分片")
     @PostMapping("/uploadchunk")
-    public ResponseMessage<Object> uploadChunk(@RequestParam("file") MultipartFile chunkFile,
-                                               @RequestParam("fileMd5") String fileMD5,
-                                               @RequestParam("chunk") int chunkIndex) {
+    public ResponseMessage<Boolean> uploadChunk(@RequestParam("file") MultipartFile chunkFile, @RequestParam("fileMd5") String fileMD5, @RequestParam("chunk") int chunkIndex) {
         byte[] chunkFileBytes = null;
         try {
             chunkFileBytes = chunkFile.getBytes();
@@ -77,10 +73,11 @@ public class BigFilesController {
      */
     @ApiOperation(value = "合并分片")
     @PostMapping("/mergechunks")
-    public ResponseMessage<Object> mergeChunks(@RequestParam("fileMd5") String fileMD5,
-                                               @RequestParam("fileName") String fileName,
-                                               @RequestParam("chunkTotal") int chunkTotal) {
-        return null;
+    public ResponseMessage<Object> mergeChunks(@RequestParam("fileMd5") String fileMD5, @RequestParam("fileName") String fileName, @RequestParam("chunkTotal") int chunkTotal) {
+        Long companyId = 1026L;
+        UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
+        uploadFileParamsDto.setFilename(fileName);
+        uploadFileParamsDto.setFileType(ResourceType.VIDEO);
+        return mediaFilesService.mergeChunks(companyId, fileMD5, chunkTotal, uploadFileParamsDto);
     }
-
 }
