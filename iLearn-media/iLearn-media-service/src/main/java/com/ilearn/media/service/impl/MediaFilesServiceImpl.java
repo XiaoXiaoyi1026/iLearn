@@ -18,6 +18,7 @@ import com.j256.simplemagic.ContentInfoUtil;
 import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -36,9 +37,9 @@ import java.util.List;
 
 /**
  * @author xiaoxiaoyi
- *  * @version 1.0
- *  * @description 媒体服务实现类
- *  * @date 2023/2/3 15:47
+ * * @version 1.0
+ * * @description 媒体服务实现类
+ * * @date 2023/2/3 15:47
  */
 @Slf4j
 @Service
@@ -142,7 +143,12 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             mediaFiles.setCompanyId(companyId);
             mediaFiles.setBucket(bucketName);
             mediaFiles.setFilePath(objectName);
-            mediaFiles.setUrl("/" + bucketName + "/" + objectName);
+            // 判断图片与mp4视频可以直接设置url, 其他类型需要转码后再进行设置
+            String filename = uploadFileParamsDto.getFilename();
+            String mimeType = getMimeTypeByFileExtension(getFileExtension(filename));
+            if (mimeType.startsWith("image") || mimeType.endsWith("mp4")) {
+                mediaFiles.setUrl("/" + bucketName + "/" + objectName);
+            }
             LocalDateTime now = LocalDateTime.now();
             mediaFiles.setCreateDate(now);
             mediaFiles.setChangeDate(now);
@@ -202,7 +208,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             return ResponseMessage.success(Boolean.TRUE);
         } catch (Exception e) {
             log.error("上传分块文件失败, 因为: {}", e.getMessage());
-            return ResponseMessage.success(Boolean.FALSE);
+            return ResponseMessage.validFail(Boolean.FALSE, "上传分块文件失败");
         }
     }
 
@@ -212,7 +218,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         File[] chunkFiles = downloadChunkFilesFromMinIO(sourceFileMD5, chunkTotal);
         String filename = uploadFileParamsDto.getFilename();
         // 得到源文件的扩展名
-        String fileExtension = filename.substring(filename.lastIndexOf('.'));
+        String fileExtension = getFileExtension(filename);
         // 创建合并后的临时文件
         File mergeFile = null;
         try {
@@ -250,7 +256,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
                 ILearnException.cast("合并文件失败, 请重试.");
             }
             uploadFileParamsDto.setFileSize(mergeFile.length());
-            uploadFileParamsDto.setContentType(ContentInfoUtil.findExtensionMatch(fileExtension).getMimeType());
+            uploadFileParamsDto.setContentType(getMimeTypeByFileExtension(fileExtension));
             // 合并文件上传到文件系统, objectName为文件上传到MinIO后的全路径
             String objectName = getFileFolder(sourceFileMD5) + sourceFileMD5 + fileExtension;
             saveFile2MinIO(mergeFile.getAbsolutePath(), videoBucket, objectName);
@@ -274,6 +280,20 @@ public class MediaFilesServiceImpl implements MediaFilesService {
                 }
             }
         }
+    }
+
+    @Override
+    public ResponseMessage<String> getUrl(String fileId) {
+        MediaFiles mediaFile = mediaFilesMapper.selectById(fileId);
+        if (mediaFile == null) {
+            log.error("文件不存在, fileId: {}", fileId);
+            return ResponseMessage.validFail("查询文件url失败");
+        }
+        String url = mediaFile.getUrl();
+        if (StringUtils.isEmpty(url)) {
+            return ResponseMessage.success("文件需要进行处理, 请稍后预览");
+        }
+        return ResponseMessage.success(url);
     }
 
     /**
@@ -317,7 +337,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     private void saveFile2MinIO(byte[] fileData, String bucketName, String objectName) {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileData)) {
             // 获取文件类型, 默认为未知的二进制流信息
-            String contentType = getContentType(objectName);
+            String contentType = getMimeTypeByObjectName(objectName);
             // InputStream stream 输入流; long objectSize 对象大小; long partSize 分片大小: -1代表最小分片大小: 5M, 最大分片大小: 5T, 分片数量最多不超过10000
             minioClient.putObject(PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(byteArrayInputStream, byteArrayInputStream.available(), -1).contentType(contentType).build());
         } catch (Exception e) {
@@ -329,23 +349,55 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     }
 
     /**
-     * 获取文件的contentType
+     * 根据文件名得到扩展名
+     *
+     * @param fileName 文件名
+     * @return 扩展名
+     */
+    private String getFileExtension(String fileName) {
+        String extension = "";
+        if (fileName != null && fileName.contains(".")) {
+            extension = fileName.substring(fileName.lastIndexOf("."));
+        } else {
+            ILearnException.cast("文件名不合法");
+        }
+        return extension;
+    }
+
+    /**
+     * 获取文件的contentType(MimeType)
      *
      * @param objectName 文件名
      * @return contentType
      */
-    private String getContentType(@NotNull String objectName) {
-        String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        if (objectName.contains(".")) {
-            // 取出其中的扩展名
-            String extension = objectName.substring(objectName.indexOf("."));
+    private String getMimeTypeByObjectName(String objectName) {
+        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        if (objectName != null) {
+            // 根据扩展名得到mimeType
+            mimeType = getMimeTypeByFileExtension(getFileExtension(objectName));
+        } else {
+            ILearnException.cast("文件名不合法");
+        }
+        return mimeType;
+    }
+
+    /**
+     * 根据文件扩展名获取文件的mimeType
+     *
+     * @param extension 文件扩展名
+     * @return 文件mimeType
+     */
+    private String getMimeTypeByFileExtension(String extension) {
+        // 默认为未知二进制流
+        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        if (StringUtils.isNotEmpty(extension)) {
             // 根据扩展名得到mimeType
             ContentInfo contentInfo = ContentInfoUtil.findExtensionMatch(extension);
             if (contentInfo != null) {
-                contentType = contentInfo.getMimeType();
+                mimeType = contentInfo.getMimeType();
             }
         }
-        return contentType;
+        return mimeType;
     }
 
     /**

@@ -4,6 +4,7 @@ import com.ilearn.base.dictionary.ResourceType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
+import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.media.model.dto.QueryMediaParamsDto;
 import com.ilearn.media.model.dto.UploadFileParamsDto;
 import com.ilearn.media.model.dto.UploadFileResponseDto;
@@ -55,11 +56,9 @@ public class MediaFilesController {
      * @param objectName 文件在MinIO上的存储名称
      * @return 上传文件响应
      */
-    @ApiOperation("上传媒资文件(图片/文档/视频)")
+    @ApiOperation(value = "上传媒资文件(图片/文档/视频)")
     @RequestMapping(value = "/upload/coursefile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public UploadFileResponseDto upload(@NotNull @RequestPart("filedata") MultipartFile fileData,
-                                        @RequestParam(value = "folder", required = false) String folder,
-                                        @RequestParam(value = "objectName", required = false) String objectName) {
+    public UploadFileResponseDto upload(@NotNull @RequestPart("filedata") MultipartFile fileData, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "objectName", required = false) String objectName) {
         Long companyId = 1232141425L;
         UploadFileResponseDto uploadFileResponseDto = null;
         try {
@@ -84,5 +83,12 @@ public class MediaFilesController {
             ILearnException.cast("获取文件字节码失败, 请重试.");
         }
         return uploadFileResponseDto;
+    }
+
+    @ApiOperation(value = "预览文件")
+    @GetMapping(value = "/preview/{mediaId}")
+    public ResponseMessage<String> preview(@PathVariable("mediaId") String mediaId) {
+        // 根据mediaId查询到文件的URL返回给前端
+        return mediaFilesService.getUrl(mediaId);
     }
 }

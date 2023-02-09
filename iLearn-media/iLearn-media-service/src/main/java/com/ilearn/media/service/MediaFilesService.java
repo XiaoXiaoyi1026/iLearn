@@ -34,7 +34,7 @@ public interface MediaFilesService {
      *
      * @param companyId           公司名称
      * @param uploadFileParamsDto 上传的文件信息
-     * @param fileData       文件的字节数据
+     * @param fileData            文件的字节数据
      * @param folder              文件在MinIO上的存储目录
      * @param objectName          文件在MinIO上的存储名称
      * @return 上传文件响应Dto
@@ -46,7 +46,7 @@ public interface MediaFilesService {
      *
      * @param companyId           公司id
      * @param uploadFileParamsDto 上传文件的参数
-     * @param fileId                  文件的id
+     * @param fileId              文件的id
      * @param bucketName          桶名称
      * @param objectName          全路径, 即保存在服务器上的位置
      * @return 保存的文件信息
@@ -64,8 +64,8 @@ public interface MediaFilesService {
     /**
      * 上传分片前检查分片是否已上传
      *
-     * @param sourceFileMD5    源文件MD5值
-     * @param chunkIndex 分片编号
+     * @param sourceFileMD5 源文件MD5值
+     * @param chunkIndex    分片编号
      * @return 分片是否已上传
      */
     ResponseMessage<Boolean> checkChunk(String sourceFileMD5, int chunkIndex);
@@ -73,9 +73,9 @@ public interface MediaFilesService {
     /**
      * 上传分片文件
      *
-     * @param sourceFileMD5    源文件MD5
-     * @param chunkIndex 分片序号
-     * @param fileData  源文件字节码
+     * @param sourceFileMD5 源文件MD5
+     * @param chunkIndex    分片序号
+     * @param fileData      源文件字节码
      * @return 响应消息
      */
     ResponseMessage<Boolean> uploadChunk(String sourceFileMD5, int chunkIndex, byte[] fileData);
@@ -84,10 +84,18 @@ public interface MediaFilesService {
      * 合并分片文件
      *
      * @param companyId           机构id
-     * @param sourceFileMD5             源文件MD5
+     * @param sourceFileMD5       源文件MD5
      * @param chunkTotal          分片的数量
      * @param uploadFileParamsDto 上传文件的参数Dto
      * @return 合并结果
      */
     ResponseMessage<Object> mergeChunks(Long companyId, String sourceFileMD5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
+
+    /**
+     * 根据文件id拿到文件的url, 即MinIO访问路径
+     *
+     * @param fileId 文件id
+     * @return 文件MinIO的Url
+     */
+    ResponseMessage<String> getUrl(String fileId);
 }
