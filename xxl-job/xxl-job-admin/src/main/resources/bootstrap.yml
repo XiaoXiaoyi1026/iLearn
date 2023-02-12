@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: xxl-job-admin
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+      config:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+        file-extension: yaml
+        refresh-enabled: true
+  profiles:
+    active: develop

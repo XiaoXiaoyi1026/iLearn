@@ -8,10 +8,12 @@ import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.media.mapper.MediaFilesMapper;
+import com.ilearn.media.mapper.MediaProcessMapper;
 import com.ilearn.media.model.dto.QueryMediaParamsDto;
 import com.ilearn.media.model.dto.UploadFileParamsDto;
 import com.ilearn.media.model.dto.UploadFileResponseDto;
 import com.ilearn.media.model.po.MediaFiles;
+import com.ilearn.media.model.po.MediaProcess;
 import com.ilearn.media.service.MediaFilesService;
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
@@ -45,11 +47,13 @@ import java.util.List;
 @Service
 public class MediaFilesServiceImpl implements MediaFilesService {
 
-    private final MediaFilesMapper mediaFilesMapper;
+    private MediaFilesMapper mediaFilesMapper;
 
-    private final MinioClient minioClient;
+    private MinioClient minioClient;
 
     private MediaFilesService mediaFilesService;
+
+    private MediaProcessMapper mediaProcessMapper;
 
     @Value("${minio.bucket.files}")
     private String filesBucket;
@@ -58,8 +62,12 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     private String videoBucket;
 
     @Autowired
-    MediaFilesServiceImpl(MediaFilesMapper mediaFilesMapper, MinioClient minioClient) {
+    void setMediaFilesMapper(MediaFilesMapper mediaFilesMapper) {
         this.mediaFilesMapper = mediaFilesMapper;
+    }
+
+    @Autowired
+    void setMinioClient(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
 
@@ -72,6 +80,11 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     @Autowired
     void setMediaFileService(MediaFilesService mediaFilesService) {
         this.mediaFilesService = mediaFilesService;
+    }
+
+    @Autowired
+    void setMediaProcessMapper(MediaProcessMapper mediaProcessMapper) {
+        this.mediaProcessMapper = mediaProcessMapper;
     }
 
     @Override
@@ -155,6 +168,15 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             mediaFiles.setStatus("1");
             mediaFiles.setAuditStatus(ObjectAuditStatus.NOT_YET);
             mediaFilesMapper.insert(mediaFiles);
+
+            // 如果媒体类型为avi, 则需要进行处理
+            if (mimeType.equals(getMimeTypeByFileExtension(".avi"))) {
+                MediaProcess mediaProcess = new MediaProcess();
+                BeanUtils.copyProperties(mediaFiles, mediaProcess);
+                // 状态 1:未处理，2：处理成功  3处理失败
+                mediaProcess.setStatus("1");
+                mediaProcessMapper.insert(mediaProcess);
+            }
         }
         return mediaFiles;
     }
@@ -207,8 +229,10 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             saveFile2MinIO(fileData, videoBucket, chunkFilePath);
             return ResponseMessage.success(Boolean.TRUE);
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("上传分块文件失败, 因为: {}", e.getMessage());
-            return ResponseMessage.validFail(Boolean.FALSE, "上传分块文件失败");
+            ILearnException.cast("上传文件失败, 请重试");
+            return ResponseMessage.validFail(Boolean.FALSE, "上传分片文件失败");
         }
     }
 
@@ -358,8 +382,6 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         String extension = "";
         if (fileName != null && fileName.contains(".")) {
             extension = fileName.substring(fileName.lastIndexOf("."));
-        } else {
-            ILearnException.cast("文件名不合法");
         }
         return extension;
     }
@@ -448,7 +470,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
      */
     @NotNull
     @Contract(pure = true)
-    private File[] downloadChunkFilesFromMinIO(String sourceFileMD5, int chunkTotal) {
+    private File @NotNull [] downloadChunkFilesFromMinIO(String sourceFileMD5, int chunkTotal) {
         // 分块文件所在目录
         String chunkFileFolder = getChunkFileFolder(sourceFileMD5);
         // 所有分块文件列表
