@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -45,8 +46,8 @@ public class CommonUtil {
             return null;
         }
         BigDecimal bd = new BigDecimal(s);
-        if (isFen != null && isFen.booleanValue()) {
-            bd = bd.divide(new BigDecimal(100), 2);
+        if (isFen != null && isFen) {
+            bd = bd.divide(new BigDecimal(100), RoundingMode.CEILING);
         }
         return bd;
     }
@@ -58,7 +59,7 @@ public class CommonUtil {
         if (StringUtils.isBlank(shifenmiao)) {
             return 0L;
         }
-        Long totalSeconds = 0L;
+        long totalSeconds = 0L;
         shifenmiao = shifenmiao.replaceAll(" ", "");
         boolean matched = shiFenMiaoPattern.matcher(shifenmiao).matches();
         if (matched) {
@@ -71,11 +72,11 @@ public class CommonUtil {
             String[] sfmArr = sfmList.toArray(new String[0]);
             for (int i = 0; i < sfmArr.length; i++) {
                 if (i == 0) {
-                    totalSeconds += Long.valueOf(sfmArr[i]);
+                    totalSeconds += Long.parseLong(sfmArr[i]);
                 } else if (i == 1) {
-                    totalSeconds += Long.valueOf(sfmArr[i]) * 60;
+                    totalSeconds += Long.parseLong(sfmArr[i]) * 60;
                 } else if (i == 2) {
-                    totalSeconds += Long.valueOf(sfmArr[i]) * 3600;
+                    totalSeconds += Long.parseLong(sfmArr[i]) * 3600;
                 }
             }
         }
@@ -85,13 +86,13 @@ public class CommonUtil {
     /**
      * 将下划线映射到骆驼命名使用的正则表达式, 预编译正则用于提高效率
      */
-    private static Pattern patternForUTC = Pattern.compile("_([a-z]){1}");
+    private static final Pattern patternForUTC = Pattern.compile("_([a-z]){1}");
 
     /**
      * 将下划线映射到骆驼命名
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 装换后的字符串
      */
     public static String mapUnderscoreToCamelCase(String str) {
         // 先转成全小写
@@ -106,10 +107,10 @@ public class CommonUtil {
     /**
      * 将骆驼命名映射到下划线, 必须是标准的驼峰命名, 否则会出现奇怪的结果
      *
-     * @param str
-     * @return
+     * @param str 字符串
+     * @return 转换后的字符串
      */
-    public static String mapCamelCaseToUnderscore(String str) {
+    public static @NotNull String mapCamelCaseToUnderscore(@NotNull String str) {
         return str.replaceAll("([A-Z]){1}", "_$1").toUpperCase();
     }
 

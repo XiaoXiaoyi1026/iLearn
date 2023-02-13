@@ -319,13 +319,8 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         return ResponseMessage.success(url);
     }
 
-    /**
-     * 从MinIO上删除文件
-     *
-     * @param bucketName 桶名称
-     * @param objectName 文件路径
-     */
-    private void removeObjectFromMinIO(String bucketName, String objectName) {
+    @Override
+    public void removeObjectFromMinIO(String bucketName, String objectName) {
         try {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
         } catch (Exception e) {
@@ -371,14 +366,8 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         }
     }
 
-    /**
-     * 保存文件到MinIO
-     *
-     * @param filePath   本地文件路径
-     * @param bucketName 上传到的桶名称
-     * @param objectName 上传后的全路径
-     */
-    private void saveFile2MinIO(String filePath, String bucketName, String objectName) {
+    @Override
+    public void saveFile2MinIO(String filePath, String bucketName, String objectName) {
         try {
             minioClient.uploadObject(UploadObjectArgs.builder().bucket(bucketName).object(objectName).filename(filePath).build());
             log.debug("上传成功, 文件路径: {}", filePath);
@@ -419,18 +408,13 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         return chunkFiles;
     }
 
-    /**
-     * 从MinIO上下载文件
-     *
-     * @param downloadFile 下载的文件
-     * @param bucketName   桶名称
-     * @param objectName   MinIO上的文件全路径
-     * @return 下载后的文件
-     */
-    private File downloadFileFromMinIO(File downloadFile, String bucketName, String objectName) {
-        try (InputStream sourceFile = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
-             // 建议与下载文件间的输出流
-             FileOutputStream downloadFileOutputStream = new FileOutputStream(downloadFile)) {
+    @Override
+    public File downloadFileFromMinIO(File downloadFile, String bucketName, String objectName) {
+        try (
+                InputStream sourceFile = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(objectName).build());
+                // 建议与下载文件间的输出流
+                FileOutputStream downloadFileOutputStream = new FileOutputStream(downloadFile)
+        ) {
             // 将服务器上拉下来的分片文件输出到下载文件中
             IOUtils.copy(sourceFile, downloadFileOutputStream);
         } catch (Exception e) {

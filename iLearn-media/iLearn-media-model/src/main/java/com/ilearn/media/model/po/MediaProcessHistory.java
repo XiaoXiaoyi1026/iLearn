@@ -59,5 +59,10 @@ public class MediaProcessHistory implements Serializable {
      */
     private String url;
 
+    /**
+     * 文件在服务器上的全路径
+     */
+    private String filePath;
+
 
 }

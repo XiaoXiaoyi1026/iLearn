@@ -26,6 +26,6 @@ public interface MediaProcessMapper extends BaseMapper<MediaProcess> {
      * @param count      用于处理视频的线程数, 一般等于CPU的核心线程数
      * @return 根据分片进行选择的要处理的视频信息列表
      */
-    @Select("SELECT * FROM media_process WHERE id % #{shardTotal} = #{shardIndex} AND status = '1' LIMIT #{count}")
+    @Select("SELECT * FROM media_process WHERE id % #{shardTotal} = #{shardIndex} AND status != '2' LIMIT #{count}")
     List<MediaProcess> selectByShard(@Param("shardTotal") int shardTotal, @Param("shardIndex") int shardIndex, @Param("count") int count);
 }

@@ -10,6 +10,7 @@ import com.ilearn.media.model.po.MediaFiles;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.File;
 
 /**
  * @author xiaoxiaoyi
@@ -98,4 +99,31 @@ public interface MediaFilesService {
      * @return 文件MinIO的Url
      */
     ResponseMessage<String> getUrl(String fileId);
+
+    /**
+     * 从MinIO上删除文件
+     *
+     * @param bucketName 桶名称
+     * @param objectName 文件路径
+     */
+    void removeObjectFromMinIO(String bucketName, String objectName);
+
+    /**
+     * 保存文件到MinIO
+     *
+     * @param filePath   本地文件路径
+     * @param bucketName 上传到的桶名称
+     * @param objectName 上传后的全路径
+     */
+    void saveFile2MinIO(String filePath, String bucketName, String objectName);
+
+    /**
+     * 从MinIO上下载文件
+     *
+     * @param downloadFile 下载的文件
+     * @param bucketName   桶名称
+     * @param objectName   MinIO上的文件全路径
+     * @return 下载后的文件
+     */
+    File downloadFileFromMinIO(File downloadFile, String bucketName, String objectName);
 }

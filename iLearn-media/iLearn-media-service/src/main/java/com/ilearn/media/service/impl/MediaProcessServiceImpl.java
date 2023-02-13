@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.ilearn.media.utils.MediaServiceUtils.*;
-
 /**
  * @author xiaoxiaoyi
  * @version 1.0
@@ -75,21 +73,20 @@ public class MediaProcessServiceImpl implements MediaProcessService {
                     ILearnException.cast("查找更新前文件失败, 请重试.");
                 }
                 // 更新源文件表的信息
-                String fileType = getMimeTypeByFileExtension(getFileExtension(url));
-                String fileName = getFileName(url);
+                LocalDateTime now = LocalDateTime.now();
+                String filename = mediaFiles.getFilename();
+                mediaFiles.setFilename(filename.substring(0, filename.lastIndexOf(".")) + ".mp4");
                 mediaFiles.setUrl(url);
                 // 由于url开始字符为'/', 所以从下标1的位置开始截取, 第2个'/'往后的字符串为filePath
                 mediaFiles.setFilePath(url.substring(url.indexOf("/", 1) + 1));
-                mediaFiles.setFileType(fileType);
-                mediaFiles.setFilename(fileName);
-                mediaFiles.setChangeDate(LocalDateTime.now());
+                mediaFiles.setChangeDate(now);
                 mediaFilesMapper.updateById(mediaFiles);
                 // 更新处理信息
                 mediaProcess.setStatus(status);
                 MediaProcessHistory mediaProcessHistory = new MediaProcessHistory();
                 BeanUtils.copyProperties(mediaProcess, mediaProcessHistory);
                 mediaProcessHistory.setUrl(url);
-                mediaProcessHistory.setFinishDate(LocalDateTime.now());
+                mediaProcessHistory.setFinishDate(now);
                 // 如果处理成功, 将待处理表的记录删除
                 mediaProcessMapper.deleteById(taskId);
                 // 将处理成功的添加到历史表
