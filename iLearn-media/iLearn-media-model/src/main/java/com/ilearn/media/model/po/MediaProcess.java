@@ -63,5 +63,8 @@ public class MediaProcess implements Serializable {
      */
     private LocalDateTime finishDate;
 
+    @TableField(value = "errormsg")
+    private String errorMessage;
+
 
 }

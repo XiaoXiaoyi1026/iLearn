@@ -22,4 +22,16 @@ public interface MediaProcessService {
      */
     List<MediaProcess> getMediaProcessList(int shardTotal, int shardIndex, int count);
 
+
+    /**
+     * 保存处理后的状态
+     *
+     * @param taskId   任务id
+     * @param status   处理后的状态 2: 成功, 3: 失败
+     * @param fileId   处理的文件id
+     * @param url      处理后的文件在MinIO上的访问路径
+     * @param errorMsg 如果处理出错, 记录的错误原因
+     */
+    void saveProcessedStatus(Long taskId, String status, String fileId, String url, String errorMsg);
+
 }

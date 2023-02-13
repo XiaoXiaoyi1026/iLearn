@@ -15,8 +15,6 @@ import com.ilearn.media.model.dto.UploadFileResponseDto;
 import com.ilearn.media.model.po.MediaFiles;
 import com.ilearn.media.model.po.MediaProcess;
 import com.ilearn.media.service.MediaFilesService;
-import com.j256.simplemagic.ContentInfo;
-import com.j256.simplemagic.ContentInfoUtil;
 import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -26,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -36,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
+import static com.ilearn.media.utils.MediaServiceUtils.*;
 
 /**
  * @author xiaoxiaoyi
@@ -373,56 +372,6 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     }
 
     /**
-     * 根据文件名得到扩展名
-     *
-     * @param fileName 文件名
-     * @return 扩展名
-     */
-    private String getFileExtension(String fileName) {
-        String extension = "";
-        if (fileName != null && fileName.contains(".")) {
-            extension = fileName.substring(fileName.lastIndexOf("."));
-        }
-        return extension;
-    }
-
-    /**
-     * 获取文件的contentType(MimeType)
-     *
-     * @param objectName 文件名
-     * @return contentType
-     */
-    private String getMimeTypeByObjectName(String objectName) {
-        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        if (objectName != null) {
-            // 根据扩展名得到mimeType
-            mimeType = getMimeTypeByFileExtension(getFileExtension(objectName));
-        } else {
-            ILearnException.cast("文件名不合法");
-        }
-        return mimeType;
-    }
-
-    /**
-     * 根据文件扩展名获取文件的mimeType
-     *
-     * @param extension 文件扩展名
-     * @return 文件mimeType
-     */
-    private String getMimeTypeByFileExtension(String extension) {
-        // 默认为未知二进制流
-        String mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        if (StringUtils.isNotEmpty(extension)) {
-            // 根据扩展名得到mimeType
-            ContentInfo contentInfo = ContentInfoUtil.findExtensionMatch(extension);
-            if (contentInfo != null) {
-                mimeType = contentInfo.getMimeType();
-            }
-        }
-        return mimeType;
-    }
-
-    /**
      * 保存文件到MinIO
      *
      * @param filePath   本地文件路径
@@ -437,28 +386,6 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             log.error("上传失败, 文件路径: {}", filePath);
             ILearnException.cast("文件上传失败, 文件路径: " + filePath);
         }
-    }
-
-    /**
-     * 获取文件在MinIO上的目录
-     *
-     * @param fileMD5 文件MD5值
-     * @return 文件所在目录
-     */
-    private String getFileFolder(@NotNull String fileMD5) {
-        StringBuilder sb = new StringBuilder();
-        return String.valueOf(sb.append(fileMD5.charAt(0)).append('/').append(fileMD5.charAt(1)).append('/').append(fileMD5).append('/'));
-    }
-
-    /**
-     * 获取分块文件在MinIO上的目录
-     *
-     * @param sourceFileMD5 源文件MD5值
-     * @return 分块文件所在目录
-     */
-    @NotNull
-    private String getChunkFileFolder(@NotNull String sourceFileMD5) {
-        return getFileFolder(sourceFileMD5) + "chunk/";
     }
 
     /**
