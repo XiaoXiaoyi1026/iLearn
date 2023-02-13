@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,6 +56,7 @@ public class MediaProcessServiceImpl implements MediaProcessService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public void saveProcessedStatus(Long taskId, String status, String fileId, String url, String errorMsg) {
         // 先查询任务, 判断任务状态(成功/失败)
         MediaProcess mediaProcess = mediaProcessMapper.selectById(taskId);
