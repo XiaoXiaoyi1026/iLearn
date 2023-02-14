@@ -1,6 +1,7 @@
 package com.ilearn.content.api;
 
 import com.ilearn.content.model.dto.SaveTeachPlanDto;
+import com.ilearn.content.model.dto.TeachPlanBindMediaDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
 import com.ilearn.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
@@ -47,6 +48,12 @@ public class TeachPlanController {
     @PostMapping
     public void saveTeachPlan(@RequestBody @Validated SaveTeachPlanDto saveTeachPlanDto) {
         teachPlanService.saveTeachPlan(saveTeachPlanDto);
+    }
+
+    @ApiOperation(value = "教学计划绑定媒体文件")
+    @PostMapping("/association/media")
+    public void teachPlanBindMedia(@RequestBody TeachPlanBindMediaDto teachPlanBindMediaDto) {
+
     }
 
 }
