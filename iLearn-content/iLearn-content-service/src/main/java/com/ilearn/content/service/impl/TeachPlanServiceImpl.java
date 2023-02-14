@@ -3,9 +3,12 @@ package com.ilearn.content.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.content.mapper.TeachPlanMapper;
+import com.ilearn.content.mapper.TeachPlanMediaMapper;
 import com.ilearn.content.model.dto.SaveTeachPlanDto;
+import com.ilearn.content.model.dto.TeachPlanBindMediaDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
 import com.ilearn.content.model.po.TeachPlan;
+import com.ilearn.content.model.po.TeachPlanMedia;
 import com.ilearn.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -28,11 +31,18 @@ import java.util.List;
 @Slf4j
 public class TeachPlanServiceImpl implements TeachPlanService {
 
-    private final TeachPlanMapper teachPlanMapper;
+    private TeachPlanMapper teachPlanMapper;
+
+    private TeachPlanMediaMapper teachPlanMediaMapper;
 
     @Autowired
-    TeachPlanServiceImpl(TeachPlanMapper teachPlanMapper) {
+    void setTeachPlanMapper(TeachPlanMapper teachPlanMapper) {
         this.teachPlanMapper = teachPlanMapper;
+    }
+
+    @Autowired
+    void setTeachPlanMediaMapper(TeachPlanMediaMapper teachPlanMediaMapper) {
+        this.teachPlanMediaMapper = teachPlanMediaMapper;
     }
 
     @Override
@@ -75,6 +85,41 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public TeachPlanMedia teachPlanBindMedia(@NotNull TeachPlanBindMediaDto teachPlanBindMediaDto) {
+        // 校验1: 教学计划必须存在
+        Long teachPlanId = teachPlanBindMediaDto.getTeachPlanId();
+        TeachPlan teachPlan = teachPlanMapper.selectById(teachPlanId);
+        if (teachPlan == null) {
+            log.error("查询教学计划失败, 绑定媒体信息失败");
+            ILearnException.cast("教学计划不存在, 绑定媒体信息失败");
+        }
+        // 校验2: 只有二级目录才能绑定媒体文件
+        if (teachPlan.getGrade() != 2) {
+            log.error("绑定媒体文件失败, 只能绑定二级目录");
+            ILearnException.cast("绑定媒体文件失败, 只能绑定二级目录");
+        }
+        // 删除原来的绑定关系
+        LambdaQueryWrapper<TeachPlanMedia> teachPlanMediaLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        teachPlanMediaLambdaQueryWrapper.eq(TeachPlanMedia::getTeachplanId, teachPlanId);
+        teachPlanMediaMapper.delete(teachPlanMediaLambdaQueryWrapper);
+        // 添加新的绑定关系
+        TeachPlanMedia teachPlanMedia = new TeachPlanMedia();
+        teachPlanMedia.setTeachplanId(teachPlanId);
+        teachPlanMedia.setMediaId(teachPlanBindMediaDto.getMediaId());
+        teachPlanMedia.setMediaFilename(teachPlanBindMediaDto.getMediaFileName());
+        teachPlanMedia.setCreateDate(LocalDateTime.now());
+        teachPlanMedia.setCourseId(teachPlan.getCourseId());
+        teachPlanMediaMapper.insert(teachPlanMedia);
+        return teachPlanMedia;
+    }
+
+    /**
+     * 设置时长
+     *
+     * @param teachPlan 教学计划
+     */
     private void setTimeLength(@NotNull TeachPlan teachPlan) {
         LocalDateTime startTime = teachPlan.getStartTime();
         LocalDateTime endTime = teachPlan.getEndTime();
@@ -152,6 +197,12 @@ public class TeachPlanServiceImpl implements TeachPlanService {
         return result + 1;
     }
 
+    /**
+     * 添加时间
+     *
+     * @param timeLength 时间字符串
+     * @param length     时长
+     */
     private void appendTime(StringBuilder timeLength, int length) {
         if (length < 10) {
             timeLength.append(0);

@@ -1,5 +1,6 @@
 package com.ilearn.content.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,12 +16,15 @@ import lombok.Data;
 public class TeachPlanBindMediaDto {
 
     @ApiModelProperty(value = "媒体文件id", required = true)
+    @JsonProperty(value = "mediaId")
     private String mediaId;
 
     @ApiModelProperty(value = "媒体文件名称", required = true)
+    @JsonProperty(value = "fileName")
     private String mediaFileName;
 
     @ApiModelProperty(value = "教学计划id", required = true)
+    @JsonProperty(value = "teachplanId")
     private Long teachPlanId;
 
 }

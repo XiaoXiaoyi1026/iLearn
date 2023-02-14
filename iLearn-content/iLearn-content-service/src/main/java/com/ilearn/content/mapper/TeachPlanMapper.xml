@@ -25,7 +25,8 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id
-        , pname, parentid, grade, media_type, start_time, end_time, description, timelength, orderby, course_id, course_pub_id, status, is_preview, create_date, change_date
+        , pname, parentid, grade, media_type, start_time, end_time, description, timelength, orderby, course_id,
+        course_pub_id, status, is_preview, create_date, change_date
     </sql>
 
     <resultMap
@@ -58,6 +59,7 @@
             <result column="t2_orderby" property="orderby"/>
             <result column="t2_course_id" property="courseId"/>
             <result column="t2_course_pub_id" property="coursePubId"/>
+            <result column="t2_is_preview" property="isPreview"/>
             <association
                     property="teachplanMedia"
                     javaType="com.ilearn.content.model.po.TeachPlanMedia"
@@ -100,11 +102,12 @@
                t2.orderby        t2_orderby,
                t2.course_id      t2_course_id,
                t2.course_pub_id  t2_course_pub_id,
+               t2.is_preview     t2_is_preview,
                tm.id             tm_id,
                tm.media_id       tm_media_id,
                tm.media_fileName tm_media_fileName
         FROM teachplan t1
-            /* 如果用内连接,  */
+                 /* 如果用内连接,  */
                  LEFT JOIN teachplan t2 ON t1.id = t2.parentid
                  LEFT JOIN teachplan_media tm ON t2.id = tm.teachplan_id
         WHERE t1.parentid = 0

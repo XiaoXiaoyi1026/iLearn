@@ -1,7 +1,9 @@
 package com.ilearn.content.service;
 
 import com.ilearn.content.model.dto.SaveTeachPlanDto;
+import com.ilearn.content.model.dto.TeachPlanBindMediaDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
+import com.ilearn.content.model.po.TeachPlanMedia;
 
 import java.util.List;
 
@@ -27,5 +29,13 @@ public interface TeachPlanService {
      * @param saveTeachPlanDto 添加/修改的课程教学计划信息
      */
     void saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
+
+    /**
+     * 教学计划绑定媒体文件
+     *
+     * @param teachPlanBindMediaDto 绑定相关数据
+     * @return 绑定后的信息
+     */
+    TeachPlanMedia teachPlanBindMedia(TeachPlanBindMediaDto teachPlanBindMediaDto);
 
 }
