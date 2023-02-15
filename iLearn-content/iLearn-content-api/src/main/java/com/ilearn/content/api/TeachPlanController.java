@@ -43,7 +43,7 @@ public class TeachPlanController {
     @ApiOperation("根据课程id查询对应的课程计划")
     @GetMapping("/{courseId}/tree-nodes")
     public List<TeachPlanDto> getTreeNodes(@PathVariable(name = "courseId") Long courseId) {
-        return teachPlanService.getTreeNodes(courseId);
+        return teachPlanService.getCourseTeachPlans(courseId);
     }
 
     @ApiOperation("保存课程计划, 可以是添加或更新")

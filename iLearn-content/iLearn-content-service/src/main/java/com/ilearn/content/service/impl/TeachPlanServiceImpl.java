@@ -46,7 +46,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
     }
 
     @Override
-    public List<TeachPlanDto> getTreeNodes(Long courseId) {
+    public List<TeachPlanDto> getCourseTeachPlans(Long courseId) {
         return teachPlanMapper.getTreeNodes(courseId);
     }
 

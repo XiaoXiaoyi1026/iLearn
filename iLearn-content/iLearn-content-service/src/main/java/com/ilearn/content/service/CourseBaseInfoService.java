@@ -40,7 +40,7 @@ public interface CourseBaseInfoService {
      * @param courseId 课程id
      * @return 课程的基本信息和营销信息
      */
-    CourseBaseInfoDto buildDtoInfo(Long courseId);
+    CourseBaseInfoDto getCourseBaseInfo(Long courseId);
 
     /**
      * 更新课程信息

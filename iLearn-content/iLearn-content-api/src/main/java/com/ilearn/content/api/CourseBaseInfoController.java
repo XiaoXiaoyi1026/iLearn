@@ -52,7 +52,7 @@ public class CourseBaseInfoController {
     @GetMapping("/{courseId}")
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
-        return courseBaseInfoService.buildDtoInfo(courseId);
+        return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 
     @PutMapping

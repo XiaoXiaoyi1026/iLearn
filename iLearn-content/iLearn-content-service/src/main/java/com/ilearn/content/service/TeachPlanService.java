@@ -21,7 +21,7 @@ public interface TeachPlanService {
      * @param courseId 课程id
      * @return 教学计划
      */
-    List<TeachPlanDto> getTreeNodes(Long courseId);
+    List<TeachPlanDto> getCourseTeachPlans(Long courseId);
 
     /**
      * 添加/修改课程教学计划

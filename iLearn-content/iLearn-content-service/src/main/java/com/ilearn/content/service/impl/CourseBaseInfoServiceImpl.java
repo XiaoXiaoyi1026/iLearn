@@ -145,7 +145,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     }
 
     @Override
-    public CourseBaseInfoDto buildDtoInfo(Long courseId) {
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId) {
         // 获取课程基本信息
         CourseBase baseInfo = courseBaseMapper.selectById(courseId);
         if (baseInfo == null) {
