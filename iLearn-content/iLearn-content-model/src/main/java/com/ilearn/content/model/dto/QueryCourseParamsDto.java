@@ -7,7 +7,7 @@ import lombok.ToString;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description TODO 查询课程参数
+ * @description 查询课程参数
  * @date 1/24/2023 4:48 PM
  */
 @Data

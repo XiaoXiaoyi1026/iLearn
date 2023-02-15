@@ -78,6 +78,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- SpringBoot集成结果试图(模板引擎)Freemarker -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
