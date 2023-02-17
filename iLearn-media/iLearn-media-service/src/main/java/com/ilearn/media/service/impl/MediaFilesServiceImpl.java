@@ -87,16 +87,6 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     }
 
     @Override
-    public MediaFiles getMediaFilesById(String mediaId) {
-        MediaFiles mediaFiles = mediaFilesMapper.selectById(mediaId);
-        if (mediaFiles == null) {
-            log.error("查询媒体信息失败, mediaId: {}", mediaId);
-            ILearnException.cast("查询媒体信息失败");
-        }
-        return mediaFiles;
-    }
-
-    @Override
     public PageResponse<MediaFiles> queryMediaFiles(Long companyId, @NotNull PageRequestParams pageRequestParams, @NotNull QueryMediaParamsDto queryMediaParamsDto) {
 
         //构建查询条件对象

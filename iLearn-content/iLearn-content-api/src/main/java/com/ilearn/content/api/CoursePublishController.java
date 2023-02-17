@@ -1,12 +1,15 @@
 package com.ilearn.content.api;
 
 import com.ilearn.content.model.dto.CoursePreviewDto;
+import com.ilearn.content.service.CoursePublishService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -17,13 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @Api(value = "课程发布相关接口")
-public class CoursePreviewController {
+public class CoursePublishController {
 
-    private com.ilearn.content.service.CoursePreviewService coursePreviewService;
+    private CoursePublishService coursePublishService;
 
     @Autowired
-    void setCoursePreviewService(com.ilearn.content.service.CoursePreviewService coursePreviewService) {
-        this.coursePreviewService = coursePreviewService;
+    void setCoursePublishService(CoursePublishService coursePublishService) {
+        this.coursePublishService = coursePublishService;
     }
 
     /**
@@ -38,10 +41,23 @@ public class CoursePreviewController {
         // 绑定模板文件
         ModelAndView mav = new ModelAndView("course_template");
         // 查询模板数据
-        CoursePreviewDto coursePreviewInfo = coursePreviewService.getCoursePreviewInfo(courseId);
+        CoursePreviewDto coursePreviewInfo = coursePublishService.getCoursePreviewInfo(courseId);
         // 模板绑定数据
         mav.addObject("model", coursePreviewInfo);
         return mav;
+    }
+
+    /**
+     * 课程提交审核
+     *
+     * @param courseId 提交的课程id
+     */
+    @ApiOperation(value = "课程提交审核")
+    @ResponseBody
+    @PostMapping("/courseaudit/commit/{courseId}")
+    public void commitAudit(@PathVariable("courseId") Long courseId) {
+        Long companyId = 1026L;
+        coursePublishService.commitAudit(companyId, courseId);
     }
 
 }

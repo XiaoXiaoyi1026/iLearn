@@ -1,9 +1,6 @@
 package com.ilearn.media.api;
 
-import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.ResponseMessage;
-import com.ilearn.base.utils.StringUtil;
-import com.ilearn.media.model.po.MediaFiles;
 import com.ilearn.media.service.MediaFilesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,11 +31,7 @@ public class MediaOpenController {
     @ApiOperation("预览文件")
     @GetMapping("/preview/{mediaId}")
     public ResponseMessage<String> getPlayUrlByMediaId(@PathVariable String mediaId) {
-        MediaFiles mediaFiles = mediaFileService.getMediaFilesById(mediaId);
-        if (mediaFiles == null || StringUtil.isEmpty(mediaFiles.getUrl())) {
-            ILearnException.cast("视频还没有转码处理");
-        }
-        return ResponseMessage.success(mediaFiles.getUrl());
+        return mediaFileService.getUrl(mediaId);
     }
 
 

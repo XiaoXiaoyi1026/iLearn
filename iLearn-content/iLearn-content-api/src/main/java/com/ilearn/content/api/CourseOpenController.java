@@ -1,7 +1,7 @@
 package com.ilearn.content.api;
 
 import com.ilearn.content.model.dto.CoursePreviewDto;
-import com.ilearn.content.service.CoursePreviewService;
+import com.ilearn.content.service.CoursePublishService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/open")
 public class CourseOpenController {
 
-    private CoursePreviewService coursePreviewService;
+    private CoursePublishService coursePreviewService;
 
     @Autowired
-    void setCoursePublishService(CoursePreviewService coursePreviewService) {
+    void setCoursePublishService(CoursePublishService coursePreviewService) {
         this.coursePreviewService = coursePreviewService;
     }
 

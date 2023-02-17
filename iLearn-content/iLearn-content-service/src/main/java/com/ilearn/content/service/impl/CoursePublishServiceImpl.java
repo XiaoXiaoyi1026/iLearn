@@ -1,11 +1,13 @@
 package com.ilearn.content.service.impl;
 
+import com.ilearn.base.dictionary.CourseAuditStatus;
 import com.ilearn.base.exception.ILearnException;
+import com.ilearn.base.utils.StringUtil;
 import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.CoursePreviewDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
 import com.ilearn.content.service.CourseBaseInfoService;
-import com.ilearn.content.service.CoursePreviewService;
+import com.ilearn.content.service.CoursePublishService;
 import com.ilearn.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class CoursePreviewServiceImpl implements CoursePreviewService {
+public class CoursePublishServiceImpl implements CoursePublishService {
 
     private CourseBaseInfoService courseBaseInfoService;
 
@@ -55,5 +57,38 @@ public class CoursePreviewServiceImpl implements CoursePreviewService {
         coursePreviewDto.setCourseBaseInfoDto(courseBaseInfo);
         coursePreviewDto.setTeachPlanDtoList(courseTeachPlans);
         return coursePreviewDto;
+    }
+
+    @Override
+    public void commitAudit(Long companyId, Long courseId) {
+        // 获取课程基本信息, 营销信息
+        CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
+        if (courseBaseInfo == null) {
+            log.error("提交审核失败, 课程不存在, courseId: {}", courseId);
+            ILearnException.cast("提交审核失败, 课程不存在");
+        }
+        // 校验1: 课程必须属于当前机构
+        if (!courseBaseInfo.getCompanyId().equals(companyId)) {
+            log.error("提交审核失败, 课程不属于当前机构, courseId: {}", courseId);
+            ILearnException.cast("不能提交不属于自己机构的课程");
+        }
+        // 校验2: 当审核状态为已提交, 则不能再次提交
+        if (CourseAuditStatus.SUBMITTED.equals(courseBaseInfo.getAuditStatus())) {
+            log.error("提交审核失败, 当前审核状态为已提交, courseId: {}", courseId);
+            ILearnException.cast("当前审核状态为已提交");
+        }
+        // 校验3: 课程图片必须指定
+        if (StringUtil.isEmpty(courseBaseInfo.getPic())) {
+            log.error("提交审核失败, 课程图片未指定, courseId: {}", courseId);
+            ILearnException.cast("课程图片未指定");
+        }
+        // 校验4: 课程计划必须添加
+        List<TeachPlanDto> courseTeachPlans = teachPlanService.getCourseTeachPlans(courseId);
+        if (courseTeachPlans == null || courseTeachPlans.isEmpty()) {
+            log.error("提交审核失败, 课程计划未添加, courseId: {}", courseId);
+            ILearnException.cast("课程计划未添加");
+        }
+        // 校验都通过, 可以开始准备插入预发布表
+
     }
 }
