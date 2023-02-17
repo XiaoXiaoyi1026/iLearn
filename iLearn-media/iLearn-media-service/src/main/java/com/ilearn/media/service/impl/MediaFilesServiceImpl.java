@@ -87,6 +87,16 @@ public class MediaFilesServiceImpl implements MediaFilesService {
     }
 
     @Override
+    public MediaFiles getMediaFilesById(String mediaId) {
+        MediaFiles mediaFiles = mediaFilesMapper.selectById(mediaId);
+        if (mediaFiles == null) {
+            log.error("查询媒体信息失败, mediaId: {}", mediaId);
+            ILearnException.cast("查询媒体信息失败");
+        }
+        return mediaFiles;
+    }
+
+    @Override
     public PageResponse<MediaFiles> queryMediaFiles(Long companyId, @NotNull PageRequestParams pageRequestParams, @NotNull QueryMediaParamsDto queryMediaParamsDto) {
 
         //构建查询条件对象
@@ -310,11 +320,12 @@ public class MediaFilesServiceImpl implements MediaFilesService {
         MediaFiles mediaFile = mediaFilesMapper.selectById(fileId);
         if (mediaFile == null) {
             log.error("文件不存在, fileId: {}", fileId);
-            return ResponseMessage.validFail("查询文件url失败");
+            ILearnException.cast("查询媒体文件失败");
         }
         String url = mediaFile.getUrl();
         if (StringUtils.isEmpty(url)) {
-            return ResponseMessage.success("文件需要进行处理, 请稍后预览");
+            log.error("文件url为空, fileId: {}", fileId);
+            ILearnException.cast("文件尚未进行转码处理");
         }
         return ResponseMessage.success(url);
     }

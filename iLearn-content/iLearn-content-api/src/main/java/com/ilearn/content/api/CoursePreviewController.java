@@ -1,7 +1,6 @@
 package com.ilearn.content.api;
 
 import com.ilearn.content.model.dto.CoursePreviewDto;
-import com.ilearn.content.service.CoursePreviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @Api(value = "课程发布相关接口")
-public class CoursePublishController {
+public class CoursePreviewController {
 
-    private CoursePreviewService coursePreviewService;
+    private com.ilearn.content.service.CoursePreviewService coursePreviewService;
 
     @Autowired
-    void setCoursePreviewService(CoursePreviewService coursePreviewService) {
+    void setCoursePreviewService(com.ilearn.content.service.CoursePreviewService coursePreviewService) {
         this.coursePreviewService = coursePreviewService;
     }
 

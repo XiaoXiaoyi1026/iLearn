@@ -21,6 +21,14 @@ import java.io.File;
 public interface MediaFilesService {
 
     /**
+     * 根据媒体id获取信息
+     *
+     * @param mediaId 媒体MD5
+     * @return 媒体信息
+     */
+    MediaFiles getMediaFilesById(String mediaId);
+
+    /**
      * @param pageRequestParams   分页参数
      * @param queryMediaParamsDto 查询条件
      * @return com.ilearn.base.model.PageResponse<com.ilearn.media.model.po.MediaFiles>
