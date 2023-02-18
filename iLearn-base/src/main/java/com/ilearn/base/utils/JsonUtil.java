@@ -17,12 +17,12 @@ import java.util.Map;
 
 public class JsonUtil {
 
-    public static @NotNull String objectTojson(Object object) {
+    public static @NotNull String objectToJson(Object object) {
         return JSON.toJSONString(object, SerializerFeature.WriteDateUseDateFormat);
     }
 
 
-    public static @NotNull String listToJson(List<Object> list) {
+    public static @NotNull String listToJson(List<?> list) {
         return JSON.toJSONString(list, SerializerFeature.WriteDateUseDateFormat);
     }
 
@@ -32,8 +32,9 @@ public class JsonUtil {
      * @param strJson {"username":"sxb"}
      * @return 根据json转换为Map对象
      */
-    public static Map jsonToMap(String strJson) {
-        Map jsoMap = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> jsonToMap(String strJson) {
+        Map<String, Object> jsoMap = new HashMap<>();
         try {
             jsoMap = JSONObject.parseObject(strJson, Map.class);
         } catch (JSONException e) {

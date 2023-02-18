@@ -25,6 +25,7 @@ public class HttpUtil {
         JSON.writeJSONString(response.getOutputStream(), restResponse);
     }
 
+
     public static String getAccessToken(String ak, String sk) throws Exception {
         // 获取token地址
         String authHost = "https://aip.baidubce.com/oauth/2.0/token?";
