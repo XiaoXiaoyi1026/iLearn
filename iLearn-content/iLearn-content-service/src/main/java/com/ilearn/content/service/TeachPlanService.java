@@ -1,5 +1,6 @@
 package com.ilearn.content.service;
 
+import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.SaveTeachPlanDto;
 import com.ilearn.content.model.dto.TeachPlanBindMediaDto;
 import com.ilearn.content.model.dto.TeachPlanDto;
@@ -27,8 +28,9 @@ public interface TeachPlanService {
      * 添加/修改课程教学计划
      *
      * @param saveTeachPlanDto 添加/修改的课程教学计划信息
+     * @return 添加/修改教学计划结果
      */
-    void saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
+    ResponseMessage<Boolean> saveTeachPlan(SaveTeachPlanDto saveTeachPlanDto);
 
     /**
      * 教学计划绑定媒体文件

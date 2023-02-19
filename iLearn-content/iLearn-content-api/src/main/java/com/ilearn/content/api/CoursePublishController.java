@@ -1,5 +1,6 @@
 package com.ilearn.content.api;
 
+import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.CoursePreviewDto;
 import com.ilearn.content.service.CoursePublishService;
 import io.swagger.annotations.Api;
@@ -55,9 +56,22 @@ public class CoursePublishController {
     @ApiOperation(value = "课程提交审核")
     @ResponseBody
     @PostMapping("/courseaudit/commit/{courseId}")
-    public void commitAudit(@PathVariable("courseId") Long courseId) {
+    public ResponseMessage<Boolean> commitAudit(@PathVariable("courseId") Long courseId) {
         Long companyId = 1026L;
-        coursePublishService.commitAudit(companyId, courseId);
+        return coursePublishService.commitAudit(companyId, courseId);
+    }
+
+    /**
+     * 课程发布
+     *
+     * @param courseId 要发布的课程id
+     * @return 发布结果
+     */
+    @ApiOperation(value = "课程发布")
+    @PostMapping("/coursepublish/{courseId}")
+    public ResponseMessage<Boolean> coursePublish(@PathVariable("courseId") Long courseId) {
+        Long companyId = 1026L;
+        return coursePublishService.coursePublish(companyId, courseId);
     }
 
 }

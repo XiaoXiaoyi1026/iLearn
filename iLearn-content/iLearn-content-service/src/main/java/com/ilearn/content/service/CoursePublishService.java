@@ -1,5 +1,6 @@
 package com.ilearn.content.service;
 
+import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.CoursePreviewDto;
 
 /**
@@ -23,7 +24,30 @@ public interface CoursePublishService {
      *
      * @param companyId 课程所属的机构id
      * @param courseId  课程id
+     * @return 提交结果
      */
-    void commitAudit(Long companyId, Long courseId);
+    ResponseMessage<Boolean> commitAudit(Long companyId, Long courseId);
 
+    /**
+     * 课程发布
+     *
+     * @param companyId 机构id
+     * @param courseId  课程id
+     * @return 发布结果
+     */
+    ResponseMessage<Boolean> coursePublish(Long companyId, Long courseId);
+
+    /**
+     * 保存课程发布信息
+     *
+     * @param courseId 课程id
+     */
+    void saveCoursePublishInfo(Long courseId);
+
+    /**
+     * 保存课程发布消息
+     *
+     * @param courseId 课程id
+     */
+    void saveCoursePublishMessage(Long courseId);
 }

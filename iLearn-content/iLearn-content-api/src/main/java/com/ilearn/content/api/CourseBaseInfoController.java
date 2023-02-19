@@ -34,6 +34,13 @@ public class CourseBaseInfoController {
         this.courseBaseInfoService = courseBaseInfoService;
     }
 
+    /**
+     * 课程分页查询
+     *
+     * @param pageRequestParams    分页参数
+     * @param queryCourseParamsDto 课程信息
+     * @return 查询结果
+     */
     @PostMapping("/list")
     @ApiOperation("课程分页查询")
     public PageResponse<CourseBase> list(PageRequestParams pageRequestParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
@@ -41,6 +48,12 @@ public class CourseBaseInfoController {
         return courseBaseInfoService.queryPageList(pageRequestParams, queryCourseParamsDto);
     }
 
+    /**
+     * 新增课程
+     *
+     * @param addCourseDto 新增的课程信息
+     * @return 新增的课程信息
+     */
     @PostMapping
     @ApiOperation("新增课程")
     public CourseBaseInfoDto add(@RequestBody @Validated(value = {ValidationGroups.Insert.class}) AddCourseDto addCourseDto) {
@@ -49,12 +62,24 @@ public class CourseBaseInfoController {
         return courseBaseInfoService.add(companyId, addCourseDto);
     }
 
+    /**
+     * 根据课程id获取对应的课程信息
+     *
+     * @param courseId 课程id
+     * @return 课程基本信息和营销信息
+     */
     @GetMapping("/{courseId}")
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 
+    /**
+     * 更新课程信息
+     *
+     * @param updateCourseDto 更新信息
+     * @return 更新结果
+     */
     @PutMapping
     @ApiOperation("更新课程信息")
     public CourseBaseInfoDto update(@RequestBody @Validated(value = {ValidationGroups.Update.class}) UpdateCourseDto updateCourseDto) {

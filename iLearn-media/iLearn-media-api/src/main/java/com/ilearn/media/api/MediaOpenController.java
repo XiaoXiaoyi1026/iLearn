@@ -28,6 +28,12 @@ public class MediaOpenController {
         this.mediaFileService = mediaFileService;
     }
 
+    /**
+     * 预览文件
+     *
+     * @param mediaId 媒体MD5
+     * @return 文件地址
+     */
     @ApiOperation("预览文件")
     @GetMapping("/preview/{mediaId}")
     public ResponseMessage<String> getPlayUrlByMediaId(@PathVariable String mediaId) {

@@ -39,6 +39,13 @@ public class MediaFilesController {
         this.mediaFilesService = mediaFilesService;
     }
 
+    /**
+     * 媒资列表查询接口
+     *
+     * @param pageRequestParams   页面参数
+     * @param queryMediaParamsDto 查询条件
+     * @return 页面数据
+     */
     @ApiOperation("媒资列表查询接口")
     @PostMapping("/files")
     public PageResponse<MediaFiles> list(PageRequestParams pageRequestParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
@@ -85,6 +92,12 @@ public class MediaFilesController {
         return uploadFileResponseDto;
     }
 
+    /**
+     * 预览文件
+     *
+     * @param mediaId 媒体MD5
+     * @return 媒体播放地址
+     */
     @ApiOperation(value = "预览文件")
     @GetMapping(value = "/preview/{mediaId}")
     public ResponseMessage<String> preview(@PathVariable("mediaId") String mediaId) {

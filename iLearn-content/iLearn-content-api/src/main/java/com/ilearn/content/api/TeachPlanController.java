@@ -46,12 +46,24 @@ public class TeachPlanController {
         return teachPlanService.getCourseTeachPlans(courseId);
     }
 
+    /**
+     * 添加/更新教学计划
+     *
+     * @param saveTeachPlanDto 要添加/更新的信息
+     * @return 添加/更新结果
+     */
     @ApiOperation("保存课程计划, 可以是添加或更新")
     @PostMapping
-    public void saveTeachPlan(@RequestBody @Validated SaveTeachPlanDto saveTeachPlanDto) {
-        teachPlanService.saveTeachPlan(saveTeachPlanDto);
+    public ResponseMessage<Boolean> saveTeachPlan(@RequestBody @Validated SaveTeachPlanDto saveTeachPlanDto) {
+        return teachPlanService.saveTeachPlan(saveTeachPlanDto);
     }
 
+    /**
+     * 教学计划绑定媒体文件
+     *
+     * @param teachPlanBindMediaDto 教学计划和媒体文件信息
+     * @return 绑定结果
+     */
     @ApiOperation(value = "教学计划绑定媒体文件")
     @PostMapping("/association/media")
     public ResponseMessage<TeachPlanMedia> teachPlanBindMedia(@RequestBody TeachPlanBindMediaDto teachPlanBindMediaDto) {

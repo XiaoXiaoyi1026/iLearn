@@ -7,6 +7,7 @@ import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
 import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
+import com.ilearn.content.model.po.CourseMarket;
 
 /**
  * @author xiaoxiaoyi
@@ -19,7 +20,7 @@ public interface CourseBaseInfoService {
     /**
      * 课程基本信息分页查询
      *
-     * @param pageRequestParams           分页参数
+     * @param pageRequestParams    分页参数
      * @param queryCourseParamsDto 课程查询条件
      * @return 分页课程信息
      */
@@ -50,4 +51,14 @@ public interface CourseBaseInfoService {
      * @return 更新后的课程Dto
      */
     CourseBaseInfoDto update(Long companyId, UpdateCourseDto updateCourseDto);
+
+    /**
+     * 保存课程营销信息
+     *
+     * @param courseMarket 营销信息
+     * @param courseId     课程id
+     * @param courseType   课程类型
+     * @param price        课程价格
+     */
+    void saveCourseMarketInfo(CourseMarket courseMarket, Long courseId, String courseType, Float price);
 }

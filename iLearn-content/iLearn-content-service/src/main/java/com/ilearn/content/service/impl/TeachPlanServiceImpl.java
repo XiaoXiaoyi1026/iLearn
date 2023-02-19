@@ -2,6 +2,7 @@ package com.ilearn.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
+import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.mapper.TeachPlanMapper;
 import com.ilearn.content.mapper.TeachPlanMediaMapper;
 import com.ilearn.content.model.dto.SaveTeachPlanDto;
@@ -52,7 +53,7 @@ public class TeachPlanServiceImpl implements TeachPlanService {
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void saveTeachPlan(@NotNull SaveTeachPlanDto saveTeachPlanDto) {
+    public ResponseMessage<Boolean> saveTeachPlan(@NotNull SaveTeachPlanDto saveTeachPlanDto) {
         // 根据传入参数中是否教学计划id判断是新增还是修改
         Long teachPlanId = saveTeachPlanDto.getId();
         TeachPlan teachPlan = new TeachPlan();
@@ -66,7 +67,11 @@ public class TeachPlanServiceImpl implements TeachPlanService {
             BeanUtils.copyProperties(saveTeachPlanDto, teachPlan);
             // 计算新插入的教学计划顺序orderBy, 默认应该排在最后
             teachPlan.setOrderby(this.getOrderBy(teachPlan));
-            teachPlanMapper.insert(teachPlan);
+            if (teachPlanMapper.insert(teachPlan) > 0) {
+                return ResponseMessage.success(Boolean.TRUE);
+            } else {
+                return ResponseMessage.validFail(Boolean.FALSE, "插入课程教学计划失败");
+            }
         } else {
             // 不为空则是修改, 先查出之前的
             teachPlan = teachPlanMapper.selectById(teachPlanId);
@@ -81,7 +86,11 @@ public class TeachPlanServiceImpl implements TeachPlanService {
             // 设置时间
             this.setTimeLength(teachPlan);
             // 把之前的保存回去
-            teachPlanMapper.updateById(teachPlan);
+            if (teachPlanMapper.updateById(teachPlan) > 0) {
+                return ResponseMessage.success(Boolean.TRUE);
+            } else {
+                return ResponseMessage.validFail(Boolean.FALSE, "更新课程教学计划失败");
+            }
         }
     }
 

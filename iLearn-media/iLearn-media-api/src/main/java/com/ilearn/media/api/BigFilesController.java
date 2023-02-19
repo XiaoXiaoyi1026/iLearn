@@ -31,12 +31,25 @@ public class BigFilesController {
         this.mediaFilesService = mediaFilesService;
     }
 
+    /**
+     * 根据文件的MD5值检查文件是否已经上传过
+     *
+     * @param fileMD5 文件MD5
+     * @return 文件是否已上传过
+     */
     @ApiOperation(value = "根据文件的MD5值检查文件是否已经上传过")
     @PostMapping("/checkfile")
     public ResponseMessage<Boolean> checkFile(@RequestParam("fileMd5") String fileMD5) {
         return mediaFilesService.checkFile(fileMD5);
     }
 
+    /**
+     * 上传分片前检查分片是否已上传
+     *
+     * @param fileMD5    文件MD5
+     * @param chunkIndex 分片编号
+     * @return 这个分片是否已经上传过
+     */
     @ApiOperation(value = "上传分片前检查分片是否已上传")
     @PostMapping("/checkchunk")
     public ResponseMessage<Boolean> checkChunk(@RequestParam("fileMd5") String fileMD5, @RequestParam("chunk") int chunkIndex) {
