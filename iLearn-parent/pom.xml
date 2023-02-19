@@ -26,6 +26,7 @@
         <mybatis-plus-boot-starter.version>3.4.1</mybatis-plus-boot-starter.version>
         <commons-lang.version>2.6</commons-lang.version>
         <minio.version>8.4.3</minio.version>
+        <guava.version>25.0-jre</guava.version>
         <xxl-job-core.version>2.3.1</xxl-job-core.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
         <commons-lang3.version>3.10</commons-lang3.version>
@@ -34,6 +35,7 @@
         <elasticsearch.version>7.12.1</elasticsearch.version>
         <simplemagic.version>1.17</simplemagic.version>
         <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
+        <annotations.version>15.0</annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -138,7 +140,7 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>25.0-jre</version>
+                <version>${guava.version}</version>
             </dependency>
             <!--分布式任务调度-->
             <dependency>
@@ -184,6 +186,13 @@
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${annotations.version}</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
 

@@ -18,6 +18,13 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- 课程发布依赖的任务处理SDK -->
+        <dependency>
+            <groupId>com.ilearn</groupId>
+            <artifactId>iLearn-task</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- nacos配置管理服务 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -63,8 +70,12 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>15.0</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <!-- xxl-job: 任务调度 -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
         </dependency>
     </dependencies>
 
