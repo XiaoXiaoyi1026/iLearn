@@ -1,5 +1,6 @@
 package com.ilearn.content;
 
+import com.ilearn.ContentServiceApplication;
 import com.ilearn.content.model.dto.CoursePreviewDto;
 import com.ilearn.content.service.CoursePublishService;
 import freemarker.template.Configuration;
@@ -25,7 +26,7 @@ import java.util.Objects;
  * @description freemarker测试
  * @date 2/19/2023 3:35 PM
  */
-@SpringBootTest()
+@SpringBootTest(classes = ContentServiceApplication.class)
 public class FreemarkerTest {
 
     @Autowired

@@ -1,5 +1,6 @@
 package com.ilearn.content;
 
+import com.ilearn.ContentServiceApplication;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
 import com.ilearn.content.mapper.CourseBaseMapper;
@@ -15,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest()
+@SpringBootTest(classes = ContentServiceApplication.class)
 public class ContentServiceApplicationTests {
 
     @Autowired
