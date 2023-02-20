@@ -36,6 +36,7 @@
         <simplemagic.version>1.17</simplemagic.version>
         <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
         <annotations.version>15.0</annotations.version>
+        <google.zxing.version>3.3.3</google.zxing.version>
     </properties>
 
     <dependencyManagement>
@@ -193,6 +194,18 @@
                 <artifactId>annotations</artifactId>
                 <version>${annotations.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${google.zxing.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${google.zxing.version}</version>
             </dependency>
         </dependencies>
 

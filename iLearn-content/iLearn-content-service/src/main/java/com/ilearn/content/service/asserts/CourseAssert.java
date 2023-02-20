@@ -4,7 +4,6 @@ import com.ilearn.base.exception.ILearnException;
 import com.ilearn.content.model.po.CourseBase;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.stereotype.Component;
 
 /**
  * @author xiaoxiaoyi
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
  * @date 2/18/2023 2:58 PM
  */
 @Slf4j
-@Component
 public class CourseAssert {
 
     /**
@@ -22,7 +20,7 @@ public class CourseAssert {
      * @param courseBase 课程信息
      * @param message    错误信息
      */
-    public void notNull(CourseBase courseBase, String message) {
+    public static void notNull(CourseBase courseBase, String message) {
         if (courseBase == null) {
             log.error("{}", message);
             ILearnException.cast(message);
@@ -34,7 +32,7 @@ public class CourseAssert {
      *
      * @param courseBase 课程信息
      */
-    public void notNull(CourseBase courseBase) {
+    public static void notNull(CourseBase courseBase) {
         notNull(courseBase, "课程不存在");
     }
 
@@ -44,7 +42,7 @@ public class CourseAssert {
      * @param companyId  机构id
      * @param courseBase 课程信息
      */
-    public void companyIdValid(Long companyId, @NotNull CourseBase courseBase) {
+    public static void companyIdValid(Long companyId, @NotNull CourseBase courseBase) {
         companyIdValid(companyId, courseBase, "不能操作不属于自己机构的课程");
     }
 
@@ -55,7 +53,7 @@ public class CourseAssert {
      * @param courseBase 课程信息
      * @param message    错误信息
      */
-    public void companyIdValid(@NotNull Long companyId, @NotNull CourseBase courseBase, String message) {
+    public static void companyIdValid(@NotNull Long companyId, @NotNull CourseBase courseBase, String message) {
         Long courseCompanyId = courseBase.getCompanyId();
         if (!companyId.equals(courseCompanyId)) {
             log.error("{}, courseCompanyId: {}, companyId: {}", message, courseCompanyId, companyId);
@@ -80,7 +78,7 @@ public class CourseAssert {
      * @param courseBase        课程信息
      * @param message           错误提示信息
      */
-    public void auditStatusValid(@NotNull String courseAuditStatus, @NotNull CourseBase courseBase, String message) {
+    public static void auditStatusValid(@NotNull String courseAuditStatus, @NotNull CourseBase courseBase, String message) {
         if (!courseAuditStatus.equals(courseBase.getAuditStatus())) {
             log.error("{}, courseAuditStatus: {}, courseBase: {}", message, courseAuditStatus, courseBase);
             ILearnException.cast(message);

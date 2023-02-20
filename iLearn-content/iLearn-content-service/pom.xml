@@ -7,38 +7,40 @@
         <artifactId>iLearn-content</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>iLearn-content-service</artifactId>
 
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.ilearn</groupId>
             <artifactId>iLearn-content-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
-        <!-- 课程发布依赖的任务处理SDK -->
         <dependency>
             <groupId>com.ilearn</groupId>
             <artifactId>iLearn-task</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
-        <!-- nacos配置管理服务 -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-
-
         <!-- MySQL 驱动 -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+        </dependency>
         <!-- mybatis plus的依赖 -->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -49,6 +51,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
         <!-- 排除 Spring Boot 依赖的日志包冲突 -->
         <dependency>
@@ -67,16 +73,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
 
-        <!-- xxl-job: 任务调度 -->
-        <dependency>
-            <groupId>com.xuxueli</groupId>
-            <artifactId>xxl-job-core</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
@@ -90,4 +87,5 @@
             </resource>
         </resources>
     </build>
+
 </project>

@@ -38,8 +38,6 @@ import java.util.List;
 @Service
 public class CoursePublishServiceImpl implements CoursePublishService {
 
-    private CourseAssert courseAssert;
-
     private CourseBaseInfoService courseBaseInfoService;
 
     private CourseBaseMapper courseBaseMapper;
@@ -53,11 +51,6 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private CoursePublishMapper coursePublishMapper;
 
     private CoursePublishService coursePublishService;
-
-    @Autowired
-    void setCourseAssert(CourseAssert courseAssert) {
-        this.courseAssert = courseAssert;
-    }
 
     @Autowired
     void setCourseBaseInfoService(CourseBaseInfoService courseBaseInfoService) {
@@ -119,11 +112,11 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     public ResponseMessage<Boolean> commitAudit(Long companyId, Long courseId) {
         // 获取课程基本信息, 营销信息
         CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
-        courseAssert.notNull(courseBaseInfo);
+        CourseAssert.notNull(courseBaseInfo);
         // 校验1: 课程必须属于当前机构
-        courseAssert.companyIdValid(companyId, courseBaseInfo);
+        CourseAssert.companyIdValid(companyId, courseBaseInfo);
         // 校验2: 当审核状态为已提交, 则不能再次提交
-        courseAssert.auditStatusValid(CourseAuditStatus.SUBMITTED, courseBaseInfo, "课程正在审核");
+        CourseAssert.auditStatusValid(CourseAuditStatus.SUBMITTED, courseBaseInfo, "课程正在审核");
         // 校验3: 课程图片必须指定
         if (StringUtil.isEmpty(courseBaseInfo.getPic())) {
             log.error("提交审核失败, 课程图片未指定, courseId: {}", courseId);
@@ -181,10 +174,10 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     public ResponseMessage<Boolean> coursePublish(Long companyId, Long courseId) {
         // 参数校验, 获取课程基本信息
         CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
-        courseAssert.notNull(courseBaseInfo);
-        courseAssert.companyIdValid(companyId, courseBaseInfo);
+        CourseAssert.notNull(courseBaseInfo);
+        CourseAssert.companyIdValid(companyId, courseBaseInfo);
         // 必须是通过审核的课程才能进行发布
-        courseAssert.auditStatusValid(CourseAuditStatus.PASSED, courseBaseInfo, "请等待审核通过方可发布");
+        CourseAssert.auditStatusValid(CourseAuditStatus.PASSED, courseBaseInfo, "请等待审核通过方可发布");
         // 保存课程发布信息
         coursePublishService.saveCoursePublishInfo(courseId);
         // 记录课程发布消息

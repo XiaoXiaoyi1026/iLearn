@@ -9,6 +9,11 @@ package com.ilearn.base.dictionary;
 public class TaskType {
 
     /**
+     * 测试任务
+     */
+    public static final String TEST = "test";
+
+    /**
      * 课程发布任务
      */
     public static final String COURSE_PUBLISH = "course_publish";

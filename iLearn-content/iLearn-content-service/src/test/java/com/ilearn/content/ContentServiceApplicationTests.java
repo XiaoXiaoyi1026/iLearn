@@ -1,4 +1,4 @@
-package com.ilearn;
+package com.ilearn.content;
 
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest()
 public class ContentServiceApplicationTests {
 
     @Autowired
@@ -31,6 +31,7 @@ public class ContentServiceApplicationTests {
     void testCourseBaseMapper() {
         CourseBase courseBase = courseBaseMapper.selectById(22);
         Assertions.assertNotNull(courseBase);
+        System.out.println(courseBase);
     }
 
     @Test
