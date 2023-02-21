@@ -3,6 +3,7 @@ package com.ilearn.content.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.dictionary.CourseAuditStatus;
 import com.ilearn.base.dictionary.CoursePublishStatus;
+import com.ilearn.base.dictionary.TaskType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.base.utils.JsonUtil;
@@ -19,6 +20,8 @@ import com.ilearn.content.service.CourseBaseInfoService;
 import com.ilearn.content.service.CoursePublishService;
 import com.ilearn.content.service.TeachPlanService;
 import com.ilearn.content.service.asserts.CourseAssert;
+import com.ilearn.task.model.po.MqMessage;
+import com.ilearn.task.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,8 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private CoursePublishMapper coursePublishMapper;
 
     private CoursePublishService coursePublishService;
+
+    private MqMessageService mqMessageService;
 
     @Autowired
     void setCourseBaseInfoService(CourseBaseInfoService courseBaseInfoService) {
@@ -85,6 +90,11 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     @Autowired
     void setCoursePublishService(CoursePublishService coursePublishService) {
         this.coursePublishService = coursePublishService;
+    }
+
+    @Autowired
+    void setMqMessageService(MqMessageService mqMessageService) {
+        this.mqMessageService = mqMessageService;
     }
 
     @Override
@@ -217,6 +227,11 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void saveCoursePublishMessage(Long courseId) {
-
+        // 使用MqMessageSDK进行消息的插入
+        MqMessage mqMessage = mqMessageService.addMessage(TaskType.COURSE_PUBLISH, String.valueOf(courseId), null, null);
+        if (mqMessage == null) {
+            // 抛出异常, 好让事务进行回滚
+            ILearnException.cast("插入课程发布信息失败, courseId: " + courseId);
+        }
     }
 }
