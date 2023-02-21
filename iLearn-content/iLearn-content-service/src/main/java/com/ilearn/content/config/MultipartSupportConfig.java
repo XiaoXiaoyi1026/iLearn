@@ -1,4 +1,4 @@
-package com.ilearn.content.feign;
+package com.ilearn.content.config;
 
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;

@@ -1,5 +1,6 @@
 package com.ilearn.content.feign;
 
+import com.ilearn.content.config.MultipartSupportConfig;
 import io.swagger.annotations.ApiOperation;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @description 通过Feign远程调用media相关的服务
  * @date 2/21/2023 10:58 AM
  */
-@FeignClient(name = "iLearn-media-api", configuration = {MultipartSupportConfig.class}, url = "localhost:63050", path = "/media")
+@FeignClient(name = "iLearn-media-api", configuration = {MultipartSupportConfig.class}, url = "localhost:63050", path = "/media", fallback = MultipartSupportConfig.class)
 public interface MediaServiceClient {
 
     /**

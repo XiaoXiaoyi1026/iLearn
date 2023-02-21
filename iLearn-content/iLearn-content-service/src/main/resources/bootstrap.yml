@@ -17,6 +17,7 @@ spring:
           - data-id: iLearn-logging-${spring.profiles.active}.yaml
             group: ilearn-project
             refresh: true
+          # feign远程配置
           - data-id: iLearn-feign-${spring.profiles.active}.yaml
             group: ilearn-project
             refresh: true
