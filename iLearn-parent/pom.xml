@@ -37,6 +37,7 @@
         <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
         <annotations.version>15.0</annotations.version>
         <google.zxing.version>3.3.3</google.zxing.version>
+        <feign.version>3.8.0</feign.version>
     </properties>
 
     <dependencyManagement>
@@ -206,6 +207,13 @@
                 <groupId>com.google.zxing</groupId>
                 <artifactId>javase</artifactId>
                 <version>${google.zxing.version}</version>
+            </dependency>
+
+            <!--feign支持Multipart格式传参-->
+            <dependency>
+                <groupId>io.github.openfeign.form</groupId>
+                <artifactId>feign-form</artifactId>
+                <version>${feign.version}</version>
             </dependency>
         </dependencies>
 
