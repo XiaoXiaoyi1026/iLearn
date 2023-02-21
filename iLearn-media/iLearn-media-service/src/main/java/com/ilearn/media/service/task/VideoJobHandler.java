@@ -1,4 +1,4 @@
-package com.ilearn.media.service.xxljobhandler;
+package com.ilearn.media.service.task;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.Mp4VideoUtil;

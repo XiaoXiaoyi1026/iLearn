@@ -158,7 +158,7 @@ public class MediaFilesServiceImpl implements MediaFilesService {
             // 判断图片与mp4视频可以直接设置url, 其他类型需要转码后再进行设置
             String filename = uploadFileParamsDto.getFilename();
             String mimeType = getMimeTypeByFileExtension(getFileExtension(filename));
-            if (mimeType.startsWith("image") || mimeType.endsWith("mp4")) {
+            if (!mimeType.endsWith("avi")) {
                 mediaFiles.setUrl("/" + bucketName + "/" + objectName);
             }
             LocalDateTime now = LocalDateTime.now();

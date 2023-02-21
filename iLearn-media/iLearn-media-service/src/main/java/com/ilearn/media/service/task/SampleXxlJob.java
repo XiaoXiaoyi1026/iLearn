@@ -1,4 +1,4 @@
-package com.ilearn.media.service.xxljobhandler;
+package com.ilearn.media.service.task;
 
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
@@ -12,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +51,7 @@ public class SampleXxlJob {
      * 2、分片广播任务
      */
     @XxlJob("shardingJobHandler")
-    public void shardingJobHandler() throws Exception {
+    public void shardingJobHandler() {
 
         // 分片参数
         int shardIndex = XxlJobHelper.getShardIndex();
@@ -110,6 +111,7 @@ public class SampleXxlJob {
 
         if (exitValue == 0) {
             // default success
+            XxlJobHelper.log("command exit value(" + exitValue + ") is success");
         } else {
             XxlJobHelper.handleFail("command exit value(" + exitValue + ") is failed");
         }
@@ -120,12 +122,12 @@ public class SampleXxlJob {
     /**
      * 4、跨平台Http任务
      * 参数示例：
-     * "url: http://www.baidu.com\n" +
+     * "url: <a href="http://www.baidu.com">...</a>\n" +
      * "method: get\n" +
      * "data: content\n";
      */
     @XxlJob("httpJobHandler")
-    public void httpJobHandler() throws Exception {
+    public void httpJobHandler() {
 
         // param parse
         String param = XxlJobHelper.getJobParam();
@@ -192,7 +194,7 @@ public class SampleXxlJob {
             // data
             if (isPostMethod && data != null && data.trim().length() > 0) {
                 DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                dataOutputStream.write(data.getBytes("UTF-8"));
+                dataOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
                 dataOutputStream.flush();
                 dataOutputStream.close();
             }
@@ -204,7 +206,7 @@ public class SampleXxlJob {
             }
 
             // result
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder result = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine()) != null) {
@@ -214,12 +216,10 @@ public class SampleXxlJob {
 
             XxlJobHelper.log(responseMsg);
 
-            return;
         } catch (Exception e) {
             XxlJobHelper.log(e);
 
             XxlJobHelper.handleFail();
-            return;
         } finally {
             try {
                 if (bufferedReader != null) {
@@ -239,7 +239,7 @@ public class SampleXxlJob {
      * 5、生命周期任务示例：任务初始化与销毁时，支持自定义相关逻辑；
      */
     @XxlJob(value = "demoJobHandler2", init = "init", destroy = "destroy")
-    public void demoJobHandler2() throws Exception {
+    public void demoJobHandler2() {
         XxlJobHelper.log("XXL-JOB, Hello World.");
     }
 

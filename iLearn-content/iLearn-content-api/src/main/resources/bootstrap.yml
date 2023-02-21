@@ -33,6 +33,9 @@ spring:
           - data-id: iLearn-freemarker-config-${spring.profiles.active}.yaml
             group: ilearn-project
             refresh: true
+          - data-id: iLearn-feign-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
   # 对应配置文件的环境名称
   profiles:
     active: develop

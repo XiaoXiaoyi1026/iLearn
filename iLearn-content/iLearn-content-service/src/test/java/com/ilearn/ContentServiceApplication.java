@@ -2,6 +2,7 @@ package com.ilearn;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * @author xiaoxiaoyi
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 1/25/2023 2:39 PM
  */
 @SpringBootApplication
+@EnableFeignClients(basePackages = {"com.ilearn.content.feign"})
 public class ContentServiceApplication {
 
     public static void main(String[] args) {
