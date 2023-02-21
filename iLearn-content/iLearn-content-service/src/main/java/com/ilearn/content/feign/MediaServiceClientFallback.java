@@ -22,7 +22,7 @@ public class MediaServiceClientFallback implements MediaServiceClient {
      */
     @Override
     public String upload(@NotNull MultipartFile fileData, String folder, String objectName) {
-        // 因为拿不到异常信息所以不用
+        // 因为拿不到异常信息所以不用该方式
         return null;
     }
 }

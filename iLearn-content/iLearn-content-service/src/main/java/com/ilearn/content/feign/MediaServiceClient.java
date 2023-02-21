@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @description 通过Feign远程调用media相关的服务
  * @date 2/21/2023 10:58 AM
  */
-@FeignClient(name = "iLearn-media-api", configuration = {MultipartSupportConfig.class}, url = "localhost:63050", path = "/media", fallbackFactory = MediaServiceClientFallback.class)
+@FeignClient(name = "iLearn-media-api", configuration = {MultipartSupportConfig.class}, url = "localhost:63050", path = "/media", fallback = MediaServiceClientFallback.class)
 public interface MediaServiceClient {
 
     /**
