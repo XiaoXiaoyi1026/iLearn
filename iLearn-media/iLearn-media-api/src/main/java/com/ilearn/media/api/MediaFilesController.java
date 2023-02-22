@@ -66,7 +66,7 @@ public class MediaFilesController {
     @ApiOperation(value = "上传媒资文件(图片/文档/视频)")
     @RequestMapping(value = "/upload/coursefile", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public UploadFileResponseDto upload(@NotNull @RequestPart("filedata") MultipartFile fileData, @RequestParam(value = "folder", required = false) String folder, @RequestParam(value = "objectName", required = false) String objectName) {
-        Long companyId = 1232141425L;
+        Long companyId = 1026L;
         UploadFileResponseDto uploadFileResponseDto = null;
         try {
             UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
@@ -76,7 +76,8 @@ public class MediaFilesController {
             }
             uploadFileParamsDto.setContentType(contentType);
             uploadFileParamsDto.setFileSize(fileData.getSize());
-            uploadFileParamsDto.setFilename(fileData.getOriginalFilename());
+            String fileName = fileData.getOriginalFilename();
+            uploadFileParamsDto.setFilename(fileName);
             if (contentType.contains("image")) {
                 uploadFileParamsDto.setFileType(ResourceType.IMAGE);
             } else {

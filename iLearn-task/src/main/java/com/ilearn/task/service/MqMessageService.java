@@ -76,4 +76,13 @@ public interface MqMessageService extends IService<MqMessage> {
 
     int getStageFour(long id);
 
+    /**
+     * 检查阶段状态
+     *
+     * @param id    任务id
+     * @param stage 阶段数, 即第几阶段
+     * @return 阶段执行结果(成功 / 失败)
+     */
+    boolean stageIsCompleted(long id, int stage);
+
 }

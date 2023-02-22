@@ -15,6 +15,7 @@ import com.ilearn.media.model.dto.UploadFileResponseDto;
 import com.ilearn.media.model.po.MediaFiles;
 import com.ilearn.media.model.po.MediaProcess;
 import com.ilearn.media.service.MediaFilesService;
+import com.ilearn.media.utils.MediaServiceUtils;
 import io.minio.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -128,10 +129,10 @@ public class MediaFilesServiceImpl implements MediaFilesService {
                 ILearnException.cast("Failed to upload file: " + filename + ", cause: filename invalid.");
             }
             // 使用文件的MD5值作为文件名
-            filename = fileMD5 + filename.substring(filename.lastIndexOf('.'));
+            objectName = fileMD5 + MediaServiceUtils.getFileExtension(filename);
         }
         // 拼接文件全路径
-        objectName = folder + filename;
+        objectName = folder + objectName;
         // 保存媒体文件到MinIO
         saveFile2MinIO(fileData, filesBucket, objectName);
         /* 由于saveMedia2DataBase是被this指针调用的, 不被spring代理, 所以不在Spring的管辖范围, 此处发生了事务失效

@@ -2,6 +2,7 @@ package com.ilearn.task.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ilearn.base.exception.ILearnException;
 import com.ilearn.task.mapper.MqMessageHistoryMapper;
 import com.ilearn.task.mapper.MqMessageMapper;
 import com.ilearn.task.model.po.MqMessage;
@@ -138,6 +139,24 @@ public class MqMessageServiceImpl extends ServiceImpl<MqMessageMapper, MqMessage
     @Override
     public int getStageFour(long id) {
         return Integer.parseInt(mqMessageMapper.selectById(id).getStageState4());
+    }
+
+    @Override
+    public boolean stageIsCompleted(long id, int stage) {
+        switch (stage) {
+            case 1:
+                return getStageOne(id) == 1;
+            case 2:
+                return getStageTwo(id) == 1;
+            case 3:
+                return getStageThree(id) == 3;
+            case 4:
+                return getStageFour(id) == 1;
+            default:
+                log.error("阶段数错误: {}", stage);
+                ILearnException.cast("阶段数超出4");
+        }
+        return false;
     }
 
 

@@ -22,14 +22,26 @@ import com.ilearn.content.service.TeachPlanService;
 import com.ilearn.content.service.asserts.CourseAssert;
 import com.ilearn.task.model.po.MqMessage;
 import com.ilearn.task.service.MqMessageService;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author xiaoxiaoyi
@@ -56,6 +68,11 @@ public class CoursePublishServiceImpl implements CoursePublishService {
     private CoursePublishService coursePublishService;
 
     private MqMessageService mqMessageService;
+
+    /**
+     * 发布课程的模板文件
+     */
+    private static final String COURSE_PUBLISH_TEMPLATE_FILE = "course_template.ftl";
 
     @Autowired
     void setCourseBaseInfoService(CourseBaseInfoService courseBaseInfoService) {
@@ -126,7 +143,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         // 校验1: 课程必须属于当前机构
         CourseAssert.companyIdValid(companyId, courseBaseInfo);
         // 校验2: 当审核状态为已提交, 则不能再次提交
-        CourseAssert.auditStatusValid(CourseAuditStatus.SUBMITTED, courseBaseInfo, "课程正在审核");
+        CourseAssert.auditStatusInvalid(CourseAuditStatus.SUBMITTED, courseBaseInfo, "课程正在审核");
         // 校验3: 课程图片必须指定
         if (StringUtil.isEmpty(courseBaseInfo.getPic())) {
             log.error("提交审核失败, 课程图片未指定, courseId: {}", courseId);
@@ -157,10 +174,12 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         courseTeacherLambdaQueryWrapper.eq(CourseTeacher::getCourseId, courseId);
         // 一个课程只有一个老师教, 一个老师可以教多门课程
         CourseTeacher courseTeacher = courseTeacherMapper.selectOne(courseTeacherLambdaQueryWrapper);
-        // 设置发布状态为未发布
-        coursePublishPre.setStatus(CoursePublishStatus.UNPUBLISHED);
+        // 设置审核状态
+        coursePublishPre.setStatus(CourseAuditStatus.SUBMITTED);
         // 将教师信息转成JSON存入预发布信息
-        coursePublishPre.setTeachers(JsonUtil.objectToJson(courseTeacher));
+        if (courseTeacher != null) {
+            coursePublishPre.setTeachers(JsonUtil.objectToJson(courseTeacher));
+        }
         // 先查询该课程是否已经插入到预发布表中
         int response;
         if (coursePublishPreMapper.selectById(courseId) != null) {
@@ -171,6 +190,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         }
         // 设置课程的审核状态为已提交
         courseBaseInfo.setAuditStatus(CourseAuditStatus.SUBMITTED);
+        courseBaseInfo.setChangeDate(LocalDateTime.now());
         // 更新课程审核状态
         if (response > 0 && courseBaseMapper.updateById(courseBaseInfo) > 0) {
             return ResponseMessage.success(Boolean.TRUE);
@@ -232,6 +252,69 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         if (mqMessage == null) {
             // 抛出异常, 好让事务进行回滚
             ILearnException.cast("插入课程发布信息失败, courseId: " + courseId);
+        }
+    }
+
+    @Override
+    public File generateStaticCourseHtml(Long courseId) {
+        File targetFile = null;
+        try {
+            // 创建临时静态文件存储html
+            targetFile = File.createTempFile("course" + courseId, ".html");
+            log.debug("创建课程发布临时文件: {}", targetFile.getAbsolutePath());
+            generateStaticCourseHtml(courseId, targetFile);
+        } catch (IOException ioException) {
+            log.error("创建临时文件失败, 因为: {}", ioException.getMessage());
+            ILearnException.cast("创建临时文件失败");
+        }
+        // 返回生成的静态文件
+        return targetFile;
+    }
+
+    @Override
+    public void generateStaticCourseHtml(Long courseId, File targetFile) {
+        FileOutputStream fileOutputStream = null;
+        InputStream inputStream = null;
+        try {
+            // 配置freemarker
+            Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+            // 得到classpath路径
+            String classpath = Objects.requireNonNull(this.getClass().getResource("/")).getPath();
+            // 设置模板文件的生成路径
+            configuration.setDirectoryForTemplateLoading(new File(classpath + "/templates/"));
+            // 设置字符集
+            configuration.setDefaultEncoding(StandardCharsets.UTF_8.name());
+            // 指定模板文件的名称
+            Template courseTemplate = configuration.getTemplate(COURSE_PUBLISH_TEMPLATE_FILE);
+            // 准备数据
+            CoursePreviewDto coursePreviewInfo = coursePublishService.getCoursePreviewInfo(courseId);
+            Map<String, Object> templateData = new HashMap<>();
+            templateData.put("model", coursePreviewInfo);
+            // 生成静态页面
+            String content = FreeMarkerTemplateUtils.processTemplateIntoString(courseTemplate, templateData);
+            // 文件输出到目标位置
+            fileOutputStream = new FileOutputStream(targetFile.getAbsolutePath());
+            // 将静态化数据输出到文件中
+            inputStream = IOUtils.toInputStream(content);
+            IOUtils.copy(inputStream, fileOutputStream);
+        } catch (Exception exception) {
+            log.error("生成发布课程静态页面出错, 因为: {}, courseId: {}", exception.getMessage(), courseId);
+            ILearnException.cast("生成发布课程静态页面出错, courseId: " + courseId);
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    log.error("关闭静态文件流失败, cause: {}", e.getMessage());
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error("关闭静态文件流失败, cause: {}", e.getMessage());
+                }
+            }
         }
     }
 }

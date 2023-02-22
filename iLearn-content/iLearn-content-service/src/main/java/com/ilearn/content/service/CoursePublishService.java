@@ -3,6 +3,8 @@ package com.ilearn.content.service;
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.CoursePreviewDto;
 
+import java.io.File;
+
 /**
  * @author xiaoxiaoyi
  * @version 1.0
@@ -50,4 +52,20 @@ public interface CoursePublishService {
      * @param courseId 课程id
      */
     void saveCoursePublishMessage(Long courseId);
+
+    /**
+     * 生成静态课程Html页面
+     *
+     * @param courseId 课程id
+     * @return 存放html的文件
+     */
+    File generateStaticCourseHtml(Long courseId);
+
+    /**
+     * 生成静态课程Html页面
+     *
+     * @param courseId   课程id
+     * @param targetFile 存放html的文件
+     */
+    void generateStaticCourseHtml(Long courseId, File targetFile);
 }

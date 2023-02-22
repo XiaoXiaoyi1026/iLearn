@@ -1,5 +1,6 @@
 package com.ilearn.task.service;
 
+import com.ilearn.base.exception.ILearnException;
 import com.ilearn.task.model.po.MqMessage;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -80,21 +81,23 @@ public abstract class MessageProcessAbstract {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    log.debug("任务出现异常:{},任务:{}", e.getMessage(), message);
+                    log.debug("任务出现异常:{}, 任务: {}", e.getMessage(), message);
                 }
                 //计数
                 countDownLatch.countDown();
-                log.debug("结束任务:{}", message);
+                log.debug("结束任务: {}", message);
             }));
             //等待,给一个充裕的超时时间,防止无限等待，到达超时时间还没有处理完成则结束任务
             if (countDownLatch.await(timeout, TimeUnit.SECONDS)) {
                 log.debug("任务全部处理完成");
             } else {
-                log.debug("任务全部处理完成,超时");
+                log.debug("任务全部处理完成, 超时");
             }
             System.out.println("结束....");
         } catch (InterruptedException e) {
             e.printStackTrace();
+            log.error("中断异常: {}", e.getMessage());
+            ILearnException.cast("中断异常");
         }
     }
 }

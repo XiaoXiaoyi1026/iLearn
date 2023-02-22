@@ -1,6 +1,7 @@
 package com.ilearn.base.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(ILearnException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestErrorResponse iLearnExceptionHandler(ILearnException iLearnException) {
+    public RestErrorResponse iLearnExceptionHandler(@NotNull ILearnException iLearnException) {
         String message = iLearnException.getMessage();
         // 记录日志信息
         log.error("捕获到异常: {}", message);
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestErrorResponse methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException methodArgumentNotValidException) {
+    public RestErrorResponse methodArgumentNotValidExceptionHandler(@NotNull MethodArgumentNotValidException methodArgumentNotValidException) {
         // 取出所有异常信息, 假设表单有多个参数异常, 那么都能取到
         BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
         // 获取参数错误信息
@@ -84,12 +85,12 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestErrorResponse exceptionHandler(Exception exception) {
+    public RestErrorResponse exceptionHandler(@NotNull Exception exception) {
         // 记录日志信息
         log.error("捕获到预期之外的异常: {}", exception.getMessage());
         exception.printStackTrace();
         // 返回给前端比较友好的信息
-        return new RestErrorResponse(CommonError.UNKOWN_ERROR.getErrMessage());
+        return new RestErrorResponse(CommonError.UNKNOWN_ERROR.getErrMessage());
     }
 
 }

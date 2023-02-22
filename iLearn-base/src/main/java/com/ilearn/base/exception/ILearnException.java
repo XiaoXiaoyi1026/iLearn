@@ -1,5 +1,8 @@
 package com.ilearn.base.exception;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author xiaoxiaoyi
  * @version 1.0
@@ -19,7 +22,8 @@ public class ILearnException extends RuntimeException {
         throw new ILearnException(message);
     }
 
-    public static void cast(CommonError commonError) {
+    @Contract("_ -> fail")
+    public static void cast(@NotNull CommonError commonError) {
         throw new ILearnException(commonError.getErrMessage());
     }
 

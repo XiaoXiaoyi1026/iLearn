@@ -84,4 +84,28 @@ public class CourseAssert {
             ILearnException.cast(message);
         }
     }
+
+    /**
+     * 判断课程审核状态
+     *
+     * @param courseAuditStatus 审核状态
+     * @param courseBase        课程信息
+     */
+    public void auditStatusInvalid(@NotNull String courseAuditStatus, @NotNull CourseBase courseBase) {
+        auditStatusInvalid(courseAuditStatus, courseBase, "审核状态异常");
+    }
+
+    /**
+     * 判断课程审核状态
+     *
+     * @param courseAuditStatus 审核状态
+     * @param courseBase        课程信息
+     * @param message           错误提示信息
+     */
+    public static void auditStatusInvalid(@NotNull String courseAuditStatus, @NotNull CourseBase courseBase, String message) {
+        if (courseAuditStatus.equals(courseBase.getAuditStatus())) {
+            log.error("{}, courseAuditStatus: {}, courseBase: {}", message, courseAuditStatus, courseBase);
+            ILearnException.cast(message);
+        }
+    }
 }

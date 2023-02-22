@@ -19,7 +19,7 @@ public class MediaServiceClientFallbackFactory implements FallbackFactory<MediaS
         return (fileData, folder, objectName) -> {
             // 降级方法, 可以记录错误日志
             log.debug("Feign远程调用iLearn-media-api服务出现熔断异常, 异常信息: {}", throwable.getMessage());
-            // 快速返回, 避免上游服务被下游牵连
+            // 快速返回, 避免上游服务被下游牵连(雪崩)
             return null;
         };
     }
