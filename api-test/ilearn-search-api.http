@@ -1,5 +1,5 @@
 ### 添加课程索引
-POST {{search_host}}/search/index/course
+POST {{gateway_host}}/search/index/course
 Content-Type: application/json
 
 {
@@ -24,3 +24,7 @@ Content-Type: application/json
   "teachmode": "200002",
   "validDays": 222
 }
+
+### 查询课程
+GET {{gateway_host}}/search/course/list?pageNo=1&keywords=spring
+Content-Type: application/json

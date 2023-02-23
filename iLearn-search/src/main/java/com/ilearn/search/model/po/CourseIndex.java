@@ -2,6 +2,7 @@ package com.ilearn.search.model.po;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  * @date 2/22/2023 4:00 PM
  */
 @Data
+@ApiModel(value = "课程索引", description = "创建课程索引时需要的参数")
 public class CourseIndex implements Serializable {
 
     private static final long serialVersionUID = 1L;
