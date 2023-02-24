@@ -231,16 +231,15 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         courseBase.setStatus(CoursePublishStatus.PUBLISHED);
         // 更新课程发布状态
         courseBaseMapper.updateById(courseBase);
+        CoursePublish coursePublish = new CoursePublish();
+        BeanUtils.copyProperties(coursePublishPre, coursePublish);
+        coursePublish.setOnlineDate(LocalDateTime.now());
+        coursePublish.setStatus(CoursePublishStatus.PUBLISHED);
         // 查询课程是否已存在发布信息
-        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
-        if (coursePublish == null) {
-            coursePublish = new CoursePublish();
-            BeanUtils.copyProperties(coursePublishPre, coursePublish);
-            coursePublish.setStatus(CoursePublishStatus.PUBLISHED);
-            coursePublishMapper.insert(coursePublish);
-        } else {
-            coursePublish.setStatus(CoursePublishStatus.PUBLISHED);
+        if (courseEverPublished(courseId)) {
             coursePublishMapper.updateById(coursePublish);
+        } else {
+            coursePublishMapper.insert(coursePublish);
         }
     }
 
@@ -316,5 +315,25 @@ public class CoursePublishServiceImpl implements CoursePublishService {
                 }
             }
         }
+    }
+
+    @Override
+    public CoursePublish getCoursePublishInfo(Long courseId) {
+        CoursePublish coursePublish = coursePublishMapper.selectById(courseId);
+        if (coursePublish == null) {
+            log.error("课程尚未发布, 请发布后重试");
+            ILearnException.cast("课程尚未发布");
+        }
+        return coursePublish;
+    }
+
+    /**
+     * 判断课程之前是否已经发布过
+     *
+     * @param courseId 课程id
+     * @return 课程是否发布过
+     */
+    private boolean courseEverPublished(Long courseId) {
+        return coursePublishMapper.selectById(courseId) != null;
     }
 }

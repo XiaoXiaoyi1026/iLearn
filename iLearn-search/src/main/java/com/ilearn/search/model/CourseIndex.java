@@ -1,4 +1,4 @@
-package com.ilearn.search.model.po;
+package com.ilearn.search.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;

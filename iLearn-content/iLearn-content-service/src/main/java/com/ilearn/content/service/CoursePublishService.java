@@ -2,6 +2,7 @@ package com.ilearn.content.service;
 
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.CoursePreviewDto;
+import com.ilearn.content.model.po.CoursePublish;
 
 import java.io.File;
 
@@ -68,4 +69,12 @@ public interface CoursePublishService {
      * @param targetFile 存放html的文件
      */
     void generateStaticCourseHtml(Long courseId, File targetFile);
+
+    /**
+     * 根据课程id获取课程发布信息
+     *
+     * @param courseId 课程id
+     * @return 课程发布信息
+     */
+    CoursePublish getCoursePublishInfo(Long courseId);
 }

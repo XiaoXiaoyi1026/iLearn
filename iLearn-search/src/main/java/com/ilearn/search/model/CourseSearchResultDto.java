@@ -1,4 +1,4 @@
-package com.ilearn.search.model.dto;
+package com.ilearn.search.model;
 
 import com.ilearn.base.model.PageResponse;
 import io.swagger.annotations.ApiModel;

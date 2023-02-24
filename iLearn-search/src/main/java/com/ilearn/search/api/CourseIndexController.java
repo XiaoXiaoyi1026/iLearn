@@ -1,7 +1,7 @@
 package com.ilearn.search.api;
 
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.search.model.po.CourseIndex;
+import com.ilearn.search.model.CourseIndex;
 import com.ilearn.search.service.CourseIndexService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +28,9 @@ public class CourseIndexController {
 
     private CourseIndexService courseIndexService;
 
+    /**
+     * 课程索引的索引库名称
+     */
     @Value("${elasticsearch.course.index}")
     private String courseIndexName;
 

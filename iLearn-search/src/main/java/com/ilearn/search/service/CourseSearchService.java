@@ -1,9 +1,9 @@
 package com.ilearn.search.service;
 
 import com.ilearn.base.model.PageRequestParams;
-import com.ilearn.search.model.dto.CourseSearchParamsDto;
-import com.ilearn.search.model.dto.CourseSearchResultDto;
-import com.ilearn.search.model.po.CourseIndex;
+import com.ilearn.search.model.CourseSearchParamsDto;
+import com.ilearn.search.model.CourseSearchResultDto;
+import com.ilearn.search.model.CourseIndex;
 
 /**
  * @author xiaoxiaoyi
