@@ -11,20 +11,22 @@
     <artifactId>iLearn-media-api</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.ilearn</groupId>
+            <artifactId>iLearn-media-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- Nacos服务注册 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
+
         <!-- Nacos配置管理 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ilearn</groupId>
-            <artifactId>iLearn-media-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!--cloud的基础环境包-->
@@ -49,7 +51,6 @@
             <groupId>com.spring4all</groupId>
             <artifactId>swagger-spring-boot-starter</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

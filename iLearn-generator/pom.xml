@@ -11,9 +11,10 @@
     </parent>
 
     <artifactId>iLearn-generator</artifactId>
+    <name>代码生成器</name>
+    <description>代码生成器服务</description>
 
     <dependencies>
-
         <!-- 日志相关配置 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,27 +63,22 @@
             <scope>runtime</scope>
         </dependency>
 
-
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
-
         <!-- 只用swagger注解， 缩小依赖的lib包 -->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>1.5.20</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
-
     </dependencies>
-
 
 </project>

@@ -10,6 +10,8 @@
     </parent>
     
     <artifactId>iLearn-media</artifactId>
+    <name>媒资服务</name>
+    <description>平台媒体资源(视频/图片等)</description>
 
     <packaging>pom</packaging>
 

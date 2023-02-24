@@ -9,6 +9,8 @@
         <relativePath>../iLearn-parent</relativePath>
     </parent>
     <artifactId>iLearn-system</artifactId>
+    <name>系统服务</name>
+    <description>负责系统内的一些特殊服务</description>
 
     <packaging>pom</packaging>
 

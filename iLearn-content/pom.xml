@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>iLearn-content</artifactId>
+    <name>内容管理</name>
+    <description>内容管理服务, 主要负责平台的课程等资源的管理</description>
 
     <packaging>pom</packaging>
 

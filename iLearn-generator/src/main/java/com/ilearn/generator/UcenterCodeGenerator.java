@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class UcenterCodeGenerator {
 
 	// 修改服务名以及数据表名
-	private static final String SERVICE_NAME = "ucenter";
+	private static final String SERVICE_NAME = "users";
 
 	//数据库账号
 	private static final String DATA_SOURCE_USER_NAME  = "root";
