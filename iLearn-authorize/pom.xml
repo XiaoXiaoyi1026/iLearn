@@ -4,17 +4,26 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ilearn</groupId>
-        <artifactId>iLearn-content</artifactId>
+        <artifactId>iLearn-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../iLearn-parent</relativePath>
     </parent>
 
-    <artifactId>iLearn-content-api</artifactId>
+    <artifactId>iLearn-authorize</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>认证授权</name>
+    <description>平台认证授权相关服务</description>
 
     <dependencies>
         <dependency>
             <groupId>com.ilearn</groupId>
-            <artifactId>iLearn-content-service</artifactId>
+            <artifactId>iLearn-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
         <!-- Spring Cloud Security 认证授权 oauth2中包含security -->
@@ -34,6 +43,7 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
+
 
         <!--cloud的基础环境包-->
         <dependency>
@@ -83,11 +93,36 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- SpringBoot集成结果试图(模板引擎)Freemarker -->
+        <!-- MySQL 驱动 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- mybatis plus的依赖 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <!--存在mybatisPlus注解添加相关注解保证不报错-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-annotation</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
 </project>
