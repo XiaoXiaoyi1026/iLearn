@@ -20,6 +20,11 @@ import java.util.Collections;
 @Configuration
 public class TokenConfig {
 
+    /**
+     * 签名密钥
+     */
+    private final String SIGNING_KEY = "xiaoxiaoyi1026";
+
     private TokenStore tokenStore;
 
     private JwtAccessTokenConverter accessTokenConverter;
@@ -44,8 +49,6 @@ public class TokenConfig {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        // 签名秘钥
-        String SIGNING_KEY = "xiaoxiaoyi1026";
         converter.setSigningKey(SIGNING_KEY);
         return converter;
     }

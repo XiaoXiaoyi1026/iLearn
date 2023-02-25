@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description 认证服务器相关配置
+ * @description 认证服务器相关配置(负责颁发令牌)
  * @date 1/25/2023 2:26 PM
  */
 @Configuration
@@ -51,7 +51,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .secret("ILearn1026")
                 // 客户端密钥
 //                .secret(new BCryptPasswordEncoder().encode("ILearn1026"))
-                // 资源列表
+                // 资源名称
                 .resourceIds("ilearn")
                 // 该client允许的授权类型authorization_code, password, refresh_token, implicit, client_credentials
                 .authorizedGrantTypes("authorization_code", "password", "client_credentials", "implicit", "refresh_token")

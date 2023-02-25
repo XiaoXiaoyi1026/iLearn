@@ -47,6 +47,10 @@ Content-Type: application/json
 ### 根据课程id获取课程信息 123为要查询的课程ID
 GET {{content_host}}/content/course/123
 
+### 携带token访问资源服务
+GET {{content_host}}/content/course/18
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaWxlYXJuIl0sInVzZXJfbmFtZSI6InhpYW94aWFveWkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNjc3MzE5NDQ2LCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiIzNzM3OTQ1OS01ZmRlLTQxYzgtOWNkYi04YTFjOTU2NDY0NWUiLCJjbGllbnRfaWQiOiJJTGVhcm5XZWJBcHAifQ.D1K4shUrf-LWCbUgq7RVt16YZ3yXK0RTECZs7NSl-po
+
 ### 更新课程信息
 PUT {{content_host}}/content/course
 Content-Type: application/json

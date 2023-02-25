@@ -12,6 +12,12 @@
     <dependencies>
         <dependency>
             <groupId>com.ilearn</groupId>
+            <artifactId>iLearn-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ilearn</groupId>
             <artifactId>iLearn-system-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
