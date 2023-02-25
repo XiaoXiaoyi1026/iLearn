@@ -12,6 +12,7 @@ import com.ilearn.content.service.CourseBaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,6 +72,9 @@ public class CourseBaseInfoController {
     @GetMapping("/{courseId}")
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
+        // 从令牌中获取认证信息
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(principal);
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 
