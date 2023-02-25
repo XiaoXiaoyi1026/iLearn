@@ -1,0 +1,5 @@
+### 授权码模式
+### 第一步申请授权码(浏览器请求)
+### 地址: {{auth_host}}/oauth/authorize?client_id=ILearnWebApp&response_type=code&scope=all&redirect_uri=http://www.ilearn1026.com
+### 第二步申请令牌
+POST {{auth_host}}/auth/oauth/token?client_id=ILearnWebApp&client_secret=ILearn1026&grant_type=authorization_code&code=UWK9JR&redirect_uri=http://www.ilearn1026.com
