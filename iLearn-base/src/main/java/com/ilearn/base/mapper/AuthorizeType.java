@@ -18,4 +18,9 @@ public class AuthorizeType {
      */
     public static final String SMS = "sms";
 
+    /**
+     * 微信
+     */
+    public static final String WX = "wx";
+
 }

@@ -1,19 +1,21 @@
 package com.ilearn.users.model.dto;
 
-import com.ilearn.base.mapper.AuthorizeType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description 统一认证需要的信息Dto
+ * @description 统一认证需要的信息
  * @date 2/26/2023 3:51 PM
  */
 @Data
 @ApiModel(value = "认证信息", description = "认证信息中的参数")
-public class AuthorizeInfoDto {
+public class AuthorizeInfo {
 
     /**
      * 用户名
@@ -48,7 +50,16 @@ public class AuthorizeInfoDto {
     /**
      * 授权类型
      */
-    @ApiModelProperty(name = "授权类型")
-    private AuthorizeType authorizeType;
+    @ApiModelProperty(name = "授权类型", required = true)
+    private String authorizeType;
+
+    /**
+     * 附加信息, 不同的认证形式有不同的附加信息
+     */
+    private Map<String, Object> payload;
+
+    AuthorizeInfo() {
+        payload = new HashMap<>();
+    }
 
 }
