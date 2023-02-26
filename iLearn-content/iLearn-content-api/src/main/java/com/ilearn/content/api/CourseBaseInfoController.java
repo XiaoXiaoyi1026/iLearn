@@ -8,11 +8,12 @@ import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
 import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
+import com.ilearn.content.model.po.IlearnUser;
 import com.ilearn.content.service.CourseBaseInfoService;
+import com.ilearn.content.utils.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,9 +73,9 @@ public class CourseBaseInfoController {
     @GetMapping("/{courseId}")
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
-        // 从令牌中获取认证信息
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(principal);
+        // 使用工具类拿用户认证信息
+        IlearnUser ilearnUser = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
+        System.out.println(ilearnUser);
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 
