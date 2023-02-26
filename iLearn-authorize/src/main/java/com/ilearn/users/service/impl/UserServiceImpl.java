@@ -3,6 +3,7 @@ package com.ilearn.users.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.dictionary.UserAuthorities;
 import com.ilearn.base.dictionary.UserRole;
+import com.ilearn.base.utils.JsonUtil;
 import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.model.po.IlearnRole;
 import com.ilearn.users.model.po.IlearnUser;
@@ -54,8 +55,12 @@ public class UserServiceImpl implements UserDetailsService {
             log.error("查询用户角色失败, username: {}", username);
             return null;
         }
-        // 构建用户账号密码和权限一并返回
-        return User.withUsername(username).password(userPassword)
+        // 将密码置空, 防止信息泄露
+        ilearnUser.setPassword(null);
+        // 将用户信息转成Json字符串
+        String userJson = JsonUtil.objectToJson(ilearnUser);
+        // 构建用户账号信息密码和权限一并写入jwt令牌上下文返回
+        return User.withUsername(userJson).password(userPassword)
                 .authorities(UserAuthorities.getUserAuthorities(userRole)).build();
     }
 }
