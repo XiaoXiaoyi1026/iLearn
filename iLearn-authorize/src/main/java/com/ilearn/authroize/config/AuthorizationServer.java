@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -29,9 +30,16 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     private AuthenticationManager authenticationManager;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+    }
+
+    @Autowired
+    void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -47,10 +55,8 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         clients.inMemory()
                 // client_id: 客户端id
                 .withClient("ILearnWebApp")
-                // 客户端密钥
-                .secret("ILearn1026")
-                // 客户端密钥
-//                .secret(new BCryptPasswordEncoder().encode("ILearn1026"))
+                // 客户端密钥(使用BCrypt加密后)
+                .secret(passwordEncoder.encode("ILearn1026"))
                 // 资源名称
                 .resourceIds("ilearn")
                 // 该client允许的授权类型authorization_code, password, refresh_token, implicit, client_credentials

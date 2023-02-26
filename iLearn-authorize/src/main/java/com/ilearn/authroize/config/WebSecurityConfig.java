@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -27,9 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-//        密码为明文方式
-        return NoOpPasswordEncoder.getInstance();
-//        return new BCryptPasswordEncoder();
+        // 使用BCrypt对密码进行加密, 单向Hash加密算法, 每一次加密都使用随机盐对明文进行加密
+        return new BCryptPasswordEncoder();
     }
 
     //配置安全拦截机制
@@ -48,6 +47,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 退出登录
         http.logout().logoutUrl("/logout");
     }
-
-
 }
