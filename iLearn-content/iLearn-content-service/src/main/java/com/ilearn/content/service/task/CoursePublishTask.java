@@ -1,6 +1,6 @@
 package com.ilearn.content.service.task;
 
-import com.ilearn.base.dictionary.TaskType;
+import com.ilearn.base.mapper.TaskType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.content.config.MultipartSupportConfig;
 import com.ilearn.content.feign.MediaServiceClient;

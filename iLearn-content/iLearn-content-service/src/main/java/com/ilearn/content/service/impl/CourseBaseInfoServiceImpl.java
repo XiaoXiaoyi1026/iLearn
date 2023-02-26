@@ -2,12 +2,12 @@ package com.ilearn.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ilearn.base.dictionary.CourseType;
+import com.ilearn.base.mapper.CourseType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
-import com.ilearn.base.dictionary.CourseAuditStatus;
-import com.ilearn.base.dictionary.CoursePublishStatus;
+import com.ilearn.base.mapper.CourseAuditStatus;
+import com.ilearn.base.mapper.CoursePublishStatus;
 import com.ilearn.content.mapper.CourseBaseMapper;
 import com.ilearn.content.mapper.CourseCategoryMapper;
 import com.ilearn.content.mapper.CourseMarketMapper;

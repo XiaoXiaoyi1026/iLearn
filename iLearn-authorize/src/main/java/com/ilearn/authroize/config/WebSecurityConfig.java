@@ -1,8 +1,11 @@
 package com.ilearn.authroize.config;
 
+import com.ilearn.authroize.api.DaoAuthenticationProviderCustom;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +22,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    /**
+     * 自定义的认证提供者
+     */
+    private DaoAuthenticationProviderCustom daoAuthenticationProviderCustom;
+
+    @Autowired
+    void setDaoAuthenticationProvider(DaoAuthenticationProviderCustom daoAuthenticationProvider) {
+        this.daoAuthenticationProviderCustom = daoAuthenticationProvider;
+    }
+
+    @Override
+    protected void configure(@NotNull AuthenticationManagerBuilder authenticationManagerBuilder) {
+        // 配置框架使用自动以的认证提供者
+        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProviderCustom);
+    }
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

@@ -1,5 +1,6 @@
 package com.ilearn.content.api;
 
+import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.exception.ValidationGroups;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
@@ -13,6 +14,7 @@ import com.ilearn.content.service.CourseBaseInfoService;
 import com.ilearn.content.utils.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
  * @description 课程基本信息相关接口
  * @date 1/24/2023 5:03 PM
  */
-
+@Slf4j
 @RestController
 @Api(value = "课程管理", tags = "课程管理相关接口")
 @RequestMapping("/course")
@@ -75,7 +77,11 @@ public class CourseBaseInfoController {
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
         // 使用工具类拿用户认证信息
         IlearnUser ilearnUser = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
-        System.out.println(ilearnUser);
+        if (ilearnUser == null) {
+            log.error("认证失败, 非法访问");
+            ILearnException.cast("获取认证信息失败, 请确认登录信息");
+        }
+        log.info("查询课程信息, 认证信息: {}", ilearnUser);
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 

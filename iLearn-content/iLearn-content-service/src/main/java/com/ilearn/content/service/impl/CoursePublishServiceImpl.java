@@ -1,9 +1,9 @@
 package com.ilearn.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.ilearn.base.dictionary.CourseAuditStatus;
-import com.ilearn.base.dictionary.CoursePublishStatus;
-import com.ilearn.base.dictionary.TaskType;
+import com.ilearn.base.mapper.CourseAuditStatus;
+import com.ilearn.base.mapper.CoursePublishStatus;
+import com.ilearn.base.mapper.TaskType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.base.utils.JsonUtil;

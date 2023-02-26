@@ -22,7 +22,7 @@ public class SystemCodeGenerator {
 	private static final String DATA_SOURCE_PASSWORD  = "mysql";
 	private static final String[] TABLE_NAMES = new String[]{
 			"course_category",
-			"dictionary",
+			"mapper",
 	};
 
 	// TODO 默认生成entity，需要生成DTO修改此变量

@@ -1,4 +1,4 @@
-package com.ilearn.base.dictionary;
+package com.ilearn.base.mapper;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

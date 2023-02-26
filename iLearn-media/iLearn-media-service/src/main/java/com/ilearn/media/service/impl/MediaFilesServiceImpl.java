@@ -2,7 +2,7 @@ package com.ilearn.media.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ilearn.base.dictionary.ObjectAuditStatus;
+import com.ilearn.base.mapper.ObjectAuditStatus;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;

@@ -1,6 +1,6 @@
 package com.ilearn.task;
 
-import com.ilearn.base.dictionary.TaskType;
+import com.ilearn.base.mapper.TaskType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

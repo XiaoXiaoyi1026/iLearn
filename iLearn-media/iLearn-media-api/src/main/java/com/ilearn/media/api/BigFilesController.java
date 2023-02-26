@@ -1,6 +1,6 @@
 package com.ilearn.media.api;
 
-import com.ilearn.base.dictionary.ResourceType;
+import com.ilearn.base.mapper.ResourceType;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.media.model.dto.UploadFileParamsDto;

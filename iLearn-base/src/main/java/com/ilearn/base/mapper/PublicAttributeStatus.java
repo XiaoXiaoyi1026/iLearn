@@ -1,4 +1,4 @@
-package com.ilearn.base.dictionary;
+package com.ilearn.base.mapper;
 
 /**
  * @author xiaoxiaoyi
