@@ -48,8 +48,11 @@ Content-Type: application/json
 GET {{content_host}}/content/course/123
 
 ### 携带token访问资源服务
-GET {{content_host}}/content/course/18
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaWxlYXJuIl0sInVzZXJfbmFtZSI6InhpYW94aWFveWkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNjc3MzE5NDQ2LCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiIzNzM3OTQ1OS01ZmRlLTQxYzgtOWNkYi04YTFjOTU2NDY0NWUiLCJjbGllbnRfaWQiOiJJTGVhcm5XZWJBcHAifQ.D1K4shUrf-LWCbUgq7RVt16YZ3yXK0RTECZs7NSl-po
+GET {{gateway_host}}/content/course/18
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiaWxlYXJuIl0sInVzZXJfbmFtZSI6InhpYW94aWFveWkiLCJzY29wZSI6WyJhbGwiXSwiZXhwIjoxNjc3Mzg1MjM5LCJhdXRob3JpdGllcyI6WyJwMSJdLCJqdGkiOiJkM2VmMWE0MC01YWFjLTQxNGQtYWYyNi00ZjUwOTE3MmI1ZGEiLCJjbGllbnRfaWQiOiJJTGVhcm5XZWJBcHAifQ.F_sh2r4wtMSRAYRykwyqPCttczJErOd-6ervUVGgS1E
+
+### 访问白名单
+GET {{gateway_host}}/content/open/course/whole/18
 
 ### 更新课程信息
 PUT {{content_host}}/content/course

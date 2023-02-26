@@ -15,7 +15,6 @@
     <description>基础工程, 负责所有服务通用的模块</description>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>

@@ -1,7 +1,6 @@
 package com.ilearn.gateway.config;
 
 import com.alibaba.fastjson.JSON;
-import com.ilearn.base.exception.RestErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
