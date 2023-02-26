@@ -17,6 +17,11 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
         <!-- Spring Cloud Security 认证授权 oauth2中包含security -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -14,6 +14,12 @@
     <description>网关服务</description>
 
     <dependencies>
+        <dependency>
+            <groupId>com.ilearn</groupId>
+            <artifactId>iLearn-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- 网关 spring cloud gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -44,10 +50,10 @@
             </exclusions>
         </dependency>
 
-        <!-- Spring Boot 集成 log4j2 -->
+        <!-- Spring Cloud Security 认证授权 oauth2中包含security -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
     </dependencies>
 

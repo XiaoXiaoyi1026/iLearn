@@ -1,10 +1,11 @@
-package com.ilearn.search.service;
+package com.ilearn.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.search.model.CourseSearchParamsDto;
 import com.ilearn.search.model.CourseSearchResultDto;
 import com.ilearn.search.model.CourseIndex;
+import com.ilearn.search.service.CourseSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
