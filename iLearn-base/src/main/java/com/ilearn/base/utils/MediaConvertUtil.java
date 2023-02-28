@@ -10,41 +10,41 @@ import java.util.List;
  * 1、查看视频时长
  * 2、校验两个视频的时长是否相等
  */
-public class VideoUtil {
+public class MediaConvertUtil {
 
     /**
      * ffmpeg的安装位置
      */
-    String ffmpeg_path;
+    String ffmpegPath;
 
-    public VideoUtil(String ffmpeg_path) {
-        this.ffmpeg_path = ffmpeg_path;
+    public MediaConvertUtil(String ffmpegPath) {
+        this.ffmpegPath = ffmpegPath;
     }
 
 
-    //检查视频时间是否一致
-    public Boolean check_video_time(String source, String target) {
-        String source_time = get_video_time(source);
+    //检查文件时间是否一致
+    public Boolean checkFileTime(String source, String target) {
+        String sourceTime = getFileTime(source);
         //取出时分秒
-        source_time = source_time.substring(0, source_time.lastIndexOf("."));
-        String target_time = get_video_time(target);
+        sourceTime = sourceTime.substring(0, sourceTime.lastIndexOf("."));
+        String targetTime = getFileTime(target);
         //取出时分秒
-        target_time = target_time.substring(0, target_time.lastIndexOf("."));
-        return source_time.equals(target_time);
+        targetTime = targetTime.substring(0, targetTime.lastIndexOf("."));
+        return sourceTime.equals(targetTime);
     }
 
     //获取视频时间(时：分：秒：毫秒)
-    public String get_video_time(String video_path) {
+    public String getFileTime(String sourceFilePath) {
         /*
         ffmpeg -i  lucene.mp4
          */
-        List<String> commend = new ArrayList<>();
-        commend.add(ffmpeg_path);
-        commend.add("-i");
-        commend.add(video_path);
+        List<String> command = new ArrayList<>();
+        command.add(ffmpegPath);
+        command.add("-i");
+        command.add(sourceFilePath);
         try {
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command(commend);
+            builder.command(command);
             //将标准输入流和错误输入流合并，通过标准输入流程读取信息
             builder.redirectErrorStream(true);
             Process p = builder.start();
@@ -124,8 +124,8 @@ public class VideoUtil {
 
     public static void main(String[] args) throws IOException {
         String ffmpeg_path = "D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe";//ffmpeg的安装位置
-        VideoUtil videoUtil = new VideoUtil(ffmpeg_path);
-        String video_time = videoUtil.get_video_time("E:\\ffmpeg_test\\1.avi");
+        MediaConvertUtil mediaConvertUtil = new MediaConvertUtil(ffmpeg_path);
+        String video_time = mediaConvertUtil.getFileTime("E:\\ffmpeg_test\\1.avi");
         System.out.println(video_time);
     }
 }

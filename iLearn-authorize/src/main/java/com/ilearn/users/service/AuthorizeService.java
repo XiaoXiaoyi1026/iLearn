@@ -1,7 +1,7 @@
 package com.ilearn.users.service;
 
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.ilearn.users.model.dto.ILearnUserExtension;
 
 /**
  * @author xiaoxiaoyi
@@ -17,6 +17,6 @@ public interface AuthorizeService {
      * @param authorizeInfo 授权信息
      * @return 用户详情
      */
-    UserDetails execute(AuthorizeInfo authorizeInfo);
+    ILearnUserExtension execute(AuthorizeInfo authorizeInfo);
 
 }

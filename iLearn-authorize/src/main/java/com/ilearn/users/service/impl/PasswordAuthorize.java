@@ -1,19 +1,20 @@
 package com.ilearn.users.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.mapper.UserAuthorities;
 import com.ilearn.base.mapper.UserRole;
-import com.ilearn.base.utils.JsonUtil;
 import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
+import com.ilearn.users.model.dto.ILearnUserExtension;
 import com.ilearn.users.model.po.IlearnRole;
 import com.ilearn.users.model.po.IlearnUser;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,18 +24,28 @@ import org.springframework.stereotype.Service;
  * @date 2/26/2023 4:28 PM
  */
 @Slf4j
-@Service
+@Service("password_authorize")
 public class PasswordAuthorize implements AuthorizeService {
 
     private IlearnUserMapper ilearnUserMapper;
+
+    /**
+     * 密码验证器
+     */
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     void setIlearnUserMapper(IlearnUserMapper ilearnUserMapper) {
         this.ilearnUserMapper = ilearnUserMapper;
     }
 
+    @Autowired
+    void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
-    public UserDetails execute(@NotNull AuthorizeInfo authorizeInfo) {
+    public ILearnUserExtension execute(@NotNull AuthorizeInfo authorizeInfo) {
         // 获取账号信息
         String userName = authorizeInfo.getUserName();
         // 从数据库查询用户信息
@@ -42,11 +53,18 @@ public class PasswordAuthorize implements AuthorizeService {
         ilearnUserLambdaQueryWrapper.eq(IlearnUser::getUsername, userName);
         IlearnUser ilearnUser = ilearnUserMapper.selectOne(ilearnUserLambdaQueryWrapper);
         if (ilearnUser == null) {
-            // 直接返回空, 交给框架处理
-            return null;
+            log.error("用户{}不存在", userName);
+            ILearnException.cast("用户" + userName + "不存在");
         }
-        // 比对密码
+        // 原密码
         String userPassword = ilearnUser.getPassword();
+        // 输入的密码
+        String inputPassword = authorizeInfo.getPassword();
+        // 调用密码验证器进行验证
+        boolean matches = passwordEncoder.matches(inputPassword, userPassword);
+        if (!matches) {
+            ILearnException.cast("密码错误");
+        }
         IlearnRole role = ilearnUserMapper.getRoleCode(ilearnUser.getId());
         if (role == null) {
             log.error("查询用户角色失败, authorizeJsonInfo: {}", authorizeInfo);
@@ -58,12 +76,12 @@ public class PasswordAuthorize implements AuthorizeService {
             log.error("查询用户角色失败, authorizeJsonInfo: {}", authorizeInfo);
             return null;
         }
-        // 将密码置空, 防止信息泄露
+        // 密码置空, 保证信息安全
         ilearnUser.setPassword(null);
-        // 将用户信息转成Json字符串
-        String userJson = JsonUtil.objectToJson(ilearnUser);
-        // 构建用户账号信息密码和权限一并写入jwt令牌上下文返回
-        return User.withUsername(userJson).password(userPassword)
-                .authorities(UserAuthorities.getUserAuthorities(userRole)).build();
+        ILearnUserExtension iLearnUserExtension = new ILearnUserExtension();
+        BeanUtils.copyProperties(ilearnUser, iLearnUserExtension);
+        // 设置用户权限
+        iLearnUserExtension.setAuthorities(UserAuthorities.getUserAuthorities(userRole));
+        return iLearnUserExtension;
     }
 }

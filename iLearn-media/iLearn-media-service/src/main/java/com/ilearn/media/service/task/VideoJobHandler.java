@@ -1,7 +1,7 @@
 package com.ilearn.media.service.task;
 
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.utils.Mp4VideoUtil;
+import com.ilearn.base.utils.MediaConvert2MP4Util;
 import com.ilearn.media.model.po.MediaProcess;
 import com.ilearn.media.service.MediaFilesService;
 import com.ilearn.media.service.MediaProcessService;
@@ -101,7 +101,7 @@ public class VideoJobHandler {
                         // 将filePath中的文件扩展名变为.mp4
                         String processedFilePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".mp4";
                         // 调用工具类进行处理
-                        Mp4VideoUtil videoUtil = new Mp4VideoUtil(ffmpegPath, videoPath, mp4Name, mp4Path);
+                        MediaConvert2MP4Util videoUtil = new MediaConvert2MP4Util(ffmpegPath, videoPath, mp4Name, mp4Path);
                         // 开始进行视频转换, 转换成功返回success
                         String processResult = videoUtil.generateMp4();
                         // 处理完成后记录处理结果

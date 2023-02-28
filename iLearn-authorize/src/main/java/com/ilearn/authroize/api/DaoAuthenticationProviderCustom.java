@@ -41,6 +41,7 @@ public class DaoAuthenticationProviderCustom extends DaoAuthenticationProvider {
      */
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+        // 拿到userDetails后的校验过程
         System.out.println(userDetails);
         System.out.println(authentication);
     }
