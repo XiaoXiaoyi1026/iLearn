@@ -1,0 +1,5 @@
+### 申请验证码
+POST {{gateway_host}}/checkcode/pic
+
+### 校验验证码
+POST {{gateway_host}}/checkcode/verify?key=VerificationCode:3675aa8e0d354268a74da7f9b8169f5b&code=YQZE

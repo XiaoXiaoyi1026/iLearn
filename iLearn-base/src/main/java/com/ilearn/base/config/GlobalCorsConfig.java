@@ -24,7 +24,7 @@ public class GlobalCorsConfig {
         configuration.addAllowedMethod("*");
 
         // 配置哪些请求来源可以跨域
-        configuration.addAllowedOrigin("http://localhost:8601");
+        configuration.addAllowedOrigin("*");
 
         // 配置哪些请求头可以跨域
         configuration.addAllowedHeader("*");
