@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: iLearn-verification-code
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+      config:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: iLearn-swagger-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
+          - data-id: iLearn-logging-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
+
+  profiles:
+    active: develop

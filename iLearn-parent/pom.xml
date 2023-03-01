@@ -40,6 +40,7 @@
         <annotations.version>15.0</annotations.version>
         <google.zxing.version>3.3.3</google.zxing.version>
         <feign.version>3.8.0</feign.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
     </properties>
 
     <dependencyManagement>
@@ -248,6 +249,13 @@
                 <groupId>com.j256.simplemagic</groupId>
                 <artifactId>simplemagic</artifactId>
                 <version>${simplemagic.version}</version>
+            </dependency>
+
+            <!-- 验证码服务依赖 -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
