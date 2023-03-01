@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserDetailsService {
             ILearnException.cast("授权信息解析失败");
         }
         assert authorizeInfo != null;
-        String authorizeType = authorizeInfo.getAuthorizeType();
+        String authorizeType = authorizeInfo.getAuthType();
         // 根据授权类型从Spring容器中拿对应的授权服务的Bean
         AuthorizeService authorizeService = applicationContext.getBean(authorizeType + "_authorize", AuthorizeService.class);
         ILearnUserExtension iLearnUserExtension = authorizeService.execute(authorizeInfo);
