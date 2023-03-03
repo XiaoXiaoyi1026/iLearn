@@ -1,6 +1,5 @@
 package com.ilearn.users.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,20 +39,19 @@ public class AuthorizeInfo {
      * 验证码
      */
     @ApiModelProperty(name = "验证码")
-    private String checkCode;
+    private String verificationCode;
 
     /**
      * 验证码key, 用于去redis中取验证码进行校验
      */
     @ApiModelProperty(name = "验证码key, 用于去redis中取验证码进行校验")
-    private String checkCodeKey;
+    private String verificationCodeKey;
 
     /**
      * 授权类型
      */
     @ApiModelProperty(name = "授权类型", required = true)
-    @JsonProperty(value = "authType")
-    private String authType;
+    private String authorizeType;
 
     /**
      * 附加信息, 不同的认证形式有不同的附加信息

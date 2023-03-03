@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.mapper.UserAuthorities;
 import com.ilearn.base.mapper.UserRole;
+import com.ilearn.base.utils.StringUtil;
+import com.ilearn.users.feign.VerificationCodeFeign;
 import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
 import com.ilearn.users.model.dto.ILearnUserExtension;
@@ -34,6 +36,11 @@ public class PasswordAuthorize implements AuthorizeService {
      */
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * 远程调用验证码验证服务的Feign客户端
+     */
+    private VerificationCodeFeign verificationCodeFeign;
+
     @Autowired
     void setIlearnUserMapper(IlearnUserMapper ilearnUserMapper) {
         this.ilearnUserMapper = ilearnUserMapper;
@@ -44,8 +51,26 @@ public class PasswordAuthorize implements AuthorizeService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Autowired
+    void setVerificationCodeFeign(VerificationCodeFeign verificationCodeFeign) {
+        this.verificationCodeFeign = verificationCodeFeign;
+    }
+
     @Override
     public ILearnUserExtension execute(@NotNull AuthorizeInfo authorizeInfo) {
+        // 校验验证码
+        String verificationCode = authorizeInfo.getVerificationCode();
+        String verificationCodeKey = authorizeInfo.getVerificationCodeKey();
+        if (StringUtil.isBlank(verificationCode) || StringUtil.isBlank(verificationCodeKey)) {
+            ILearnException.cast("验证码为空");
+        }
+        Boolean verify = verificationCodeFeign.verify(verificationCodeKey, verificationCode);
+        if (verify == null) {
+            ILearnException.cast("服务繁忙, 请稍后再试");
+        }
+        if (!verify) {
+            ILearnException.cast("验证码错误");
+        }
         // 获取账号信息
         String userName = authorizeInfo.getUserName();
         // 从数据库查询用户信息
