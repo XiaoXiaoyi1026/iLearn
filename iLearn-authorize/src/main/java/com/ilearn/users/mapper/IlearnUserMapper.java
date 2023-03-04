@@ -23,6 +23,6 @@ public interface IlearnUserMapper extends BaseMapper<IlearnUser> {
      * @return 角色代码
      */
     @Select("SELECT * FROM ilearn_users.ilearn_role WHERE id = (SELECT role_id FROM ilearn_users.ilearn_user_role WHERE user_id = ${userId})")
-    IlearnRole getRoleCode(String userId);
+    IlearnRole getRole(String userId);
 
 }

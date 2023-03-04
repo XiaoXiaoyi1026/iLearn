@@ -58,7 +58,7 @@ public class AuthorizeInfo {
      */
     private Map<String, Object> payload;
 
-    AuthorizeInfo() {
+    public AuthorizeInfo() {
         payload = new HashMap<>();
     }
 

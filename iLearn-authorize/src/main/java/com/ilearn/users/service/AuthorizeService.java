@@ -1,7 +1,7 @@
 package com.ilearn.users.service;
 
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserExtension;
+import com.ilearn.users.model.dto.ILearnUserAuthorities;
 
 /**
  * @author xiaoxiaoyi
@@ -17,6 +17,6 @@ public interface AuthorizeService {
      * @param authorizeInfo 授权信息
      * @return 用户详情
      */
-    ILearnUserExtension execute(AuthorizeInfo authorizeInfo);
+    ILearnUserAuthorities execute(AuthorizeInfo authorizeInfo);
 
 }

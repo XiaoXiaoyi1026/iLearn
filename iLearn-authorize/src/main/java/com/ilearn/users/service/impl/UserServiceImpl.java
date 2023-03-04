@@ -3,7 +3,7 @@ package com.ilearn.users.service.impl;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserExtension;
+import com.ilearn.users.model.dto.ILearnUserAuthorities;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -53,20 +53,20 @@ public class UserServiceImpl implements UserDetailsService {
         String authorizeType = authorizeInfo.getAuthorizeType();
         // 根据授权类型从Spring容器中拿对应的授权服务的Bean
         AuthorizeService authorizeService = applicationContext.getBean(authorizeType + "_authorize", AuthorizeService.class);
-        ILearnUserExtension iLearnUserExtension = authorizeService.execute(authorizeInfo);
-        return getUserPrincipal(iLearnUserExtension);
+        ILearnUserAuthorities iLearnUserAuthorities = authorizeService.execute(authorizeInfo);
+        return getUserPrincipal(iLearnUserAuthorities);
     }
 
     /**
      * 根据iLearnUserExtension的信息构建UserDetails
      *
-     * @param iLearnUserExtension 用户信息
+     * @param iLearnUserAuthorities 用户信息
      * @return 框架需要的对象
      */
-    private UserDetails getUserPrincipal(@NotNull ILearnUserExtension iLearnUserExtension) {
-        return User.withUsername(JsonUtil.objectToJson(iLearnUserExtension))
+    private UserDetails getUserPrincipal(@NotNull ILearnUserAuthorities iLearnUserAuthorities) {
+        return User.withUsername(JsonUtil.objectToJson(iLearnUserAuthorities))
                 // 自定义的DaoAuthenticationProviderCustom不做密码验证
                 .password("")
-                .authorities(iLearnUserExtension.getAuthorities()).build();
+                .authorities(iLearnUserAuthorities.getAuthorities()).build();
     }
 }

@@ -8,7 +8,7 @@ import com.ilearn.base.utils.StringUtil;
 import com.ilearn.users.feign.VerificationCodeFeign;
 import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserExtension;
+import com.ilearn.users.model.dto.ILearnUserAuthorities;
 import com.ilearn.users.model.po.IlearnRole;
 import com.ilearn.users.model.po.IlearnUser;
 import com.ilearn.users.service.AuthorizeService;
@@ -57,7 +57,7 @@ public class PasswordAuthorize implements AuthorizeService {
     }
 
     @Override
-    public ILearnUserExtension execute(@NotNull AuthorizeInfo authorizeInfo) {
+    public ILearnUserAuthorities execute(@NotNull AuthorizeInfo authorizeInfo) {
         // 校验验证码
         String verificationCode = authorizeInfo.getVerificationCode();
         String verificationCodeKey = authorizeInfo.getVerificationCodeKey();
@@ -90,7 +90,7 @@ public class PasswordAuthorize implements AuthorizeService {
         if (!matches) {
             ILearnException.cast("密码错误");
         }
-        IlearnRole role = ilearnUserMapper.getRoleCode(ilearnUser.getId());
+        IlearnRole role = ilearnUserMapper.getRole(ilearnUser.getId());
         if (role == null) {
             log.error("查询用户角色失败, authorizeJsonInfo: {}", authorizeInfo);
             return null;
@@ -103,10 +103,10 @@ public class PasswordAuthorize implements AuthorizeService {
         }
         // 密码置空, 保证信息安全
         ilearnUser.setPassword(null);
-        ILearnUserExtension iLearnUserExtension = new ILearnUserExtension();
-        BeanUtils.copyProperties(ilearnUser, iLearnUserExtension);
+        ILearnUserAuthorities iLearnUserAuthorities = new ILearnUserAuthorities();
+        BeanUtils.copyProperties(ilearnUser, iLearnUserAuthorities);
         // 设置用户权限
-        iLearnUserExtension.setAuthorities(UserAuthorities.getUserAuthorities(userRole));
-        return iLearnUserExtension;
+        iLearnUserAuthorities.setAuthorities(UserAuthorities.getUserAuthorities(userRole));
+        return iLearnUserAuthorities;
     }
 }

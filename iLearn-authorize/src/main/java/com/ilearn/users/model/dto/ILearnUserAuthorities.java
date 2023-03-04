@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ILearnUserExtension extends IlearnUser {
+public class ILearnUserAuthorities extends IlearnUser {
     /**
      * 授权信息
      */
