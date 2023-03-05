@@ -59,9 +59,14 @@ public class WXAuthorize implements AuthorizeService {
             ILearnException.cast("微信授权登录失败");
         }
         // 拿着授权码去申请令牌
-        Map<?, ?> wxAccessToken = getWXAccessToken(code);
+        Map<String, Object> wxAccessToken = getWXAccessToken(code);
         // 用令牌去调用微信的用户信息服务获取用户信息
-
+        String accessToken = String.valueOf(wxAccessToken.get("access_token"));
+        String openid = String.valueOf(wxAccessToken.get("openid"));
+        if (accessToken == null || openid == null) {
+            ILearnException.cast("微信授权登录失败");
+        }
+        Map<String, Object> userInfo = getUserInfo(accessToken, openid);
         // 将用户信息保存进数据库
         IlearnUser ilearnUser = ilearnUserMapper.selectById(1026L);
         ILearnUserAuthorities ilearnUserAuthorities = new ILearnUserAuthorities();
@@ -78,16 +83,31 @@ public class WXAuthorize implements AuthorizeService {
     }
 
     /**
+     * 使用令牌请求微信用户服务获取用户信息
+     *
+     * @param accessToken 令牌
+     * @param openid      开放id
+     * @return 用户信息
+     */
+    private Map<String, Object> getUserInfo(String accessToken, String openid) {
+        String urlTemplate = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s";
+        String url = String.format(urlTemplate, accessToken, openid);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+        String body = response.getBody();
+        return JsonUtil.jsonToMap(body);
+    }
+
+    /**
      * 获取请求微信服务用的令牌
      *
      * @param code 用户授权码
      * @return 微信令牌
      */
-    private Map<?, ?> getWXAccessToken(String code) {
+    private Map<String, Object> getWXAccessToken(String code) {
         // url模板
-        String url_template = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
+        String urlTemplate = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code";
         // 向模板中填充数据
-        String url = String.format(url_template, appID, secret, code);
+        String url = String.format(urlTemplate, appID, secret, code);
         /* 使用restTemplate远程调用微信服务拿到令牌, 返回结果:
         {
             "access_token":"ACCESS_TOKEN",
