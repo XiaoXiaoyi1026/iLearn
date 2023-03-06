@@ -87,8 +87,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public RestErrorResponse exceptionHandler(@NotNull Exception exception) {
         // 记录日志信息
-        log.error("捕获到预期之外的异常: {}", exception.getMessage());
+        String message = exception.getMessage();
+        log.error("捕获到预期之外的异常: {}", message);
         exception.printStackTrace();
+        if ("Access is denied".equals(message)) {
+            return new RestErrorResponse(CommonError.ACCESS_DENIED.getErrMessage());
+        }
         // 返回给前端比较友好的信息
         return new RestErrorResponse(CommonError.UNKNOWN_ERROR.getErrMessage());
     }

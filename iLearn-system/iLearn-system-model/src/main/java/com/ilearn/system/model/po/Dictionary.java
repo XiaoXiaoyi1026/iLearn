@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author xiaoxiaoyi
  */
 @Data
-@TableName("mapper")
+@TableName("dictionary")
 public class Dictionary implements Serializable {
 
     private static final long serialVersionUID = 1L;

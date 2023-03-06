@@ -12,7 +12,8 @@ public enum CommonError {
     PARAMS_ERROR("非法参数"),
     OBJECT_NULL("对象为空"),
     QUERY_NULL("查询结果为空"),
-    REQUEST_NULL("请求参数为空");
+    REQUEST_NULL("请求参数为空"),
+    ACCESS_DENIED("没有此操作的权限");
 
     private final String errMessage;
 
