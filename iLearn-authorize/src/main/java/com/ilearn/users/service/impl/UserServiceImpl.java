@@ -2,8 +2,10 @@ package com.ilearn.users.service.impl;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;
+import com.ilearn.users.mapper.IlearnMenuMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
 import com.ilearn.users.model.dto.ILearnUserAuthorities;
+import com.ilearn.users.model.po.IlearnMenu;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author xiaoxiaoyi
@@ -27,9 +31,16 @@ public class UserServiceImpl implements UserDetailsService {
 
     private ApplicationContext applicationContext;
 
+    private IlearnMenuMapper ilearnMenuMapper;
+
     @Autowired
     void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Autowired
+    void setIlearnMenuMapper(IlearnMenuMapper ilearnMenuMapper) {
+        this.ilearnMenuMapper = ilearnMenuMapper;
     }
 
     /**
@@ -64,9 +75,17 @@ public class UserServiceImpl implements UserDetailsService {
      * @return 框架需要的对象
      */
     private UserDetails getUserPrincipal(@NotNull ILearnUserAuthorities iLearnUserAuthorities) {
+        // 获取用户权限
+        String userID = iLearnUserAuthorities.getId();
+        List<IlearnMenu> userMenus = ilearnMenuMapper.getUserMenus(userID);
+        String[] userPermissions = new String[userMenus.size()];
+        int i = 0;
+        for (IlearnMenu userMenu : userMenus) {
+            userPermissions[i++] = userMenu.getCode();
+        }
         return User.withUsername(JsonUtil.objectToJson(iLearnUserAuthorities))
                 // 自定义的DaoAuthenticationProviderCustom不做密码验证
                 .password("")
-                .authorities(iLearnUserAuthorities.getAuthorities()).build();
+                .authorities(userPermissions).build();
     }
 }

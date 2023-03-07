@@ -2,7 +2,6 @@ package com.ilearn.users.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.mapper.UserAuthorities;
 import com.ilearn.base.mapper.UserRole;
 import com.ilearn.base.mapper.UserType;
 import com.ilearn.base.utils.JsonUtil;
@@ -10,7 +9,6 @@ import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.mapper.IlearnUserRoleMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
 import com.ilearn.users.model.dto.ILearnUserAuthorities;
-import com.ilearn.users.model.po.IlearnRole;
 import com.ilearn.users.model.po.IlearnUser;
 import com.ilearn.users.model.po.IlearnUserRole;
 import com.ilearn.users.service.AuthorizeService;
@@ -98,13 +96,6 @@ public class WXAuthorize implements AuthorizeService {
         IlearnUser ilearnUser = wXAuthorize.saveUserInfo2DB(userInfo);
         ILearnUserAuthorities ilearnUserAuthorities = new ILearnUserAuthorities();
         BeanUtils.copyProperties(ilearnUser, ilearnUserAuthorities);
-        IlearnRole role = ilearnUserMapper.getRole(ilearnUser.getId());
-        UserRole userRole = UserRole.getUserRole(role.getRoleCode());
-        if (userRole == null) {
-            ILearnException.cast("获取用户角色失败");
-        }
-        String[] userAuthorities = UserAuthorities.getUserAuthorities(userRole);
-        ilearnUserAuthorities.setAuthorities(userAuthorities);
         // 返回用户的授权信息
         return ilearnUserAuthorities;
     }

@@ -48,7 +48,7 @@ public class CourseBaseInfoController {
      */
     @PostMapping("/list")
     @ApiOperation("课程分页查询")
-    @PreAuthorize("hasAuthority('A1')")
+    @PreAuthorize("hasAuthority('course_find_list')")
     public PageResponse<CourseBase> list(PageRequestParams pageRequestParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         // Controller -> Service -> Mapper(dao)
         return courseBaseInfoService.queryPageList(pageRequestParams, queryCourseParamsDto);

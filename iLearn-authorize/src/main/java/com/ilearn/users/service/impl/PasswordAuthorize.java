@@ -2,14 +2,11 @@ package com.ilearn.users.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.mapper.UserAuthorities;
-import com.ilearn.base.mapper.UserRole;
 import com.ilearn.base.utils.StringUtil;
 import com.ilearn.users.feign.VerificationCodeFeign;
 import com.ilearn.users.mapper.IlearnUserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
 import com.ilearn.users.model.dto.ILearnUserAuthorities;
-import com.ilearn.users.model.po.IlearnRole;
 import com.ilearn.users.model.po.IlearnUser;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
@@ -90,23 +87,10 @@ public class PasswordAuthorize implements AuthorizeService {
         if (!matches) {
             ILearnException.cast("密码错误");
         }
-        IlearnRole role = ilearnUserMapper.getRole(ilearnUser.getId());
-        if (role == null) {
-            log.error("查询用户角色失败, authorizeJsonInfo: {}", authorizeInfo);
-            return null;
-        }
-        String roleCode = role.getRoleCode();
-        UserRole userRole = UserRole.getUserRole(roleCode);
-        if (userRole == null) {
-            log.error("查询用户角色失败, authorizeJsonInfo: {}", authorizeInfo);
-            return null;
-        }
         // 密码置空, 保证信息安全
         ilearnUser.setPassword(null);
         ILearnUserAuthorities iLearnUserAuthorities = new ILearnUserAuthorities();
         BeanUtils.copyProperties(ilearnUser, iLearnUserAuthorities);
-        // 设置用户权限
-        iLearnUserAuthorities.setAuthorities(UserAuthorities.getUserAuthorities(userRole));
         return iLearnUserAuthorities;
     }
 }
