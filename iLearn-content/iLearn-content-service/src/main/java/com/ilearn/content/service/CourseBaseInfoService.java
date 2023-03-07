@@ -27,6 +27,16 @@ public interface CourseBaseInfoService {
     PageResponse<CourseBase> queryPageList(PageRequestParams pageRequestParams, QueryCourseParamsDto queryCourseParamsDto);
 
     /**
+     * 课程基本信息分页查询
+     *
+     * @param companyId            机构id
+     * @param pageRequestParams    分页参数
+     * @param queryCourseParamsDto 课程查询条件
+     * @return 分页课程信息
+     */
+    PageResponse<CourseBase> queryPageList(String companyId, PageRequestParams pageRequestParams, QueryCourseParamsDto queryCourseParamsDto);
+
+    /**
      * 新增课程
      *
      * @param companyId    企业id

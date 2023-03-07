@@ -50,8 +50,14 @@ public class CourseBaseInfoController {
     @ApiOperation("课程分页查询")
     @PreAuthorize("hasAuthority('course_find_list')")
     public PageResponse<CourseBase> list(PageRequestParams pageRequestParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
+        // 获取登录用户的授权信息
+        IlearnUser userInfo = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
+        if (userInfo == null) {
+            ILearnException.cast("授权信息异常, 请重新登录后再试");
+        }
+        String companyId = userInfo.getCompanyId();
         // Controller -> Service -> Mapper(dao)
-        return courseBaseInfoService.queryPageList(pageRequestParams, queryCourseParamsDto);
+        return courseBaseInfoService.queryPageList(companyId, pageRequestParams, queryCourseParamsDto);
     }
 
     /**
