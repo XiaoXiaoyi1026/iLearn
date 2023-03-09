@@ -1,6 +1,5 @@
 package com.ilearn.content.api;
 
-import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.exception.ValidationGroups;
 import com.ilearn.base.model.PageRequestParams;
 import com.ilearn.base.model.PageResponse;
@@ -11,7 +10,6 @@ import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
 import com.ilearn.content.model.po.IlearnUser;
 import com.ilearn.content.service.CourseBaseInfoService;
-import com.ilearn.content.utils.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import static com.ilearn.content.utils.SecurityUtil.getSecurityInfo;
 
 /**
  * @author xiaoxiaoyi
@@ -50,12 +50,7 @@ public class CourseBaseInfoController {
     @ApiOperation("课程分页查询")
     @PreAuthorize("hasAuthority('course_find_list')")
     public PageResponse<CourseBase> list(PageRequestParams pageRequestParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
-        // 获取登录用户的授权信息
-        IlearnUser userInfo = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
-        if (userInfo == null) {
-            ILearnException.cast("授权信息异常, 请重新登录后再试");
-        }
-        String companyId = userInfo.getCompanyId();
+        String companyId = getSecurityInfo().getCompanyId();
         // Controller -> Service -> Mapper(dao)
         return courseBaseInfoService.queryPageList(companyId, pageRequestParams, queryCourseParamsDto);
     }
@@ -68,9 +63,10 @@ public class CourseBaseInfoController {
      */
     @PostMapping
     @ApiOperation("新增课程")
+    @PreAuthorize("hasAuthority('ilearn_teachmanager_course_add')")
     public CourseBaseInfoDto add(@RequestBody @Validated(value = {ValidationGroups.Insert.class}) AddCourseDto addCourseDto) {
         // 认证/授权后, 可获取登录用户和所属培训机构的id
-        Long companyId = 1026L;
+        Long companyId = Long.parseLong(getSecurityInfo().getCompanyId());
         return courseBaseInfoService.add(companyId, addCourseDto);
     }
 
@@ -84,11 +80,7 @@ public class CourseBaseInfoController {
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
         // 使用工具类拿用户认证信息
-        IlearnUser ilearnUser = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
-        if (ilearnUser == null) {
-            log.error("认证失败, 非法访问");
-            ILearnException.cast("获取认证信息失败, 请确认登录信息");
-        }
+        IlearnUser ilearnUser = getSecurityInfo();
         log.info("查询课程信息, 认证信息: {}", ilearnUser);
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
@@ -102,7 +94,7 @@ public class CourseBaseInfoController {
     @PutMapping
     @ApiOperation("更新课程信息")
     public CourseBaseInfoDto update(@RequestBody @Validated(value = {ValidationGroups.Update.class}) UpdateCourseDto updateCourseDto) {
-        Long companyId = 1026L;
+        Long companyId = Long.parseLong(getSecurityInfo().getCompanyId());
         return courseBaseInfoService.update(companyId, updateCourseDto);
     }
 

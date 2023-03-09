@@ -2,6 +2,7 @@ package com.ilearn.content.utils;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;
+import com.ilearn.content.model.po.IlearnUser;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,5 +40,18 @@ public class SecurityUtil {
             return object;
         }
         return null;
+    }
+
+    /**
+     * 获取登录用户的授权信息
+     *
+     * @return 授权信息
+     */
+    public static IlearnUser getSecurityInfo() {
+        IlearnUser userInfo = SecurityUtil.getInfoFromSecurityContext(IlearnUser.class);
+        if (userInfo == null) {
+            ILearnException.cast("授权信息异常, 请重新登录后再试");
+        }
+        return userInfo;
     }
 }

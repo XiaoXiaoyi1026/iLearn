@@ -2,6 +2,7 @@ package com.ilearn.content.api;
 
 import com.ilearn.base.model.ResponseMessage;
 import com.ilearn.content.model.dto.CoursePreviewDto;
+import com.ilearn.content.model.po.CoursePublish;
 import com.ilearn.content.service.CoursePublishService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +74,19 @@ public class CoursePublishController {
     public ResponseMessage<Boolean> coursePublish(@PathVariable("courseId") Long courseId) {
         Long companyId = 1026L;
         return coursePublishService.coursePublish(companyId, courseId);
+    }
+
+    /**
+     * 获取课程发布信息
+     *
+     * @param courseId 课程id
+     * @return 课程发布信息
+     */
+    @ApiOperation(value = "获取课程发布信息")
+    @GetMapping("/r/coursepublish/{courseId}")
+    @ResponseBody
+    public CoursePublish getCoursePublishInfo(@PathVariable(name = "courseId") Long courseId) {
+        return coursePublishService.getCoursePublishInfo(courseId);
     }
 
 }
