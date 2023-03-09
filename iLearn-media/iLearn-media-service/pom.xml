@@ -11,11 +11,21 @@
     <artifactId>iLearn-media-service</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.ilearn</groupId>
             <artifactId>iLearn-media-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+
+        <!-- Nacos服务注册 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
         <!-- Nacos配置管理 -->
@@ -56,12 +66,6 @@
             </exclusions>
         </dependency>
 
-        <!-- Spring Boot 集成 log4j2 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-
         <!-- 分布式文件系统 -->
         <dependency>
             <groupId>io.minio</groupId>
@@ -79,7 +83,6 @@
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
