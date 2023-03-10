@@ -1,4 +1,4 @@
-package com.ilearn.content.utils;
+package com.ilearn.learning.utils;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;

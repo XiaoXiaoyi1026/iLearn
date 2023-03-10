@@ -8,7 +8,7 @@ import com.ilearn.content.model.dto.CourseBaseInfoDto;
 import com.ilearn.content.model.dto.QueryCourseParamsDto;
 import com.ilearn.content.model.dto.UpdateCourseDto;
 import com.ilearn.content.model.po.CourseBase;
-import com.ilearn.content.model.po.IlearnUser;
+import com.ilearn.content.model.po.User;
 import com.ilearn.content.service.CourseBaseInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,8 +80,8 @@ public class CourseBaseInfoController {
     @ApiOperation("根据课程id获取对应的课程信息")
     public CourseBaseInfoDto getById(@PathVariable(name = "courseId") Long courseId) {
         // 使用工具类拿用户认证信息
-        IlearnUser ilearnUser = getSecurityInfo();
-        log.info("查询课程信息, 认证信息: {}", ilearnUser);
+        User user = getSecurityInfo();
+        log.info("查询课程信息, 认证信息: {}", user);
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 

@@ -2,15 +2,14 @@ package com.ilearn.users.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
-import com.ilearn.base.mapper.UserRole;
 import com.ilearn.base.mapper.UserType;
 import com.ilearn.base.utils.JsonUtil;
-import com.ilearn.users.mapper.IlearnUserMapper;
-import com.ilearn.users.mapper.IlearnUserRoleMapper;
+import com.ilearn.users.mapper.UserMapper;
+import com.ilearn.users.mapper.UserRoleMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserAuthorities;
-import com.ilearn.users.model.po.IlearnUser;
-import com.ilearn.users.model.po.IlearnUserRole;
+import com.ilearn.users.model.dto.UserAuthorities;
+import com.ilearn.users.model.po.User;
+import com.ilearn.users.model.po.UserRole;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -37,13 +36,13 @@ import java.util.UUID;
 @Service(value = "wx_authorize")
 public class WXAuthorize implements AuthorizeService {
 
-    private IlearnUserMapper ilearnUserMapper;
+    private UserMapper userMapper;
 
     private RestTemplate restTemplate;
 
     private WXAuthorize wXAuthorize;
 
-    private IlearnUserRoleMapper ilearnUserRoleMapper;
+    private UserRoleMapper userRoleMapper;
 
     @Value("authorize.appID")
     private String appID;
@@ -52,8 +51,8 @@ public class WXAuthorize implements AuthorizeService {
     private String secret;
 
     @Autowired
-    void setIlearnUserMapper(IlearnUserMapper ilearnUserMapper) {
-        this.ilearnUserMapper = ilearnUserMapper;
+    void setIlearnUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Autowired
@@ -67,13 +66,13 @@ public class WXAuthorize implements AuthorizeService {
     }
 
     @Autowired
-    void setIlearnUserRoleMapper(IlearnUserRoleMapper ilearnUserRoleMapper) {
-        this.ilearnUserRoleMapper = ilearnUserRoleMapper;
+    void setIlearnUserRoleMapper(UserRoleMapper userRoleMapper) {
+        this.userRoleMapper = userRoleMapper;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ILearnUserAuthorities execute(@NotNull AuthorizeInfo authorizeInfo) {
+    public UserAuthorities execute(@NotNull AuthorizeInfo authorizeInfo) {
         // 获取微信的授权码
         Map<String, Object> payload = authorizeInfo.getPayload();
         String code = String.valueOf(payload.get("code"));
@@ -93,9 +92,9 @@ public class WXAuthorize implements AuthorizeService {
             ILearnException.cast("获取用户信息失败");
         }
         // 将用户信息保存进数据库(涉及多个表的操作, 为保证数据一致性需要加上事务控制)
-        IlearnUser ilearnUser = wXAuthorize.saveUserInfo2DB(userInfo);
-        ILearnUserAuthorities ilearnUserAuthorities = new ILearnUserAuthorities();
-        BeanUtils.copyProperties(ilearnUser, ilearnUserAuthorities);
+        User user = wXAuthorize.saveUserInfo2DB(userInfo);
+        UserAuthorities ilearnUserAuthorities = new UserAuthorities();
+        BeanUtils.copyProperties(user, ilearnUserAuthorities);
         // 返回用户的授权信息
         return ilearnUserAuthorities;
     }
@@ -117,29 +116,29 @@ public class WXAuthorize implements AuthorizeService {
      * @return 保存结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public IlearnUser saveUserInfo2DB(@NotNull Map<String, Object> userInfo) {
+    public User saveUserInfo2DB(@NotNull Map<String, Object> userInfo) {
         // 先取出unionID
         String unionID = String.valueOf(userInfo.get("unionid"));
-        LambdaQueryWrapper<IlearnUser> ilearnUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        ilearnUserLambdaQueryWrapper.eq(IlearnUser::getWxUnionid, unionID);
-        IlearnUser ilearnUser = ilearnUserMapper.selectOne(ilearnUserLambdaQueryWrapper);
-        if (ilearnUser == null) {
+        LambdaQueryWrapper<User> ilearnUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        ilearnUserLambdaQueryWrapper.eq(User::getWxUnionid, unionID);
+        User user = userMapper.selectOne(ilearnUserLambdaQueryWrapper);
+        if (user == null) {
             // 用户不存在则添加
-            ilearnUser = new IlearnUser();
+            user = new User();
             String userId = String.valueOf(UUID.randomUUID());
-            ilearnUser.setId(userId);
-            ilearnUser.setWxUnionid(unionID);
+            user.setId(userId);
+            user.setWxUnionid(unionID);
             String nickname = String.valueOf(userInfo.get("nickname"));
-            ilearnUser.setNickname(nickname);
-            ilearnUser.setName(nickname);
-            ilearnUser.setUserpic(String.valueOf(userInfo.get("headimgurl")));
-            ilearnUser.setPassword(unionID);
+            user.setNickname(nickname);
+            user.setName(nickname);
+            user.setUserpic(String.valueOf(userInfo.get("headimgurl")));
+            user.setPassword(unionID);
             LocalDateTime createTime = LocalDateTime.now();
-            ilearnUser.setCreateTime(createTime);
-            ilearnUser.setSex(String.valueOf(userInfo.get("sex")));
-            ilearnUser.setStatus("1");
-            ilearnUser.setUtype(UserType.get(UserRole.STUDENT));
-            int insert = ilearnUserMapper.insert(ilearnUser);
+            user.setCreateTime(createTime);
+            user.setSex(String.valueOf(userInfo.get("sex")));
+            user.setStatus("1");
+            user.setUtype(UserType.get(com.ilearn.base.mapper.UserRole.STUDENT));
+            int insert = userMapper.insert(user);
             if (insert == 0) {
                 // 如果保存用户信息失败, 需要抛出异常给框架以进行事务控制
                 log.error("保存用户信息到数据库失败, userInfo: {}", userInfo);
@@ -147,18 +146,18 @@ public class WXAuthorize implements AuthorizeService {
             }
             // 保存用户角色相关信息, 数据库中学生角色的id为17
             String studentRoleId = "17";
-            IlearnUserRole ilearnUserRole = new IlearnUserRole();
-            ilearnUserRole.setId(String.valueOf(UUID.randomUUID()));
-            ilearnUserRole.setUserId(userId);
-            ilearnUserRole.setCreateTime(createTime);
-            ilearnUserRole.setCreator("超级管理员");
-            ilearnUserRole.setRoleId(studentRoleId);
-            if (ilearnUserRoleMapper.insert(ilearnUserRole) == 0) {
-                log.error("保存用户和角色的关联信息失败, userRole: " + ilearnUserRole);
+            UserRole userRole = new UserRole();
+            userRole.setId(String.valueOf(UUID.randomUUID()));
+            userRole.setUserId(userId);
+            userRole.setCreateTime(createTime);
+            userRole.setCreator("超级管理员");
+            userRole.setRoleId(studentRoleId);
+            if (userRoleMapper.insert(userRole) == 0) {
+                log.error("保存用户和角色的关联信息失败, userRole: " + userRole);
                 throw new RuntimeException("保存用户和角色的关联信息失败");
             }
         }
-        return ilearnUser;
+        return user;
     }
 
     /**

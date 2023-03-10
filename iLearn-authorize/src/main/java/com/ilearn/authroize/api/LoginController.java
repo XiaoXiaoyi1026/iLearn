@@ -1,7 +1,7 @@
 package com.ilearn.authroize.api;
 
-import com.ilearn.users.mapper.IlearnUserMapper;
-import com.ilearn.users.model.po.IlearnUser;
+import com.ilearn.users.mapper.UserMapper;
+import com.ilearn.users.model.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    private IlearnUserMapper ilearnUserMapper;
+    private UserMapper userMapper;
 
     @Autowired
-    void setIlearnUserMapper(IlearnUserMapper ilearnUserMapper) {
-        this.ilearnUserMapper = ilearnUserMapper;
+    void setIlearnUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @RequestMapping("/login-success")
@@ -32,8 +32,8 @@ public class LoginController {
     }
 
     @RequestMapping("/user/{id}")
-    public IlearnUser getUser(@PathVariable("id") String id) {
-        return ilearnUserMapper.selectById(id);
+    public User getUser(@PathVariable("id") String id) {
+        return userMapper.selectById(id);
     }
 
     @RequestMapping("/r/r1")

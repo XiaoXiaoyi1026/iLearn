@@ -2,10 +2,10 @@ package com.ilearn.users.service.impl;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;
-import com.ilearn.users.mapper.IlearnMenuMapper;
+import com.ilearn.users.mapper.MenuMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserAuthorities;
-import com.ilearn.users.model.po.IlearnMenu;
+import com.ilearn.users.model.dto.UserAuthorities;
+import com.ilearn.users.model.po.Menu;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserDetailsService {
 
     private ApplicationContext applicationContext;
 
-    private IlearnMenuMapper ilearnMenuMapper;
+    private MenuMapper menuMapper;
 
     @Autowired
     void setApplicationContext(ApplicationContext applicationContext) {
@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     @Autowired
-    void setIlearnMenuMapper(IlearnMenuMapper ilearnMenuMapper) {
-        this.ilearnMenuMapper = ilearnMenuMapper;
+    void setIlearnMenuMapper(MenuMapper menuMapper) {
+        this.menuMapper = menuMapper;
     }
 
     /**
@@ -64,26 +64,26 @@ public class UserServiceImpl implements UserDetailsService {
         String authorizeType = authorizeInfo.getAuthorizeType();
         // 根据授权类型从Spring容器中拿对应的授权服务的Bean
         AuthorizeService authorizeService = applicationContext.getBean(authorizeType + "_authorize", AuthorizeService.class);
-        ILearnUserAuthorities iLearnUserAuthorities = authorizeService.execute(authorizeInfo);
-        return getUserPrincipal(iLearnUserAuthorities);
+        UserAuthorities userAuthorities = authorizeService.execute(authorizeInfo);
+        return getUserPrincipal(userAuthorities);
     }
 
     /**
      * 根据iLearnUserExtension的信息构建UserDetails
      *
-     * @param iLearnUserAuthorities 用户信息
+     * @param userAuthorities 用户信息
      * @return 框架需要的对象
      */
-    private UserDetails getUserPrincipal(@NotNull ILearnUserAuthorities iLearnUserAuthorities) {
+    private UserDetails getUserPrincipal(@NotNull UserAuthorities userAuthorities) {
         // 获取用户权限
-        String userID = iLearnUserAuthorities.getId();
-        List<IlearnMenu> userMenus = ilearnMenuMapper.getUserMenus(userID);
+        String userID = userAuthorities.getId();
+        List<Menu> userMenus = menuMapper.getUserMenus(userID);
         String[] userPermissions = new String[userMenus.size()];
         int i = 0;
-        for (IlearnMenu userMenu : userMenus) {
+        for (Menu userMenu : userMenus) {
             userPermissions[i++] = userMenu.getCode();
         }
-        return User.withUsername(JsonUtil.objectToJson(iLearnUserAuthorities))
+        return User.withUsername(JsonUtil.objectToJson(userAuthorities))
                 // 自定义的DaoAuthenticationProviderCustom不做密码验证
                 .password("")
                 .authorities(userPermissions).build();

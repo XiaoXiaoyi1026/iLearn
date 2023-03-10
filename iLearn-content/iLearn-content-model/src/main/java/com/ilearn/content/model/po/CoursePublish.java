@@ -132,7 +132,7 @@ public class CoursePublish implements Serializable {
     private LocalDateTime offlineDate;
 
     /**
-     * 发布状态
+     * 发布状态，对应数据字典--203
      */
     private String status;
 
@@ -142,7 +142,7 @@ public class CoursePublish implements Serializable {
     private String remark;
 
     /**
-     * 收费规则，对应数据字典--203
+     * 收费规则，对应数据字典--201
      */
     private String charge;
 

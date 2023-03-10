@@ -1,7 +1,7 @@
 package com.ilearn.authroize.api;
 
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserAuthorities;
+import com.ilearn.users.model.dto.UserAuthorities;
 import com.ilearn.users.service.AuthorizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +34,7 @@ public class WXLoginController {
         Map<String, Object> payload = authorizeInfo.getPayload();
         payload.put("code", code);
         payload.put("state", state);
-        ILearnUserAuthorities userExtension = wxAuthorize.execute(authorizeInfo);
+        UserAuthorities userExtension = wxAuthorize.execute(authorizeInfo);
         if (userExtension == null) {
             // 如果获取用户信息失败, 则重定向到错误页面
             return "redirect:http://http://www.ilearn1026.com/error.html";

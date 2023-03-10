@@ -1,0 +1,27 @@
+# 应用名称
+spring:
+  application:
+    name: iLearn-learning-center-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      config:
+        namespace: ${spring.profiles.active}
+        group: ilearn-project
+        # 对应配置文件的文件类型, 即扩展名
+        file-extension: yaml
+        refresh-enabled: true
+        # 通用配置文件依赖, 可依赖多个文件
+        shared-configs:
+          - data-id: iLearn-logging-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
+          # feign远程配置
+          - data-id: iLearn-feign-${spring.profiles.active}.yaml
+            group: ilearn-project
+            refresh: true
+  # 对应配置文件的环境名称
+  profiles:
+    active: develop
+
+

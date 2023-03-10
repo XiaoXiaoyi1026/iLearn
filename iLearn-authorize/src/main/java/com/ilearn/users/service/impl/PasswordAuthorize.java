@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.StringUtil;
 import com.ilearn.users.feign.VerificationCodeFeign;
-import com.ilearn.users.mapper.IlearnUserMapper;
+import com.ilearn.users.mapper.UserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
-import com.ilearn.users.model.dto.ILearnUserAuthorities;
-import com.ilearn.users.model.po.IlearnUser;
+import com.ilearn.users.model.dto.UserAuthorities;
+import com.ilearn.users.model.po.User;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 @Service("password_authorize")
 public class PasswordAuthorize implements AuthorizeService {
 
-    private IlearnUserMapper ilearnUserMapper;
+    private UserMapper userMapper;
 
     /**
      * 密码验证器
@@ -39,8 +39,8 @@ public class PasswordAuthorize implements AuthorizeService {
     private VerificationCodeFeign verificationCodeFeign;
 
     @Autowired
-    void setIlearnUserMapper(IlearnUserMapper ilearnUserMapper) {
-        this.ilearnUserMapper = ilearnUserMapper;
+    void setIlearnUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
     @Autowired
@@ -54,7 +54,7 @@ public class PasswordAuthorize implements AuthorizeService {
     }
 
     @Override
-    public ILearnUserAuthorities execute(@NotNull AuthorizeInfo authorizeInfo) {
+    public UserAuthorities execute(@NotNull AuthorizeInfo authorizeInfo) {
         // 校验验证码
         String verificationCode = authorizeInfo.getVerificationCode();
         String verificationCodeKey = authorizeInfo.getVerificationCodeKey();
@@ -71,15 +71,15 @@ public class PasswordAuthorize implements AuthorizeService {
         // 获取账号信息
         String userName = authorizeInfo.getUserName();
         // 从数据库查询用户信息
-        LambdaQueryWrapper<IlearnUser> ilearnUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        ilearnUserLambdaQueryWrapper.eq(IlearnUser::getUsername, userName);
-        IlearnUser ilearnUser = ilearnUserMapper.selectOne(ilearnUserLambdaQueryWrapper);
-        if (ilearnUser == null) {
+        LambdaQueryWrapper<User> ilearnUserLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        ilearnUserLambdaQueryWrapper.eq(User::getUsername, userName);
+        User user = userMapper.selectOne(ilearnUserLambdaQueryWrapper);
+        if (user == null) {
             log.error("用户{}不存在", userName);
             ILearnException.cast("用户" + userName + "不存在");
         }
         // 原密码
-        String userPassword = ilearnUser.getPassword();
+        String userPassword = user.getPassword();
         // 输入的密码
         String inputPassword = authorizeInfo.getPassword();
         // 调用密码验证器进行验证
@@ -88,9 +88,9 @@ public class PasswordAuthorize implements AuthorizeService {
             ILearnException.cast("密码错误");
         }
         // 密码置空, 保证信息安全
-        ilearnUser.setPassword(null);
-        ILearnUserAuthorities iLearnUserAuthorities = new ILearnUserAuthorities();
-        BeanUtils.copyProperties(ilearnUser, iLearnUserAuthorities);
-        return iLearnUserAuthorities;
+        user.setPassword(null);
+        UserAuthorities userAuthorities = new UserAuthorities();
+        BeanUtils.copyProperties(user, userAuthorities);
+        return userAuthorities;
     }
 }
