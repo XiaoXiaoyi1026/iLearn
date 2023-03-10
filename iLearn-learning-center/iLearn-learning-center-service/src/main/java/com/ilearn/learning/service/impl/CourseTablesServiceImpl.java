@@ -69,18 +69,28 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         LocalDateTime now = LocalDateTime.now();
         // feign远程调用查询课程发布信息
         CoursePublish coursePublishInfo = contentServiceClient.getCoursePublishInfo(courseId);
-        ChooseCourse chooseCourse = getChooseCourse(userId, courseId);
+        ChooseCourse chooseCourse;
+        if (CourseType.FREE.equals(coursePublishInfo.getCharge())) {
+            // 如果课程类型为免费, 则查询免费的选课记录
+            chooseCourse = getChooseFreeCourse(userId, courseId);
+        } else {
+            // 否则查询收费的选课记录
+            chooseCourse = getChoosePaidCourse(userId, courseId);
+        }
         if (chooseCourse == null) {
-            chooseCourse = courseTablesService.addChooseCourse(userId, now, coursePublishInfo);
-            // 如果选课成功且课程表中没有该条选课记录, 则插入
+            // 如果选课记录为空则新增
+            chooseCourse = addChooseCourse(userId, now, coursePublishInfo);
+            // 新增选课记录完成后如果选课状态为成功且课程表中没有该课程, 则新增该课程
             if (CourseSelectionStatus.SUCCESSFUL.equals(chooseCourse.getStatus()) && getCourseTables(userId, courseId) == null) {
                 courseTablesService.addCourseTables(now, chooseCourse);
             }
         }
+        // 封装返回数据
         ChooseCourseDto chooseCourseDto = new ChooseCourseDto();
         BeanUtils.copyProperties(chooseCourse, chooseCourseDto);
+        // 判断课程学习资格
         String courseLearningQualification = CourseLearningQualification.NORMAL;
-        if (chooseCourse.getStatus().equals(CourseSelectionStatus.TO_BE_PAID)) {
+        if (CourseSelectionStatus.TO_BE_PAID.equals(chooseCourse.getStatus())) {
             courseLearningQualification = CourseLearningQualification.EXCEPTION;
         } else if (chooseCourse.getValidtimeEnd().isBefore(now)) {
             courseLearningQualification = CourseLearningQualification.EXPIRED;
@@ -105,14 +115,13 @@ public class CourseTablesServiceImpl implements CourseTablesService {
 
     @NotNull
     private ChooseCourse addChooseCourse(String userId, LocalDateTime now, @NotNull CoursePublish coursePublishInfo) {
-        // 如果没有选过该课程, 则添加选课记录
         ChooseCourse chooseCourse = new ChooseCourse();
         chooseCourse.setCourseId(coursePublishInfo.getId());
         chooseCourse.setCourseName(coursePublishInfo.getName());
         chooseCourse.setUserId(userId);
         chooseCourse.setCompanyId(coursePublishInfo.getCompanyId());
         chooseCourse.setOrderType(
-                coursePublishInfo.getCharge().equals(CourseType.FREE) ?
+                CourseType.FREE.equals(coursePublishInfo.getCharge()) ?
                         CourseSelectionType.FREE : CourseSelectionType.CHARGE
         );
         chooseCourse.setCreateDate(now);
@@ -120,7 +129,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         Integer validDays = coursePublishInfo.getValidDays();
         chooseCourse.setValidDays(validDays);
         chooseCourse.setStatus(
-                chooseCourse.getOrderType().equals(CourseSelectionType.FREE) ?
+                CourseSelectionType.FREE.equals(chooseCourse.getOrderType()) ?
                         CourseSelectionStatus.SUCCESSFUL : CourseSelectionStatus.TO_BE_PAID
         );
         chooseCourse.setValidtimeStart(now);
@@ -133,13 +142,28 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         return chooseCourse;
     }
 
-    private @Nullable ChooseCourse getChooseCourse(String userId, Long courseId) {
+    private @Nullable ChooseCourse getChooseFreeCourse(String userId, Long courseId) {
         // 查询是否已经添加过该课程
         LambdaQueryWrapper<ChooseCourse> chooseCourseLambdaQueryWrapper = new LambdaQueryWrapper<>();
         chooseCourseLambdaQueryWrapper.eq(ChooseCourse::getUserId, userId)
                 .eq(ChooseCourse::getCourseId, courseId)
                 .eq(ChooseCourse::getOrderType, CourseSelectionType.FREE)
                 .eq(ChooseCourse::getStatus, CourseSelectionStatus.SUCCESSFUL);
+        // 因为不存在唯一约束, 所以不能用selectOne
+        List<ChooseCourse> chooseCourses = chooseCourseMapper.selectList(chooseCourseLambdaQueryWrapper);
+        if (chooseCourses != null && chooseCourses.size() > 0) {
+            return chooseCourses.get(0);
+        }
+        return null;
+    }
+
+    private @Nullable ChooseCourse getChoosePaidCourse(String userId, Long courseId) {
+        // 查询是否已经添加过该课程
+        LambdaQueryWrapper<ChooseCourse> chooseCourseLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        chooseCourseLambdaQueryWrapper.eq(ChooseCourse::getUserId, userId)
+                .eq(ChooseCourse::getCourseId, courseId)
+                .eq(ChooseCourse::getOrderType, CourseSelectionType.CHARGE)
+                .eq(ChooseCourse::getStatus, CourseSelectionStatus.TO_BE_PAID);
         // 因为不存在唯一约束, 所以不能用selectOne
         List<ChooseCourse> chooseCourses = chooseCourseMapper.selectList(chooseCourseLambdaQueryWrapper);
         if (chooseCourses != null && chooseCourses.size() > 0) {
