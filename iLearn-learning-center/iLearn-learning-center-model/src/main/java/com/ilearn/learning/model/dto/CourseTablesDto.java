@@ -1,19 +1,18 @@
 package com.ilearn.learning.model.dto;
 
-import com.ilearn.learning.model.po.ChooseCourse;
+import com.ilearn.learning.model.po.CourseTables;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * @author xiaoxiaoyi
  * @version 1.0
- * @description 选课Dto
- * @date 3/9/2023 4:29 PM
+ * @description 课程表Dto
+ * @date 3/10/2023 2:47 PM
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ChooseCourseDto extends ChooseCourse {
-
+public class CourseTablesDto extends CourseTables {
     /**
      * 学习资格:
      * [
@@ -23,5 +22,4 @@ public class ChooseCourseDto extends ChooseCourse {
      * ]
      */
     public String learnStatus;
-
 }

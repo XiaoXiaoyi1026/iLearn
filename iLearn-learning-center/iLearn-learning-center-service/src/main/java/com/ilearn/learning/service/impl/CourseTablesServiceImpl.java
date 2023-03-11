@@ -11,6 +11,7 @@ import com.ilearn.learning.feign.ContentServiceClient;
 import com.ilearn.learning.mapper.ChooseCourseMapper;
 import com.ilearn.learning.mapper.CourseTablesMapper;
 import com.ilearn.learning.model.dto.ChooseCourseDto;
+import com.ilearn.learning.model.dto.CourseTablesDto;
 import com.ilearn.learning.model.po.ChooseCourse;
 import com.ilearn.learning.model.po.CourseTables;
 import com.ilearn.learning.service.CourseTablesService;
@@ -41,7 +42,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
 
     private CourseTablesMapper courseTablesMapper;
 
-    private CourseTablesServiceImpl courseTablesService;
+    private CourseTablesService courseTablesService;
 
     @Autowired
     void setChooseCourseMapper(ChooseCourseMapper chooseCourseMapper) {
@@ -59,7 +60,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
     }
 
     @Autowired
-    void setCourseTablesService(CourseTablesServiceImpl courseTablesService) {
+    void setCourseTablesService(CourseTablesService courseTablesService) {
         this.courseTablesService = courseTablesService;
     }
 
@@ -79,7 +80,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         }
         if (chooseCourse == null) {
             // 如果选课记录为空则新增
-            chooseCourse = addChooseCourse(userId, now, coursePublishInfo);
+            chooseCourse = courseTablesService.addChooseCourse(userId, now, coursePublishInfo);
             // 新增选课记录完成后如果选课状态为成功且课程表中没有该课程, 则新增该课程
             if (CourseSelectionStatus.SUCCESSFUL.equals(chooseCourse.getStatus()) && getCourseTables(userId, courseId) == null) {
                 courseTablesService.addCourseTables(now, chooseCourse);
@@ -89,17 +90,31 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         ChooseCourseDto chooseCourseDto = new ChooseCourseDto();
         BeanUtils.copyProperties(chooseCourse, chooseCourseDto);
         // 判断课程学习资格
-        String courseLearningQualification = CourseLearningQualification.NORMAL;
-        if (CourseSelectionStatus.TO_BE_PAID.equals(chooseCourse.getStatus())) {
-            courseLearningQualification = CourseLearningQualification.EXCEPTION;
-        } else if (chooseCourse.getValidtimeEnd().isBefore(now)) {
-            courseLearningQualification = CourseLearningQualification.EXPIRED;
-        }
-        chooseCourseDto.setLearningStatus(courseLearningQualification);
+        chooseCourseDto.setLearnStatus(getLearningQualification(userId, courseId).getLearnStatus());
         return chooseCourseDto;
     }
 
-    private void addCourseTables(LocalDateTime now, ChooseCourse chooseCourse) {
+    @Override
+    public CourseTablesDto getLearningQualification(String userId, Long courseId) {
+        CourseTables courseTables = getCourseTables(userId, courseId);
+        CourseTablesDto courseTablesDto = new CourseTablesDto();
+        if (courseTables == null) {
+            // 如果课程表为空, 则说明根本没选课或者未支付
+            courseTablesDto.setLearnStatus(CourseLearningQualification.EXCEPTION);
+        } else {
+            BeanUtils.copyProperties(courseTables, courseTablesDto);
+            if (courseTablesDto.getValidtimeEnd().isBefore(LocalDateTime.now())) {
+                courseTablesDto.setLearnStatus(CourseLearningQualification.EXPIRED);
+            } else {
+                courseTablesDto.setLearnStatus(CourseLearningQualification.NORMAL);
+            }
+        }
+        return courseTablesDto;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addCourseTables(LocalDateTime now, ChooseCourse chooseCourse) {
         CourseTables courseTables = new CourseTables();
         BeanUtils.copyProperties(chooseCourse, courseTables);
         // 选课表主键
@@ -114,7 +129,9 @@ public class CourseTablesServiceImpl implements CourseTablesService {
     }
 
     @NotNull
-    private ChooseCourse addChooseCourse(String userId, LocalDateTime now, @NotNull CoursePublish coursePublishInfo) {
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ChooseCourse addChooseCourse(String userId, LocalDateTime now, @NotNull CoursePublish coursePublishInfo) {
         ChooseCourse chooseCourse = new ChooseCourse();
         chooseCourse.setCourseId(coursePublishInfo.getId());
         chooseCourse.setCourseName(coursePublishInfo.getName());
@@ -142,7 +159,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         return chooseCourse;
     }
 
-    private @Nullable ChooseCourse getChooseFreeCourse(String userId, Long courseId) {
+    public @Nullable ChooseCourse getChooseFreeCourse(String userId, Long courseId) {
         // 查询是否已经添加过该课程
         LambdaQueryWrapper<ChooseCourse> chooseCourseLambdaQueryWrapper = new LambdaQueryWrapper<>();
         chooseCourseLambdaQueryWrapper.eq(ChooseCourse::getUserId, userId)
@@ -157,7 +174,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         return null;
     }
 
-    private @Nullable ChooseCourse getChoosePaidCourse(String userId, Long courseId) {
+    public @Nullable ChooseCourse getChoosePaidCourse(String userId, Long courseId) {
         // 查询是否已经添加过该课程
         LambdaQueryWrapper<ChooseCourse> chooseCourseLambdaQueryWrapper = new LambdaQueryWrapper<>();
         chooseCourseLambdaQueryWrapper.eq(ChooseCourse::getUserId, userId)
@@ -172,7 +189,7 @@ public class CourseTablesServiceImpl implements CourseTablesService {
         return null;
     }
 
-    private @Nullable CourseTables getCourseTables(String userId, Long courseId) {
+    public @Nullable CourseTables getCourseTables(String userId, Long courseId) {
         // 由于course_ables表中添加了由userId和courseId共同决定的唯一索引, 所以可以用selectOne
         LambdaQueryWrapper<CourseTables> courseTablesLambdaQueryWrapper = new LambdaQueryWrapper<>();
         courseTablesLambdaQueryWrapper.eq(CourseTables::getUserId, userId)

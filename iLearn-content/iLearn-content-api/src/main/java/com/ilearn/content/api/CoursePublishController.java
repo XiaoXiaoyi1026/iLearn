@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import static com.ilearn.content.utils.SecurityUtil.getSecurityInfo;
+
 /**
  * @author xiaoxiaoyi
  * @version 1.0
@@ -58,7 +60,7 @@ public class CoursePublishController {
     @ResponseBody
     @PostMapping("/courseaudit/commit/{courseId}")
     public ResponseMessage<Boolean> commitAudit(@PathVariable("courseId") Long courseId) {
-        Long companyId = 1026L;
+        Long companyId = Long.parseLong(getSecurityInfo().getCompanyId());
         return coursePublishService.commitAudit(companyId, courseId);
     }
 
@@ -72,7 +74,7 @@ public class CoursePublishController {
     @PostMapping("/coursepublish/{courseId}")
     @ResponseBody
     public ResponseMessage<Boolean> coursePublish(@PathVariable("courseId") Long courseId) {
-        Long companyId = 1026L;
+        Long companyId = Long.parseLong(getSecurityInfo().getCompanyId());
         return coursePublishService.coursePublish(companyId, courseId);
     }
 

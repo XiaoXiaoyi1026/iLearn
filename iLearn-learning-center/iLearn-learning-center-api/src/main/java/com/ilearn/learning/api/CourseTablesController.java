@@ -2,6 +2,7 @@ package com.ilearn.learning.api;
 
 import com.ilearn.content.model.po.User;
 import com.ilearn.learning.model.dto.ChooseCourseDto;
+import com.ilearn.learning.model.dto.CourseTablesDto;
 import com.ilearn.learning.service.CourseTablesService;
 import com.ilearn.learning.utils.SecurityUtil;
 import io.swagger.annotations.Api;
@@ -36,6 +37,14 @@ public class CourseTablesController {
         User securityInfo = SecurityUtil.getSecurityInfo();
         String userId = securityInfo.getId();
         return courseTablesService.addChooseCourseDto(userId, courseId);
+    }
+
+    @ApiOperation(value = "查询学习资格")
+    @PostMapping("/choosecourse/learnstatus/{courseId}")
+    public CourseTablesDto getLearningQualification(@PathVariable(name = "courseId") Long courseId) {
+        User securityInfo = SecurityUtil.getSecurityInfo();
+        String userId = securityInfo.getId();
+        return courseTablesService.getLearningQualification(userId, courseId);
     }
 
 }
