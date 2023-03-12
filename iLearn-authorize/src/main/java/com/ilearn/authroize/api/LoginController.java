@@ -1,7 +1,7 @@
 package com.ilearn.authroize.api;
 
+import com.ilearn.base.model.po.User;
 import com.ilearn.users.mapper.UserMapper;
-import com.ilearn.users.model.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

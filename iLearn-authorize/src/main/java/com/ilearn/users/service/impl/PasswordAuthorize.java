@@ -2,12 +2,12 @@ package com.ilearn.users.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ilearn.base.exception.ILearnException;
+import com.ilearn.base.model.po.User;
 import com.ilearn.base.utils.StringUtil;
 import com.ilearn.users.feign.VerificationCodeFeign;
 import com.ilearn.users.mapper.UserMapper;
 import com.ilearn.users.model.dto.AuthorizeInfo;
 import com.ilearn.users.model.dto.UserAuthorities;
-import com.ilearn.users.model.po.User;
 import com.ilearn.users.service.AuthorizeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

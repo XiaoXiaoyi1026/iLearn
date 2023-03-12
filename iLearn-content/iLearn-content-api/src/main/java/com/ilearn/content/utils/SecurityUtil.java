@@ -2,7 +2,7 @@ package com.ilearn.content.utils;
 
 import com.ilearn.base.exception.ILearnException;
 import com.ilearn.base.utils.JsonUtil;
-import com.ilearn.content.model.po.User;
+import com.ilearn.base.model.po.User;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;

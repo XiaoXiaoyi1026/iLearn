@@ -1,6 +1,6 @@
 package com.ilearn.users.model.dto;
 
-import com.ilearn.users.model.po.User;
+import com.ilearn.base.model.po.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

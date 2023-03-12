@@ -1,4 +1,4 @@
-package com.ilearn.content.config;
+package com.ilearn.order.config;
 
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.slf4j.Logger;
@@ -64,5 +64,4 @@ public class XxlJobConfig {
 
         return xxlJobSpringExecutor;
     }
-
 }

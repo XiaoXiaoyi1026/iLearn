@@ -1,6 +1,6 @@
 package com.ilearn.learning.api;
 
-import com.ilearn.content.model.po.User;
+import com.ilearn.base.model.po.User;
 import com.ilearn.learning.model.dto.ChooseCourseDto;
 import com.ilearn.learning.model.dto.CourseTablesDto;
 import com.ilearn.learning.service.CourseTablesService;
